@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics · Motion &amp; Graphs Review — Graded</title>
+<style>
+  :root{
+    --navy:#1F4E79; --gold:#c8952d; --gold-soft:#f6ead2;
+    --ink:#22303e; --soft:#55636f; --paper:#f7f5ef; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d9d4c8; --paired:#dbe7f3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 16px 40px}
+  header{background:var(--navy);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:var(--gold);font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.85}
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.filled{background:var(--navy);border-color:var(--navy);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(30,40,60,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--navy);margin-bottom:4px}
+  h3{font-size:15px;color:#8a4a2b;margin:14px 0 6px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  .formula-strip{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#f4f2ec;border-radius:10px;padding:10px;margin-bottom:12px}
+  .fpill{background:#fff;border:2px solid var(--navy);border-radius:8px;padding:6px 12px;font-family:Georgia,serif;font-size:15px}
+  /* matching (deferred) */
+  .matchcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mitem{position:relative;border:2px solid var(--navy);border-radius:10px;padding:8px 26px 8px 10px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none;margin-bottom:8px}
+  .mitem.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .mitem.paired{background:var(--paired)}
+  .mitem .badge{position:absolute;top:6px;right:7px;font-weight:800;font-size:13px;color:var(--navy)}
+  .mitem.g-ok{background:var(--good-bg);border-color:var(--good)}
+  .mitem.g-no{background:var(--bad-bg);border-color:var(--bad)}
+  .mitem svg{display:block;margin:0 auto}
+  /* ordering */
+  .slots{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .slot{display:flex;align-items:center;gap:10px}
+  .slot .num{font-family:Georgia,serif;font-weight:700;color:var(--gold);font-size:17px;width:22px;text-align:center}
+  .slot .drop{flex:1;min-height:44px;border:2px dashed #b9b09a;border-radius:10px;background:#fbfaf5;display:flex;align-items:center;padding:4px 8px;cursor:pointer}
+  .pool{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;background:#eef0f2;border-radius:10px;padding:10px}
+  .tcard{background:#fff;border:2px solid var(--navy);border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;user-select:none}
+  .tcard.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .slot .drop .tcard{width:100%;border-style:solid}
+  .slot.g-ok .drop{border:2px solid var(--good);background:var(--good-bg)}
+  .slot.g-no .drop{border:2px solid var(--bad);background:var(--bad-bg)}
+  /* dropdown rows */
+  .drow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow select{font-size:13.5px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff;max-width:52%}
+  .drow.g-ok{background:var(--good-bg)} .drow.g-no{background:var(--bad-bg)}
+  .gwrap{text-align:center;margin:8px 0}
+  /* MC deferred */
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.sel{border-color:var(--gold);background:var(--gold-soft);font-weight:700}
+  .opt.g-right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.g-wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f4f2ec;border-radius:8px;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+  /* flashcards */
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .flash{perspective:800px;height:125px;cursor:pointer}
+  .finner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+  .flash.flip .finner{transform:rotateY(180deg)}
+  .fface{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center}
+  .ffront{background:var(--navy);color:#fff;font-weight:700;font-size:15px}
+  .fback{background:var(--gold-soft);border:2px solid var(--gold);color:var(--ink);transform:rotateY(180deg);font-size:12px;line-height:1.32}
+  /* problems + numbers */
+  .prob{border-top:1px solid var(--line);padding:12px 0 8px}
+  .prob .stem{font-size:14.5px;margin-bottom:6px}
+  .prob .stem b{color:var(--navy)}
+  .numrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0}
+  .numrow label{font-weight:700;font-size:14px}
+  .numrow input{width:95px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.g-ok{border-color:var(--good);background:var(--good-bg)}
+  input.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  .hintbox{font-size:12.5px;color:var(--soft);font-style:italic}
+  /* grade panel */
+  .gradebar{background:var(--navy);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .gradebar input{font-size:16px;padding:9px 12px;border-radius:9px;border:none;width:min(280px,90%);text-align:center;margin-bottom:10px}
+  .bigbtn{background:var(--gold);color:#3a2a08;border:none;border-radius:10px;padding:13px 34px;font-size:18px;font-weight:800;cursor:pointer}
+  .bigbtn:active{transform:scale(.97)}
+  .warn{color:#ffd9a0;font-size:13.5px;margin-top:10px}
+  .scorecard{display:none;background:#fff;color:var(--ink);border:4px solid var(--gold);border-radius:14px;padding:20px;margin-top:14px;text-align:center}
+  .scorecard .sc-name{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--navy)}
+  .scorecard .sc-score{font-family:Georgia,serif;font-size:52px;font-weight:800;color:var(--gold);line-height:1.1;margin:6px 0}
+  .scorecard .sc-pct{font-size:22px;font-weight:700;color:var(--navy)}
+  .scorecard .sc-msg{font-size:15px;margin-top:6px}
+  .scorecard .sc-meta{font-size:12px;color:var(--soft);margin-top:8px}
+  .locknote{display:none;text-align:center;font-size:13px;color:var(--soft);font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physics · Ch 2 Test Review — Graded Mode</div>
+  <h1>Motion &amp; Graphs — Interactive Review</h1>
+  <p><b>How this works:</b> answer EVERYTHING first — no hints, no feedback, just like the test. When every chip up top is filled in, scroll to the bottom, type your name, and hit GRADE ME. You'll get a score card to show your teacher — and only then will every answer light up green or red.</p>
+</header>
+
+<div class="progress">
+  <span class="chip" id="chip-shapes">Graph Shapes</span>
+  <span class="chip" id="chip-translate">Translator</span>
+  <span class="chip" id="chip-derive">Derivations</span>
+  <span class="chip" id="chip-tool">Right Tool</span>
+  <span class="chip" id="chip-problems">Problems</span>
+  <span class="chip" id="chip-graphs">Graph Reading</span>
+  <span class="chip" id="chip-sigfig">Sig Figs</span>
+</div>
+
+<section>
+  <h2>1 · Graph Shapes — Match Graph to Story <span style="font-size:13px;color:var(--soft)">(6 pts)</span></h2>
+  <div class="dir">All are d–t graphs. Tap a graph, then tap the story you pair it with — matching ① badges appear on both. Tap a paired card to un-pair. No feedback until grading!</div>
+  <div class="matchcols"><div id="gsL"></div><div id="gsR"></div></div>
+</section>
+
+<section>
+  <h2>2 · The Translator — Between Graphs <span style="font-size:13px;color:var(--soft)">(6 pts)</span></h2>
+  <div class="dir">The rule: slope of d–t = the v–t height · slope of v–t = the a–t height. Label every segment.</div>
+  <h3>A. This d–t graph → what does v–t do?</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 420 140" width="420"><g stroke="#ddd" stroke-width="1"><line x1="35" y1="115" x2="405" y2="115"/><line x1="35" y1="85" x2="405" y2="85"/><line x1="35" y1="55" x2="405" y2="55"/><line x1="35" y1="25" x2="405" y2="25"/><line x1="158" y1="115" x2="158" y2="12"/><line x1="281" y1="115" x2="281" y2="12"/></g><line x1="35" y1="115" x2="410" y2="115" stroke="#22303e" stroke-width="2"/><line x1="35" y1="115" x2="35" y2="10" stroke="#22303e" stroke-width="2"/><polyline points="35,113 158,73 281,73 405,15" fill="none" stroke="#7a2e2a" stroke-width="2.6"/><text x="80" y="132" font-size="11">segment 1</text><text x="200" y="132" font-size="11">segment 2</text><text x="325" y="132" font-size="11">segment 3</text><text x="14" y="65" font-size="11">d</text></svg>
+  </div>
+  <div id="trA"></div>
+  <h3>B. This v–t graph → what does a–t do?</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 420 140" width="420"><g stroke="#ddd" stroke-width="1"><line x1="35" y1="115" x2="405" y2="115"/><line x1="35" y1="85" x2="405" y2="85"/><line x1="35" y1="55" x2="405" y2="55"/><line x1="35" y1="25" x2="405" y2="25"/><line x1="158" y1="115" x2="158" y2="12"/><line x1="281" y1="115" x2="281" y2="12"/></g><line x1="35" y1="115" x2="410" y2="115" stroke="#22303e" stroke-width="2"/><line x1="35" y1="115" x2="35" y2="10" stroke="#22303e" stroke-width="2"/><polyline points="35,88 158,88 281,28 405,28" fill="none" stroke="#7a2e2a" stroke-width="2.6"/><text x="80" y="132" font-size="11">segment 1</text><text x="200" y="132" font-size="11">segment 2</text><text x="325" y="132" font-size="11">segment 3</text><text x="14" y="65" font-size="11">v</text></svg>
+  </div>
+  <div id="trB"></div>
+</section>
+
+<section>
+  <h2>3 · Where the Equations Come From — Build Each Derivation <span style="font-size:13px;color:var(--soft)">(12 pts)</span></h2>
+  <div class="dir">Tap a step card, then tap the slot where it belongs (1 = first move). These aren't magic formulas — each one is BUILT, and you're the builder.</div>
+  <h3>Derivation 1 · v = d/t</h3>
+  <div class="slots" id="slots-d1"></div><div class="pool" id="pool-d1"></div>
+  <h3>Derivation 2 · a = Δv/t</h3>
+  <div class="slots" id="slots-d2"></div><div class="pool" id="pool-d2"></div>
+  <h3>Derivation 3 · d<sub>f</sub> − d<sub>i</sub> = v<sub>i</sub>t + ½at²</h3>
+  <div class="slots" id="slots-d3"></div><div class="pool" id="pool-d3"></div>
+</section>
+
+<section>
+  <h2>4 · Pick the Right Tool <span style="font-size:13px;color:var(--soft)">(6 pts)</span></h2>
+  <div class="formula-strip">
+    <span class="fpill">v = d/t</span>
+    <span class="fpill">v<sub>f</sub> = v<sub>i</sub> + at</span>
+    <span class="fpill">d = v<sub>i</sub>t + ½at²</span>
+    <span class="fpill">v<sub>f</sub>² − v<sub>i</sub>² = 2ad</span>
+  </div>
+  <div class="dir">For each situation, choose the equation that gets you there. Hint hiding in plain sight: what do you do when NO time is given?</div>
+  <div id="toolbox"></div>
+</section>
+
+<section>
+  <h2>5 · Problem Gauntlet <span style="font-size:13px;color:var(--soft)">(8 pts)</span></h2>
+  <div class="dir">Friendly numbers throughout. Work each on paper in the required format (given/find, formula, substitute WITH units, solve), then enter your answer. One decimal place is fine.</div>
+  <div id="probbox"></div>
+</section>
+
+<section>
+  <h2>6 · Reading the Graphs — Numbers Off the Picture <span style="font-size:13px;color:var(--soft)">(10 pts)</span></h2>
+  <div class="dir">Now the graphs carry real numbers — and some answers are NEGATIVE. Type negatives with a minus sign (like -2). Slopes and areas are your tools.</div>
+
+  <h3>Graph A — d–t with a return trip</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 440 210" width="440"><g stroke="#ddd" stroke-width="1"><line x1="40" y1="160" x2="400" y2="160"/><line x1="40" y1="100" x2="400" y2="100"/><line x1="40" y1="40" x2="400" y2="40"/><line x1="130" y1="160" x2="130" y2="35"/><line x1="220" y1="160" x2="220" y2="35"/><line x1="310" y1="160" x2="310" y2="35"/><line x1="400" y1="160" x2="400" y2="35"/></g><line x1="40" y1="160" x2="410" y2="160" stroke="#22303e" stroke-width="2"/><line x1="40" y1="160" x2="40" y2="30" stroke="#22303e" stroke-width="2"/><polyline points="40,160 130,40 220,40 400,160" fill="none" stroke="#7a2e2a" stroke-width="2.6"/><g font-size="11" fill="#22303e"><text x="36" y="175">0</text><text x="126" y="175">2</text><text x="216" y="175">4</text><text x="306" y="175">6</text><text x="396" y="175">8</text><text x="24" y="164">0</text><text x="24" y="104">4</text><text x="24" y="44">8</text><text x="200" y="195">time (s)</text><text x="6" y="100" transform="rotate(-90 12 100)">d (m)</text></g></svg>
+  </div>
+  <div class="numrow"><label>Velocity from 0–2 s:</label><input id="ga1" inputmode="text"><label>m/s</label></div>
+  <div class="numrow"><label>Velocity from 2–4 s:</label><input id="ga2" inputmode="text"><label>m/s</label></div>
+  <div class="numrow"><label>Velocity from 4–8 s:</label><input id="ga3" inputmode="text"><label>m/s</label><span class="hintbox">(slope = Δd/Δt — watch the direction!)</span></div>
+  <div class="drow" id="gddrow1" data-key="back"><span>That negative velocity in the last segment means the object is…</span>
+    <select id="gdd1" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="slowfwd">Slowing down but still moving forward</option>
+      <option value="back">Moving BACKWARD — returning toward the start</option>
+      <option value="stopped">Completely stopped</option>
+      <option value="broken">Impossible — velocity can't be negative</option>
+    </select></div>
+
+  <h3>Graph B — v–t that crosses zero</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 440 250" width="440"><g stroke="#ddd" stroke-width="1"><line x1="40" y1="68" x2="400" y2="68"/><line x1="40" y1="188" x2="400" y2="188"/><line x1="88" y1="50" x2="88" y2="210"/><line x1="136" y1="50" x2="136" y2="210"/><line x1="184" y1="50" x2="184" y2="210"/><line x1="232" y1="50" x2="232" y2="210"/><line x1="280" y1="50" x2="280" y2="210"/><line x1="328" y1="50" x2="328" y2="210"/><line x1="376" y1="50" x2="376" y2="210"/></g><line x1="40" y1="140" x2="410" y2="140" stroke="#22303e" stroke-width="2"/><line x1="40" y1="50" x2="40" y2="210" stroke="#22303e" stroke-width="2"/><polyline points="40,68 184,140 280,188 376,188" fill="none" stroke="#7a2e2a" stroke-width="2.6"/><g font-size="11" fill="#22303e"><text x="36" y="225">0</text><text x="84" y="225">1</text><text x="132" y="225">2</text><text x="180" y="225">3</text><text x="228" y="225">4</text><text x="276" y="225">5</text><text x="324" y="225">6</text><text x="372" y="225">7</text><text x="18" y="72">+6</text><text x="24" y="144">0</text><text x="18" y="192">−4</text><text x="190" y="243">time (s)</text><text x="2" y="130" transform="rotate(-90 8 130)">v (m/s)</text></g></svg>
+  </div>
+  <div class="numrow"><label>Acceleration from 0–5 s:</label><input id="gb1" inputmode="text"><label>m/s²</label><span class="hintbox">(slope of v–t; from +6 down to −4)</span></div>
+  <div class="numrow"><label>At what time is the object momentarily STOPPED?</label><input id="gb2" inputmode="text"><label>s</label></div>
+  <div class="numrow"><label>Displacement during the first 3 s (area under the line):</label><input id="gb4" inputmode="text"><label>m</label><span class="hintbox">(triangle: ½ × base × height)</span></div>
+  <div class="drow" id="gddrow2" data-key="negfast"><span>After t = 3 s, the object is…</span>
+    <select id="gdd2" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="slowfwd">Still moving forward, just slowly</option>
+      <option value="negfast">Moving in the NEGATIVE direction, going faster and faster that way</option>
+      <option value="rest">At rest for good</option>
+      <option value="backslow">Moving backward and slowing down</option>
+    </select></div>
+
+  <h3>Graph C — a–t below the axis</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 440 190" width="440"><g stroke="#ddd" stroke-width="1"><line x1="40" y1="124" x2="400" y2="124"/><line x1="130" y1="40" x2="130" y2="160"/><line x1="220" y1="40" x2="220" y2="160"/><line x1="310" y1="40" x2="310" y2="160"/><line x1="400" y1="40" x2="400" y2="160"/></g><line x1="40" y1="70" x2="410" y2="70" stroke="#22303e" stroke-width="2"/><line x1="40" y1="40" x2="40" y2="160" stroke="#22303e" stroke-width="2"/><line x1="40" y1="124" x2="400" y2="124" stroke="#7a2e2a" stroke-width="2.6"/><g font-size="11" fill="#22303e"><text x="36" y="180">0</text><text x="126" y="180">1</text><text x="216" y="180">2</text><text x="306" y="180">3</text><text x="396" y="180">4</text><text x="24" y="74">0</text><text x="14" y="128">−3</text><text x="190" y="188"></text><text x="200" y="184">time (s)</text><text x="0" y="115" transform="rotate(-90 6 115)">a (m/s²)</text></g></svg>
+  </div>
+  <p style="font-size:14px;margin:4px 0 8px">The object enters this graph moving at <b>+12 m/s</b>, and the acceleration holds at <b>−3 m/s²</b> for all 4 seconds.</p>
+  <div class="numrow"><label>Final velocity at t = 4 s:</label><input id="gc1" inputmode="text"><label>m/s</label><span class="hintbox">(v<sub>f</sub> = v<sub>i</sub> + at — mind the sign)</span></div>
+  <div class="drow" id="gddrow3" data-key="stop4"><span>So over these 4 seconds, the object was…</span>
+    <select id="gdd3" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="backfast">Speeding up backward the whole time</option>
+      <option value="const">Cruising at constant velocity</option>
+      <option value="stop4">Slowing down steadily — braking to a stop at exactly t = 4 s</option>
+      <option value="rest">Sitting at rest the whole time</option>
+    </select></div>
+</section>
+
+<section>
+  <h2>7 · Vocabulary — Tap to Flip <span style="font-size:13px;color:var(--soft)">(study only — not scored)</span></h2>
+  <div class="dir">Say the definition BEFORE you flip, or it doesn't count. Great to do while you wait to grade.</div>
+  <div class="fgrid" id="fgrid"></div>
+</section>
+
+<section>
+  <h2>8 · Significant Figures <span style="font-size:13px;color:var(--soft)">(7 pts)</span></h2>
+  <div class="dir">Part A: count the sig figs. Part B: apply the rules.</div>
+  <h3>A. How many sig figs?</h3>
+  <div class="numrow"><label>205 &rarr;</label><input id="sf1" inputmode="numeric"> <label>0.0450 &rarr;</label><input id="sf2" inputmode="numeric"> <label>3.20 &times; 10³ &rarr;</label><input id="sf3" inputmode="numeric"> <label>0.007 &rarr;</label><input id="sf4" inputmode="numeric"> <label>12.010 &rarr;</label><input id="sf5" inputmode="numeric"></div>
+  <h3>B. Apply</h3>
+  <div class="numrow"><label>Round 3.14159 to 3 sig figs:</label><input id="sf6" inputmode="decimal"></div>
+  <div class="numrow"><label>2.5 &times; 3.42, answered to correct sig figs:</label><input id="sf7" inputmode="decimal"><span class="hintbox">(multiplication rule: answer keeps the FEWEST sig figs of the inputs)</span></div>
+</section>
+
+<!-- ============ GRADE BAR ============ -->
+<section class="gradebar" id="gradebar">
+  <h2 style="color:var(--gold);margin-bottom:8px">Ready? Grade it.</h2>
+  <p style="font-size:13.5px;opacity:.85;margin-bottom:12px">All seven chips filled? Type your name, then hit the button. Your score card appears here — screenshot it or show the screen. Answers reveal AFTER grading, and everything locks.</p>
+  <input id="stuname" placeholder="Your name" autocomplete="off"><br>
+  <button class="bigbtn" id="gradebtn" onclick="gradeAll()">GRADE ME</button>
+  <div class="warn" id="gradewarn"></div>
+  <div class="scorecard" id="scorecard">
+    <div class="sc-name" id="scName"></div>
+    <div class="sc-score" id="scScore"></div>
+    <div class="sc-pct" id="scPct"></div>
+    <div class="sc-msg" id="scMsg"></div>
+    <div class="sc-meta" id="scMeta"></div>
+  </div>
+  <div class="locknote" id="locknote">Answers are now revealed above — green = right, red = wrong. Everything is locked; reload the page to start completely fresh.</div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+let GRADED=false;
+const BADGES=["\u2460","\u2461","\u2462","\u2463","\u2464","\u2465"];
+
+/* ========== deferred pair matcher ========== */
+function makePairMatcher(leftId, rightId, pairsData, name){
+  const st={selL:null, selR:null, pairs:[]}; // pairs: [{l,r}]
+  function badgeRefresh(){
+    document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{
+      const b=el.querySelector(".badge"); if(b) b.textContent="";
+      el.classList.remove("paired");
+    });
+    st.pairs.forEach((p,i)=>{
+      [p.l,p.r].forEach(el=>{ el.classList.add("paired"); el.querySelector(".badge").textContent=BADGES[i]||("#"+(i+1)); });
+    });
+  }
+  function unpair(el){
+    const idx=st.pairs.findIndex(p=>p.l===el||p.r===el);
+    if(idx>-1){ st.pairs.splice(idx,1); badgeRefresh(); refreshChips(); return true; }
+    return false;
+  }
+  function tap(el, side){
+    if(GRADED) return;
+    if(unpair(el)) return; // tapping paired card unpairs
+    const key = side==="L"?"selL":"selR";
+    if(st[key]) st[key].classList.remove("sel");
+    st[key]=(st[key]===el?null:el); if(st[key]) st[key].classList.add("sel");
+    if(st.selL && st.selR){
+      st.selL.classList.remove("sel"); st.selR.classList.remove("sel");
+      st.pairs.push({l:st.selL, r:st.selR});
+      st.selL=null; st.selR=null;
+      badgeRefresh(); refreshChips();
+    }
+  }
+  const L=$(leftId), R=$(rightId); L.innerHTML=""; R.innerHTML="";
+  shuffle(pairsData.map((p,i)=>({h:p[0],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i;
+    d.addEventListener("click",()=>tap(d,"L")); L.appendChild(d);
+  });
+  shuffle(pairsData.map((p,i)=>({h:p[1],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i;
+    d.addEventListener("click",()=>tap(d,"R")); R.appendChild(d);
+  });
+  return {
+    complete: ()=> st.pairs.length===pairsData.length,
+    grade: ()=>{
+      let right=0;
+      st.pairs.forEach(p=>{
+        const ok = p.l.dataset.i===p.r.dataset.i;
+        [p.l,p.r].forEach(el=>el.classList.add(ok?"g-ok":"g-no"));
+        if(ok) right++;
+      });
+      // unpaired items marked wrong
+      document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{
+        if(!el.classList.contains("g-ok")&&!el.classList.contains("g-no")) el.classList.add("g-no");
+      });
+      return right;
+    },
+    total: pairsData.length
+  };
+}
+
+/* ========== 1 shapes ========== */
+function miniDT(path,poly){
+  return `<svg viewBox="0 0 130 78" width="128"><line x1="16" y1="64" x2="124" y2="64" stroke="#22303e" stroke-width="1.5"/><line x1="16" y1="64" x2="16" y2="6" stroke="#22303e" stroke-width="1.5"/><text x="66" y="76" font-size="8">t</text><text x="4" y="38" font-size="8">d</text>${poly?`<polyline points="${poly}" fill="none" stroke="#7a2e2a" stroke-width="2.2"/>`:`<path d="${path}" fill="none" stroke="#7a2e2a" stroke-width="2.2"/>`}</svg>`;
+}
+const shapePairs=[
+  [miniDT(null,"16,34 118,34"),"Parked. Not moving at all — but NOT at the start point."],
+  [miniDT(null,"16,62 118,34"),"Steady casual walk, constant speed."],
+  [miniDT(null,"16,62 70,10"),"Steady sprint — constant speed, but FAST."],
+  [miniDT(null,"16,62 66,28 118,28"),"Walks somewhere, then stops and stays."],
+  [miniDT(null,"16,62 66,16 118,62"),"Goes out… and comes all the way back."],
+  [miniDT("M 16,62 Q 82,58 118,12",null),"Speeding up the whole time — slope keeps growing."]
+];
+const shapesM = makePairMatcher("gsL","gsR",shapePairs,"shapes");
+
+/* ========== 2 translator ========== */
+const trAitems=[["Segment 1 (rising steadily)","lowflat"],["Segment 2 (flat)","zero"],["Segment 3 (rising, steeper)","highflat"]];
+const trAopts=[["zero","v–t sits ON zero (stopped)"],["lowflat","v–t is FLAT at a low positive value"],["highflat","v–t is FLAT at a HIGHER positive value"],["rise","v–t is a rising slanted line"]];
+const trBitems=[["Segment 1 (flat, low v)","zero"],["Segment 2 (v rising steadily)","pos"],["Segment 3 (flat, higher v)","zero2"]];
+const trBopts=[["zero","a–t hugs ZERO (constant speed)"],["pos","a–t is a flat POSITIVE value (steady speeding up)"],["neg","a–t is a flat NEGATIVE value (slowing down)"],["zero2","a–t hugs ZERO again (new constant speed)"]];
+[["trA",trAitems,trAopts],["trB",trBitems,trBopts]].forEach(([bid,items,opts])=>{
+  const box=$(bid);
+  items.forEach(it=>{
+    const r=document.createElement("div"); r.className="drow"; r.dataset.key=it[1];
+    const sel=document.createElement("select");
+    sel.innerHTML=`<option value="">— choose —</option>`+opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+    sel.addEventListener("change",refreshChips);
+    r.innerHTML=`<span>${it[0]}</span>`; r.appendChild(sel); box.appendChild(r);
+  });
+});
+function gradeTrans(){
+  let right=0;
+  document.querySelectorAll("#trA .drow, #trB .drow").forEach(r=>{
+    const s=r.querySelector("select"); const key=r.dataset.key, val=s.value;
+    const ok=(key===val)||(key==="zero"&&val==="zero2")||(key==="zero2"&&val==="zero");
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true;
+  });
+  return right;
+}
+
+/* ========== 3 derivations ========== */
+const derivs={
+  d1:["Velocity is DEFINED as change in position per change in time",
+      "Write the definition as a formula:  v = Δd / Δt",
+      "Notice: Δd over Δt is rise over run — v is the SLOPE of the d–t graph",
+      "Multiply both sides by t to rearrange:  d = v · t"],
+  d2:["Acceleration is DEFINED as change in velocity per change in time",
+      "Write it as a formula:  a = (v_f − v_i) / t",
+      "Notice: this is rise over run on the v–t graph — a is its SLOPE",
+      "Multiply both sides by t and rearrange:  v_f = v_i + a·t"],
+  d3:["Displacement = the AREA under the v–t graph",
+      "With constant acceleration, that area splits into a rectangle plus a triangle",
+      "Rectangle: v_i × t.   Triangle: ½ × t × (a·t)  =  ½at²",
+      "Add the two areas:  d_f − d_i = v_i·t + ½at²"]
+};
+const dstate={};
+function buildOrderPuzzle(key){
+  dstate[key]={sel:null};
+  const steps=derivs[key];
+  const slots=$("slots-"+key); slots.innerHTML="";
+  for(let i=0;i<steps.length;i++){
+    const s=document.createElement("div"); s.className="slot";
+    s.innerHTML=`<div class="num">${i+1}</div><div class="drop"></div>`;
+    s.querySelector(".drop").addEventListener("click",()=>slotTap(key,s));
+    slots.appendChild(s);
+  }
+  const pool=$("pool-"+key); pool.innerHTML="";
+  shuffle(steps.map((t,i)=>({t,i}))).forEach(o=>{
+    const c=document.createElement("div"); c.className="tcard"; c.textContent=o.t; c.dataset.i=o.i;
+    c.addEventListener("click",e=>{e.stopPropagation(); cardTap(key,c);});
+    pool.appendChild(c);
+  });
+}
+function cardTap(key,c){
+  if(GRADED) return;
+  const st=dstate[key];
+  if(c.parentElement.classList.contains("drop")){ $("pool-"+key).appendChild(c); c.classList.remove("sel"); if(st.sel===c) st.sel=null; refreshChips(); return; }
+  if(st.sel===c){ c.classList.remove("sel"); st.sel=null; return; }
+  if(st.sel) st.sel.classList.remove("sel");
+  st.sel=c; c.classList.add("sel");
+}
+function slotTap(key,slotEl){
+  if(GRADED) return;
+  const st=dstate[key]; const drop=slotEl.querySelector(".drop");
+  if(!st.sel){ const occ=drop.querySelector(".tcard"); if(occ){ $("pool-"+key).appendChild(occ); refreshChips(); } return; }
+  const occ=drop.querySelector(".tcard"); if(occ) $("pool-"+key).appendChild(occ);
+  st.sel.classList.remove("sel"); drop.appendChild(st.sel); st.sel=null; refreshChips();
+}
+["d1","d2","d3"].forEach(buildOrderPuzzle);
+function deriveFilled(){
+  let filled=true;
+  ["d1","d2","d3"].forEach(k=>{ $("slots-"+k).querySelectorAll(".drop").forEach(d=>{ if(!d.querySelector(".tcard")) filled=false; }); });
+  return filled;
+}
+function gradeDerive(){
+  let right=0;
+  ["d1","d2","d3"].forEach(key=>{
+    $("slots-"+key).querySelectorAll(".slot").forEach((s,i)=>{
+      const c=s.querySelector(".tcard");
+      const ok=c&&+c.dataset.i===i;
+      s.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    });
+  });
+  return right;
+}
+
+/* ========== 4 right tool ========== */
+const eqOpts=[["e1","v = d/t"],["e2","v_f = v_i + at"],["e3","d = v_i t + ½at²"],["e4","v_f² − v_i² = 2ad"]];
+const toolRows=[
+  ["You know total distance and total time; you want average speed.","e1"],
+  ["You know v_i, a, and the time; you want the final velocity.","e2"],
+  ["You know v_i, a, and the time; you want how FAR it traveled.","e3"],
+  ["You know v_i, v_f, and the displacement — but NO time; you want a.","e4"],
+  ["A car must stop: you know v_i, v_f = 0, and a — NO time; you want stopping distance.","e4"],
+  ["Dropped from rest: you know a and t; you want distance fallen.","e3"]
+];
+toolRows.forEach(rw=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=rw[1];
+  const sel=document.createElement("select");
+  sel.innerHTML=`<option value="">— pick the equation —</option>`+eqOpts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span>${rw[0]}</span>`; r.appendChild(sel); $("toolbox").appendChild(r);
+});
+function gradeTool(){
+  let right=0;
+  document.querySelectorAll("#toolbox .drow").forEach(r=>{
+    const s=r.querySelector("select");
+    const ok=s.value===r.dataset.key;
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true;
+  });
+  return right;
+}
+
+/* ========== 5 problems ========== */
+const probs=[
+  {stem:"<b>1.</b> A cyclist covers 120 m in 4.0 s at constant speed. Find her speed.", unit:"m/s", ans:30, id:"p1"},
+  {stem:"<b>2.</b> A cart travels at 12 m/s. How long does it take to cover 60 m?", unit:"s", ans:5, id:"p2"},
+  {stem:"<b>3.</b> A car speeds up from 4 m/s to 16 m/s in 3.0 s. Find its acceleration.", unit:"m/s²", ans:4, id:"p3"},
+  {stem:"<b>4.</b> A runner at 5 m/s accelerates at 2 m/s² for 6.0 s. Find her final velocity.", unit:"m/s", ans:17, id:"p4"},
+  {stem:"<b>5.</b> A rock is dropped from rest (v<sub>i</sub> = 0) and falls with a = 10 m/s² for 4.0 s. How far does it fall?", unit:"m", ans:80, id:"p5"},
+  {stem:"<b>6.</b> Starting from rest, a sled covers 36 m in 3.0 s under constant acceleration. Find a.", unit:"m/s²", ans:8, id:"p6"},
+  {stem:"<b>7.</b> A dragster goes from rest to 20 m/s over 50 m. Find its acceleration.", unit:"m/s²", ans:4, id:"p7"},
+  {stem:"<b>8.</b> A car moving at 10 m/s accelerates at 5 m/s² until it reaches 20 m/s. How far did it travel while accelerating?", unit:"m", ans:30, id:"p8"}
+];
+probs.forEach(p=>{
+  const d=document.createElement("div"); d.className="prob";
+  d.innerHTML=`<div class="stem">${p.stem}</div><div class="numrow"><label>Answer:</label><input id="${p.id}" inputmode="decimal"><label>${p.unit}</label></div>`;
+  $("probbox").appendChild(d);
+});
+document.querySelectorAll("#probbox input").forEach(i=>i.addEventListener("input",refreshChips));
+function gradeProbs(){
+  let right=0;
+  probs.forEach(p=>{
+    const el=$(p.id); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-p.ans)<=0.05;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+  });
+  return right;
+}
+
+/* ========== 6 vocab ========== */
+const cards=[
+  ["Vector","A quantity with BOTH size and direction — displacement, velocity, acceleration, force"],
+  ["Scalar","Size only, no direction — distance, speed, time, mass"],
+  ["Δ (delta)","'Change in' — always FINAL minus INITIAL. Δv = v_f − v_i"],
+  ["Distance vs. displacement","Distance = path length (always +). Displacement = change in position (has direction!)"],
+  ["Speed vs. velocity","Same split, per time: speed is scalar, velocity is a vector (speed + direction)"],
+  ["Acceleration","The rate velocity changes: a = Δv/t, in m/s². Speeding up, slowing down, OR turning"],
+  ["Slope of d–t","= the velocity. Flat = stopped, steep = fast, curving = accelerating"],
+  ["Slope of v–t","= the acceleration. Flat v–t means a = 0 — even at high speed!"],
+  ["Area under v–t","= the displacement. This is where ½at² comes from (rectangle + triangle)"],
+  ["Significant figures","The digits you actually measured. Multiplying? Keep the FEWEST sig figs of the inputs"]
+];
+shuffle(cards).forEach(c=>{
+  const f=document.createElement("div"); f.className="flash";
+  f.innerHTML=`<div class="finner"><div class="fface ffront">${c[0]}</div><div class="fface fback">${c[1]}</div></div>`;
+  f.addEventListener("click",()=>f.classList.toggle("flip"));
+  $("fgrid").appendChild(f);
+});
+
+/* ========== 7 sig figs ========== */
+const sfChecks=[["sf1",3],["sf2",3],["sf3",3],["sf4",1],["sf5",5],["sf6",3.14],["sf7",8.6]];
+sfChecks.forEach(([id])=>$(id).addEventListener("input",refreshChips));
+function gradeSF(){
+  let right=0;
+  sfChecks.forEach(([id,t])=>{
+    const el=$(id); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-t)<=0.001;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+  });
+  return right;
+}
+
+
+
+/* ========== 6 graph reading ========== */
+const graphChecks=[["ga1",4],["ga2",0],["ga3",-2],["gb1",-2],["gb2",3],["gb4",9],["gc1",0]];
+graphChecks.forEach(([id])=>$(id).addEventListener("input",refreshChips));
+const graphDD=[["gddrow1","gdd1"],["gddrow2","gdd2"],["gddrow3","gdd3"]];
+function gradeGraphs(){
+  let right=0;
+  graphChecks.forEach(([id,t])=>{
+    const el=$(id); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-t)<=0.05;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+  });
+  graphDD.forEach(([rowId,selId])=>{
+    const row=$(rowId), sel=$(selId);
+    const ok=sel.value===row.dataset.key;
+    row.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    sel.disabled=true;
+  });
+  return right;
+}
+
+/* ========== completion chips ========== */
+function selectsFilled(sel){ let ok=true; document.querySelectorAll(sel).forEach(s=>{ if(!s.value) ok=false; }); return ok; }
+function inputsFilled(ids){ return ids.every(id=>$(id).value.trim()!==""); }
+function refreshChips(){
+  const states={
+    shapes: shapesM.complete(),
+    translate: selectsFilled("#trA select, #trB select"),
+    derive: deriveFilled(),
+    tool: selectsFilled("#toolbox select"),
+    problems: inputsFilled(probs.map(p=>p.id)),
+    graphs: inputsFilled(graphChecks.map(c=>c[0])) && graphDD.every(([r,sid])=>$(sid).value!==""),
+    sigfig: inputsFilled(sfChecks.map(c=>c[0]))
+  };
+  Object.entries(states).forEach(([k,v])=>$("chip-"+k).classList.toggle("filled",v));
+  return states;
+}
+
+/* ========== GRADE ========== */
+let warned=false;
+function gradeAll(){
+  if(GRADED) return;
+  const states=refreshChips();
+  const missing=Object.entries(states).filter(([k,v])=>!v).map(([k])=>({shapes:"Graph Shapes",translate:"Translator",derive:"Derivations",tool:"Right Tool",problems:"Problems",graphs:"Graph Reading",sigfig:"Sig Figs"}[k]));
+  if(missing.length && !warned){
+    warned=true;
+    $("gradewarn").textContent="Not finished: "+missing.join(", ")+". Blanks count as wrong — press GRADE ME again to grade anyway, or go finish first.";
+    return;
+  }
+  GRADED=true;
+  $("gradebtn").disabled=true; $("gradebtn").style.opacity=.5; $("gradewarn").textContent="";
+  const parts=[
+    ["Graph Shapes", shapesM.grade(), shapesM.total],
+    ["Translator", gradeTrans(), 6],
+    ["Derivations", gradeDerive(), 12],
+    ["Right Tool", gradeTool(), 6],
+    ["Problems", gradeProbs(), 8],
+    ["Graph Reading", gradeGraphs(), 10],
+    ["Sig Figs", gradeSF(), 7]
+  ];
+  const got=parts.reduce((s,p)=>s+p[1],0), tot=parts.reduce((s,p)=>s+p[2],0);
+  const pct=Math.round(100*got/tot);
+  const name=($("stuname").value.trim()||"(no name entered)");
+  const msg = pct>=90 ? "Outstanding — test-ready. Show this off." :
+              pct>=75 ? "Solid — check your red items, they're your study list." :
+              pct>=50 ? "Halfway there — the red sections below ARE your study plan tonight." :
+              "The reveal below is your roadmap — reload and rebuild after reviewing.";
+  $("scName").textContent=name;
+  $("scScore").textContent=`${got} / ${tot}`;
+  $("scPct").textContent=pct+"%";
+  $("scMsg").textContent=msg + "  ·  " + parts.map(p=>`${p[0]} ${p[1]}/${p[2]}`).join("  ·  ");
+  $("scMeta").textContent="Graded " + new Date().toLocaleString();
+  $("scorecard").style.display="block";
+  $("locknote").style.display="block";
+  $("stuname").disabled=true;
+  $("scorecard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+refreshChips();
+</script>
+</body>
+</html>

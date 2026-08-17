@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical Science · Matter &amp; Density Review — Graded</title>
+<style>
+  :root{
+    --main:#1e6b46; --main-dark:#154d32; --accent:#d98e2b; --accent-soft:#f7ead4;
+    --ink:#22303e; --soft:#55636f; --paper:#f3f7f2; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d5ddd2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 16px 40px}
+  header{background:var(--main);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:#ffd9a0;font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.9}
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.filled{background:var(--main);border-color:var(--main);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(30,60,40,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--main-dark);margin-bottom:4px}
+  h3{font-size:15px;color:#8a4a2b;margin:14px 0 6px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  .pts{font-size:13px;color:var(--soft)}
+  /* dropdown rows */
+  .drow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow>span{flex:1;min-width:200px}
+  .drow select{font-size:13.5px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff}
+  .drow.g-ok{background:var(--good-bg)} .drow.g-no{background:var(--bad-bg)}
+  .sol{display:none;width:100%;font-size:13px;color:var(--soft);background:#f2f5f0;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:7px 11px;margin-top:5px}
+  .sol.show{display:block}
+  /* matcher */
+  .matchcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mitem{position:relative;border:2px solid var(--main);border-radius:10px;padding:8px 26px 8px 10px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none;margin-bottom:8px}
+  .mitem.sel{background:var(--accent-soft);border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+  .mitem.paired{background:#e2ecdf}
+  .mitem .badge{position:absolute;top:6px;right:7px;font-weight:800;font-size:13px;color:var(--main)}
+  .mitem.g-ok{background:var(--good-bg);border-color:var(--good)}
+  .mitem.g-no{background:var(--bad-bg);border-color:var(--bad)}
+  /* MC */
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .opt.g-right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.g-wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f2f5f0;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+  /* inputs */
+  .prob{border-top:1px solid var(--line);padding:12px 0 8px}
+  .prob .stem{font-size:14.5px;margin-bottom:6px}
+  .prob .stem b{color:var(--main-dark)}
+  .numrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0}
+  .numrow label{font-weight:700;font-size:14px}
+  .numrow input{width:95px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.g-ok{border-color:var(--good);background:var(--good-bg)}
+  input.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  /* density machine */
+  .dm-targets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+  .dm-btn{border:2.5px solid var(--main);border-radius:10px;background:#fff;color:var(--main);font-weight:800;font-size:16px;padding:10px 20px;cursor:pointer}
+  .dm-btn.active{background:var(--main);color:#fff}
+  .dm-stage{background:#f6f9f5;border:2px solid var(--line);border-radius:12px;padding:16px;min-height:120px;text-align:center}
+  .dm-eq{font-family:Georgia,serif;font-size:26px;margin:10px 0;line-height:1.6}
+  .dm-eq .vv{color:#b3392e;font-weight:700}
+  .dm-eq .dd{color:#1f4e79;font-weight:700}
+  .dm-eq .mm{color:#1e6b46;font-weight:700}
+  .dm-eq .cancel{text-decoration:line-through;opacity:.45}
+  .dm-note{font-size:13.5px;color:var(--soft);font-style:italic}
+  .dm-next{background:var(--accent);color:#3a2508;border:none;border-radius:9px;padding:10px 22px;font-size:15px;font-weight:800;cursor:pointer;margin-top:10px}
+  .frac{display:inline-block;vertical-align:middle;text-align:center}
+  .frac .top{display:block;border-bottom:2px solid currentColor;padding:0 6px}
+  .frac .bot{display:block;padding:0 6px}
+  .tri-wrap{text-align:center;margin:6px 0 12px}
+  /* grade bar */
+  .gradebar{background:var(--main);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .gradebar input{font-size:16px;padding:9px 12px;border-radius:9px;border:none;width:min(280px,90%);text-align:center;margin-bottom:10px}
+  .bigbtn{background:var(--accent);color:#3a2508;border:none;border-radius:10px;padding:13px 34px;font-size:18px;font-weight:800;cursor:pointer}
+  .bigbtn:active{transform:scale(.97)}
+  .warn{color:#ffd9a0;font-size:13.5px;margin-top:10px}
+  .scorecard{display:none;background:#fff;color:var(--ink);border:4px solid var(--accent);border-radius:14px;padding:20px;margin-top:14px;text-align:center}
+  .scorecard .sc-name{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-score{font-family:Georgia,serif;font-size:52px;font-weight:800;color:var(--accent);line-height:1.1;margin:6px 0}
+  .scorecard .sc-pct{font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-msg{font-size:15px;margin-top:6px}
+  .scorecard .sc-meta{font-size:12px;color:var(--soft);margin-top:8px}
+  .locknote{display:none;text-align:center;font-size:13px;color:var(--soft);font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physical Science · Matter Unit — Graded Mode</div>
+  <h1>Matter, Mixtures &amp; Density — Review</h1>
+  <p><b>How this works:</b> answer EVERYTHING first — no feedback, just like the test. The Density Machine (section 5) is a learning tool: play with it before the math sections. When every chip is filled, type your name at the bottom and hit GRADE ME for your score card. THEN every answer lights up green or red with a full explanation — read the explanations on your reds; that's where the studying happens.</p>
+</header>
+
+<div class="progress">
+  <span class="chip" id="chip-pc">Prop or Change</span>
+  <span class="chip" id="chip-match">Matter Match</span>
+  <span class="chip" id="chip-classify">Classify It</span>
+  <span class="chip" id="chip-sep">Separation</span>
+  <span class="chip" id="chip-dm">Density Machine</span>
+  <span class="chip" id="chip-mc">Multiple Choice</span>
+  <span class="chip" id="chip-num">Number Crunch</span>
+  <span class="chip" id="chip-intro">Intro Review</span>
+</div>
+
+<!-- 1 PROPERTY OR CHANGE -->
+<section>
+  <h2>1 · Property or Change? Physical or Chemical? <span class="pts">(8 pts)</span></h2>
+  <div class="dir">Label each one. Remember your own reasoning — you'll get the full explanation after grading.</div>
+  <div id="pcbox"></div>
+</section>
+
+<!-- 2 MATTER MATCH -->
+<section>
+  <h2>2 · Matter Match <span class="pts">(7 pts)</span></h2>
+  <div class="dir">Tap a term, then tap its definition — matching ① badges appear on both. Tap a paired card to un-pair. No feedback until grading.</div>
+  <div class="matchcols"><div id="mmL"></div><div id="mmR"></div></div>
+  <div class="sol" id="mmSol"><b>The ladder of matter:</b> atoms build everything. One kind of atom = an ELEMENT. Atoms bonded together = a MOLECULE (O&#8322; is a molecule of an element; H&#8322;O is a molecule of a compound). Different elements bonded = a COMPOUND. No bonding, just mingling = a MIXTURE — same throughout (homogeneous) or visibly chunky (heterogeneous). Elements and compounds are the only PURE substances.</div>
+</section>
+
+<!-- 3 CLASSIFY -->
+<section>
+  <h2>3 · Classify the Stuff <span class="pts">(7 pts)</span></h2>
+  <div class="dir">Element, compound, or which kind of mixture?</div>
+  <div id="clbox"></div>
+</section>
+
+<!-- 4 SEPARATION -->
+<section>
+  <h2>4 · Separation Station <span class="pts">(5 pts)</span></h2>
+  <div class="dir">Pick the BEST tool for each job. Think about which physical property each tool exploits.</div>
+  <div id="sepbox"></div>
+</section>
+
+<!-- 5 DENSITY MACHINE -->
+<section>
+  <h2>5 · The Density Machine <span class="pts">(learn — completion counts, not scored)</span></h2>
+  <div class="dir">The algebra, in slow motion. Pick what you're solving for, then tap NEXT STEP and watch the equation rearrange itself. Run all three before touching Section 7.</div>
+  <div class="tri-wrap">
+    <svg viewBox="0 0 180 130" width="170"><polygon points="90,8 8,122 172,122" fill="#f6f9f5" stroke="#1e6b46" stroke-width="2.5"/><line x1="34" y1="86" x2="146" y2="86" stroke="#1e6b46" stroke-width="2"/><line x1="90" y1="86" x2="90" y2="122" stroke="#1e6b46" stroke-width="2"/><text x="82" y="66" font-size="30" font-family="Georgia" font-weight="bold" fill="#1e6b46">m</text><text x="46" y="114" font-size="26" font-family="Georgia" font-weight="bold" fill="#1f4e79">D</text><text x="118" y="114" font-size="26" font-family="Georgia" font-weight="bold" fill="#b3392e">V</text></svg>
+    <div class="dm-note">The classic triangle: cover the one you want. But the triangle is a crutch — the Machine below shows the REAL algebra.</div>
+  </div>
+  <div class="dm-targets">
+    <button class="dm-btn" id="dmb-D" onclick="dmStart('D')">Solve for D</button>
+    <button class="dm-btn" id="dmb-m" onclick="dmStart('m')">Solve for m</button>
+    <button class="dm-btn" id="dmb-V" onclick="dmStart('V')">Solve for V</button>
+  </div>
+  <div class="dm-stage">
+    <div class="dm-eq" id="dmEq">Pick a target above.</div>
+    <div class="dm-note" id="dmNote"></div>
+    <button class="dm-next" id="dmNext" onclick="dmNext()" style="display:none">NEXT STEP →</button>
+  </div>
+</section>
+
+<!-- 6 MC -->
+<section>
+  <h2>6 · Multiple Choice <span class="pts">(5 pts)</span></h2>
+  <div class="dir">One pick each; change your mind freely until grading.</div>
+  <div id="mcbox"></div>
+</section>
+
+<!-- 7 NUMBER CRUNCH -->
+<section>
+  <h2>7 · Number Crunch — Density &amp; Conversions <span class="pts">(9 pts)</span></h2>
+  <div class="dir">Use the Density Machine's three formulas. Work on paper, enter answers (one decimal place is fine). Full worked solutions appear after grading.</div>
+  <div id="numbox"></div>
+  <div class="drow" id="floatrow" data-key="float"><span><b>7.</b> A block has a density of 0.7 g/mL. Drop it in water — what happens?</span>
+    <select id="floatsel" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="sink">It sinks</option>
+      <option value="float">It floats</option>
+      <option value="dissolve">It dissolves</option>
+      <option value="hover">It hovers mid-water</option>
+    </select>
+    <div class="sol">Water's density is 1 g/mL. Less dense than water → floats. Denser → sinks. 0.7 &lt; 1, so it rides high with about 70% of it underwater. This one number — 1 g/mL — is the referee for every float/sink question.</div>
+  </div>
+</section>
+
+<!-- 8 INTRO REVIEW -->
+<section>
+  <h2>8 · Intro Unit Rapid Fire <span class="pts">(3 pts)</span></h2>
+  <div class="dir">Still fair game on the test.</div>
+  <div id="introbox"></div>
+</section>
+
+<!-- GRADE BAR -->
+<section class="gradebar" id="gradebar">
+  <h2 style="color:#ffd9a0;margin-bottom:8px">Ready? Grade it.</h2>
+  <p style="font-size:13.5px;opacity:.9;margin-bottom:12px">All eight chips filled? Type your name, hit the button, show your teacher the score card. Answers + explanations reveal AFTER grading, then everything locks.</p>
+  <input id="stuname" placeholder="Your name" autocomplete="off"><br>
+  <button class="bigbtn" id="gradebtn" onclick="gradeAll()">GRADE ME</button>
+  <div class="warn" id="gradewarn"></div>
+  <div class="scorecard" id="scorecard">
+    <div class="sc-name" id="scName"></div>
+    <div class="sc-score" id="scScore"></div>
+    <div class="sc-pct" id="scPct"></div>
+    <div class="sc-msg" id="scMsg"></div>
+    <div class="sc-meta" id="scMeta"></div>
+  </div>
+  <div class="locknote" id="locknote">Answers and explanations are revealed above — green = right, red = wrong. READ THE EXPLANATIONS ON YOUR REDS. Everything is locked; reload to start fresh.</div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+let GRADED=false;
+const BADGES=["\u2460","\u2461","\u2462","\u2463","\u2464","\u2465","\u2466"];
+
+/* ===== generic dropdown-row builder with post-grade explanations ===== */
+function buildDrows(boxId, items, opts){
+  const box=$(boxId);
+  items.forEach((it,i)=>{
+    const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+    const sel=document.createElement("select");
+    sel.innerHTML=`<option value="">— choose —</option>`+opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+    sel.addEventListener("change",refreshChips);
+    r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`;
+    r.appendChild(sel);
+    const s=document.createElement("div"); s.className="sol"; s.innerHTML=it.sol;
+    r.appendChild(s);
+    box.appendChild(r);
+  });
+}
+function gradeDrows(boxId){
+  let right=0;
+  $(boxId).querySelectorAll(".drow").forEach(r=>{
+    const s=r.querySelector("select");
+    const ok=s.value===r.dataset.key;
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true;
+    r.querySelector(".sol").classList.add("show");
+  });
+  return right;
+}
+function drowsFilled(boxId){
+  let ok=true;
+  $(boxId).querySelectorAll(".drow select").forEach(s=>{ if(!s.value) ok=false; });
+  return ok;
+}
+
+/* ===== 1 PROPERTY OR CHANGE ===== */
+const pcOpts=[["pp","Physical property"],["cp","Chemical property"],["pc","Physical change"],["cc","Chemical change"]];
+const pcItems=[
+  {text:"Rubbing alcohol boils at 82 °C.", key:"pp", sol:"A PROPERTY is a description; a CHANGE is an event. Boiling point describes the substance without changing what it is — and you can measure it and get your alcohol back. Physical property."},
+  {text:"Gasoline can burst into flame.", key:"cp", sol:"CAN burn = a chemical property (flammability). It describes what the substance is CAPABLE of becoming — you can only test it by turning gasoline into new substances. 'Can/ability to' language usually flags a chemical property."},
+  {text:"A silver spoon slowly turns black.", key:"cc", sol:"Tarnishing IS happening — an event, so it's a change. The black layer is a NEW substance (silver sulfide) that wasn't there before, and no amount of melting or freezing brings the shine back by itself. New substance = chemical change."},
+  {text:"An ice cube melts into a puddle.", key:"pc", sol:"An event, so a change — but solid water became liquid water. Same substance, new form. Freeze it and it's back. State changes are ALWAYS physical changes, no matter how dramatic they look."},
+  {text:"Vinegar fizzes when poured on baking soda.", key:"cc", sol:"Fizzing means a gas is being CREATED that wasn't there before (carbon dioxide) — new substance, chemical change. Bubbles from boiling are different: that's just the liquid itself becoming gas."},
+  {text:"A granite countertop has a density of 2.7 g/mL.", key:"pp", sol:"A measurement that describes the granite without touching its identity. Density, color, mass, volume, melting point — the measure-it-and-it's-still-itself family. Physical property."},
+  {text:"A sheet of paper is torn into confetti.", key:"pc", sol:"Still paper — just smaller paper. Changing size or shape never changes the substance. Physical change. (BURNING the paper would be the chemical version.)"},
+  {text:"Iron CAN rust when left in the rain.", key:"cp", sol:"Trick of wording: nothing rusted yet — this describes iron's ABILITY to react with oxygen. Ability to rust = chemical property. If the fender actually rusts, THAT event is a chemical change."}
+];
+buildDrows("pcbox", pcItems, pcOpts);
+
+/* ===== 2 MATTER MATCH (deferred pair matcher) ===== */
+function makePairMatcher(leftId, rightId, pairsData){
+  const st={selL:null, selR:null, pairs:[]};
+  function badgeRefresh(){
+    document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{
+      el.querySelector(".badge").textContent=""; el.classList.remove("paired");
+    });
+    st.pairs.forEach((p,i)=>{
+      [p.l,p.r].forEach(el=>{ el.classList.add("paired"); el.querySelector(".badge").textContent=BADGES[i]||("#"+(i+1)); });
+    });
+  }
+  function unpair(el){
+    const idx=st.pairs.findIndex(p=>p.l===el||p.r===el);
+    if(idx>-1){ st.pairs.splice(idx,1); badgeRefresh(); refreshChips(); return true; }
+    return false;
+  }
+  function tap(el, side){
+    if(GRADED) return;
+    if(unpair(el)) return;
+    const key = side==="L"?"selL":"selR";
+    if(st[key]) st[key].classList.remove("sel");
+    st[key]=(st[key]===el?null:el); if(st[key]) st[key].classList.add("sel");
+    if(st.selL && st.selR){
+      st.selL.classList.remove("sel"); st.selR.classList.remove("sel");
+      st.pairs.push({l:st.selL, r:st.selR});
+      st.selL=null; st.selR=null;
+      badgeRefresh(); refreshChips();
+    }
+  }
+  const L=$(leftId), R=$(rightId); L.innerHTML=""; R.innerHTML="";
+  shuffle(pairsData.map((p,i)=>({h:p[0],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i;
+    d.addEventListener("click",()=>tap(d,"L")); L.appendChild(d);
+  });
+  shuffle(pairsData.map((p,i)=>({h:p[1],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i;
+    d.addEventListener("click",()=>tap(d,"R")); R.appendChild(d);
+  });
+  return {
+    complete: ()=> st.pairs.length===pairsData.length,
+    grade: ()=>{
+      let right=0;
+      st.pairs.forEach(p=>{
+        const ok = p.l.dataset.i===p.r.dataset.i;
+        [p.l,p.r].forEach(el=>el.classList.add(ok?"g-ok":"g-no"));
+        if(ok) right++;
+      });
+      document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{
+        if(!el.classList.contains("g-ok")&&!el.classList.contains("g-no")) el.classList.add("g-no");
+      });
+      return right;
+    },
+    total: pairsData.length
+  };
+}
+const matterPairs=[
+  ["<b>Atom</b>","The smallest piece of an element that is still that element"],
+  ["<b>Element</b>","Made of only ONE type of atom — can't be broken down further"],
+  ["<b>Compound</b>","Two or more DIFFERENT elements chemically bonded together"],
+  ["<b>Molecule</b>","Two or more atoms bonded — even identical ones, like O&#8322;"],
+  ["<b>Pure substance</b>","One type of particle throughout — an element or a compound"],
+  ["<b>Homogeneous mixture</b>","Blended so evenly it looks the same throughout, like salt water"],
+  ["<b>Heterogeneous mixture</b>","You can SEE the different parts, like a chocolate chip cookie"]
+];
+const matterM = makePairMatcher("mmL","mmR",matterPairs);
+
+/* ===== 3 CLASSIFY ===== */
+const clOpts=[["el","Element"],["cmp","Compound"],["hom","Homogeneous mixture"],["het","Heterogeneous mixture"]];
+const clItems=[
+  {text:"Salt water", key:"hom", sol:"Salt + water = two substances mingled, so it's a mixture — and it's blended so evenly every sip is identical, so homogeneous. Key giveaway: you can't SEE the salt. (And you can get it back by evaporation — no chemical bonds were formed.)"},
+  {text:"A chocolate chip cookie", key:"het", sol:"Chips here, dough there — visibly different parts in different places. Heterogeneous. If you can pick pieces out with tweezers, it's heterogeneous."},
+  {text:"Pure oxygen gas (O&#8322;)", key:"el", sol:"Sneaky one: O&#8322; is a MOLECULE, but both atoms are the same element — so the substance is still just the element oxygen. Molecule ≠ compound. Compound requires DIFFERENT elements bonded."},
+  {text:"Water (H&#8322;O)", key:"cmp", sol:"Hydrogen and oxygen — two different elements — chemically BONDED into one new substance with its own properties. That bond is everything: it's why water is a compound and salt water is only a mixture."},
+  {text:"A pure iron nail", key:"el", sol:"Every atom in it is iron. One type of atom = element. (Let it rust and the story changes — iron oxide is a compound.)"},
+  {text:"The air in this room", key:"hom", sol:"Nitrogen, oxygen, argon, CO&#8322; — several substances, not bonded, blended perfectly evenly. Every breath is the same recipe: homogeneous mixture. Most invisible mixtures are homogeneous."},
+  {text:"Italian salad dressing (shaken, then left to sit)", key:"het", sol:"Oil floats up, vinegar sinks, herbs drift — layers you can see. Heterogeneous. Bonus connection: the oil floats BECAUSE it's less dense than vinegar. Density cameo!"}
+];
+buildDrows("clbox", clItems, clOpts);
+
+/* ===== 4 SEPARATION ===== */
+const sepOpts=[["mag","Magnetic attraction"],["fil","Filtration"],["eva","Evaporation"],["dis","Distillation"]];
+const sepItems=[
+  {text:"Iron filings accidentally spilled into sand.", key:"mag", sol:"Iron is magnetic; sand isn't. Sweep a magnet over the mix and the filings jump out. Every separation method exploits a physical property the two substances DON'T share — here, it's magnetism."},
+  {text:"Sand stirred into water.", key:"fil", sol:"Sand never dissolved — the grains are still whole particles, and whole particles get caught in filter paper while water slips through. Filtration works on undissolved chunks only."},
+  {text:"You want the SALT back from salt water.", key:"eva", sol:"Filter paper fails here — dissolved salt passes right through with the water. So make the water LEAVE: boil or let it evaporate, and the salt can't evaporate with it. Salt stays behind in the pan. You keep the salt, lose the water."},
+  {text:"You want pure DRINKING WATER from salt water.", key:"dis", sol:"Evaporation's twin, opposite goal. Boil the salt water, but this time CAPTURE the steam and cool it back into liquid — that condensed water left its salt behind. Distillation = evaporation + collection. Which of the two you use depends on which part you want to keep."},
+  {text:"Muddy water from a puddle.", key:"fil", sol:"Mud is suspended particles, not dissolved — so filter paper catches it. (It wouldn't be safe to drink yet, but it would be clear.) Compare with salt water: dissolved things laugh at filters; suspended things don't."}
+];
+buildDrows("sepbox", sepItems, sepOpts);
+
+/* ===== 5 DENSITY MACHINE ===== */
+const dmSeqs={
+  D:[
+    {eq:`<span class="dd">D</span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="vv">V</span></span></span>`,
+     note:"Good news: the equation ALREADY solves for D. Divide mass by volume and you're done. Tap NEXT anyway to see it used."},
+    {eq:`<span class="dd">D</span> = <span class="frac"><span class="top">24 g</span><span class="bot">8 mL</span></span> = 3 <span style="font-size:16px">g/mL</span>`,
+     note:"Example: 24 g of rock in 8 mL of space → 3 g/mL. Done. D is the easy one."}
+  ],
+  m:[
+    {eq:`<span class="dd">D</span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="vv">V</span></span></span>`,
+     note:"We want m — but it's trapped on top of that fraction, divided by V. To free it, UNDO the division."},
+    {eq:`<span class="dd">D</span> × <span class="vv">V</span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="vv">V</span></span></span> × <span class="vv">V</span>`,
+     note:"Multiply BOTH sides by V. (Both sides — always both sides. That's the golden rule of algebra.)"},
+    {eq:`<span class="dd">D</span> × <span class="vv">V</span> = <span class="mm">m</span> × <span class="frac cancel"><span class="top"><span class="vv">V</span></span><span class="bot"><span class="vv">V</span></span></span>`,
+     note:"On the right, V divided by V = 1 — the V's cancel each other out and vanish. That's the 'floating across' you see: V didn't teleport, it got canceled on one side and born on the other."},
+    {eq:`<span class="mm">m</span> = <span class="dd">D</span> × <span class="vv">V</span>`,
+     note:"Flip it around to put m first: mass = density × volume. Example: D = 2 g/mL, V = 10 mL → m = 20 g."}
+  ],
+  V:[
+    {eq:`<span class="dd">D</span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="vv">V</span></span></span>`,
+     note:"We want V — worst position of all, trapped on the BOTTOM. Two moves needed. First: get V off the bottom."},
+    {eq:`<span class="dd">D</span> × <span class="vv">V</span> = <span class="mm">m</span>`,
+     note:"Multiply both sides by V (the V's canceled on the right, same as before). V is free of the fraction — but now it's stuck to D."},
+    {eq:`<span class="frac"><span class="top"><span class="dd cancel">D</span> × <span class="vv">V</span></span><span class="bot"><span class="dd cancel">D</span></span></span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="dd">D</span></span></span>`,
+     note:"Second move: divide BOTH sides by D. On the left, D over D cancels to 1 and disappears."},
+    {eq:`<span class="vv">V</span> = <span class="frac"><span class="top"><span class="mm">m</span></span><span class="bot"><span class="dd">D</span></span></span>`,
+     note:"Volume = mass ÷ density. Example: m = 30 g, D = 6 g/mL → V = 5 mL. Notice all three formulas are ONE equation wearing three outfits."}
+  ]
+};
+const dmDone={D:false,m:false,V:false};
+let dmCur=null, dmStep=0;
+function dmStart(t){
+  dmCur=t; dmStep=0;
+  ["D","m","V"].forEach(k=>$("dmb-"+k).classList.toggle("active",k===t));
+  dmShow();
+}
+function dmShow(){
+  const seq=dmSeqs[dmCur];
+  $("dmEq").innerHTML=seq[dmStep].eq;
+  $("dmNote").textContent=seq[dmStep].note;
+  if(dmStep < seq.length-1){ $("dmNext").style.display="inline-block"; $("dmNext").textContent="NEXT STEP →"; }
+  else {
+    $("dmNext").style.display="none";
+    dmDone[dmCur]=true;
+    refreshChips();
+  }
+}
+function dmNext(){ dmStep++; dmShow(); }
+
+/* ===== 6 MC ===== */
+const mcQs=[
+  {q:"Your mass is 60 kg on Earth. On the Moon, your mass would be...",
+   opts:["10 kg — the Moon's gravity is weaker","60 kg — mass is the amount of matter, and you took all of it with you","360 kg — less gravity means more mass","0 kg — there is no mass in space"], a:1,
+   e:"Mass counts your matter; gravity has no vote. Your WEIGHT (the pull of gravity on that matter) drops to about 1/6 on the Moon — that's the quantity that changes. Mass: kilograms, never changes. Weight: a force, changes with location."},
+  {q:"Which tool-and-quantity pairing is correct?",
+   opts:["Volume measures the amount of matter","Weight measures the space something takes up","Mass measures the pull of gravity","Volume measures the space something takes up"], a:3,
+   e:"The clean version: MASS = amount of matter (balance, kg). VOLUME = amount of space (graduated cylinder, mL). WEIGHT = gravity's pull on the mass (scale, newtons). Three different questions about the same object."},
+  {q:"A steel ship floats, but a steel bolt dropped overboard sinks. Why does the ship float?",
+   opts:["Ships push gravity away with their engines","Steel becomes less dense when it is bent into a curved shape","The ship's AVERAGE density — steel plus all the air inside the hull — is less than water's","Salt water has no density, so everything floats in it"], a:2,
+   e:"The bolt is solid steel: density ~8 g/mL, sinks instantly. The ship is mostly AIR wrapped in a steel skin — total mass ÷ total volume comes out below 1 g/mL, so it floats. Proof: crumple a foil boat into a tight ball (same mass, way less volume) and it sinks. Density is about the WHOLE package, not the material."},
+  {q:"Why does ice float in your drink?",
+   opts:["Ice is heavier than water","Water EXPANDS when it freezes, so ice is less dense than liquid water","Cold things always rise","The bubbles inside ice carry it upward"], a:1,
+   e:"Freezing water is weird: its molecules lock into an open hexagonal pattern that takes MORE room than the liquid did. Same mass, bigger volume → smaller density (ice ≈ 0.92 g/mL vs. water's 1). Nearly every other substance does the opposite. This oddity is why lakes freeze top-down and fish survive winter."},
+  {q:"Which line correctly ranks these in a cup of water: object A (1.4 g/mL), object B (0.5 g/mL), object C (0.98 g/mL)?",
+   opts:["A floats high, B sinks, C floats low","B floats high, C floats barely (mostly submerged), A sinks","All three float — they're all close to 1","C sinks, B sinks, A floats"], a:1,
+   e:"Compare each to water's 1 g/mL. B (0.5) is half water's density — floats high like a cork. C (0.98) barely wins — floats with almost everything underwater, like ice does. A (1.4) loses — sinks. The FARTHER below 1, the higher it rides."}
+];
+function buildMCGroup(boxId, qs, prefix){
+  const box=$(boxId);
+  qs.forEach((m,qi)=>{
+    const d=document.createElement("div"); d.className="mcq"; d.dataset.a=m.a; d.dataset.group=prefix;
+    d.innerHTML=`<div class="q">${qi+1}. ${m.q}</div>`;
+    const wrap=document.createElement("div"); wrap.className="opts";
+    shuffle(m.opts.map((t,i)=>({t,i}))).forEach(o=>{
+      const b=document.createElement("button"); b.className="opt"; b.innerHTML=o.t; b.dataset.i=o.i;
+      b.addEventListener("click",()=>{
+        if(GRADED) return;
+        wrap.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+        b.classList.add("sel"); d.dataset.picked=o.i; refreshChips();
+      });
+      wrap.appendChild(b);
+    });
+    d.appendChild(wrap);
+    const ex=document.createElement("div"); ex.className="expl"; ex.innerHTML=m.e; d.appendChild(ex);
+    box.appendChild(d);
+  });
+}
+function gradeMCGroup(prefix){
+  let right=0;
+  document.querySelectorAll(`.mcq[data-group="${prefix}"]`).forEach(d=>{
+    const a=+d.dataset.a, picked=d.dataset.picked!==undefined?+d.dataset.picked:null;
+    d.querySelectorAll(".opt").forEach(b=>{
+      b.disabled=true;
+      if(+b.dataset.i===a) b.classList.add("g-right");
+      else if(picked!==null && +b.dataset.i===picked) b.classList.add("g-wrongpick");
+    });
+    if(picked===a) right++;
+    d.querySelector(".expl").classList.add("show");
+  });
+  return right;
+}
+buildMCGroup("mcbox", mcQs, "mq");
+
+/* ===== 7 NUMBER CRUNCH ===== */
+const numProbs=[
+  {stem:"<b>1.</b> A mineral sample has a mass of 36 g and a volume of 12 mL. Find its density.", unit:"g/mL", ans:3,
+   sol:"Solving for D — the easy outfit: D = m/V = 36 g ÷ 12 mL = 3 g/mL. Denser than water (1), so this rock sinks."},
+  {stem:"<b>2.</b> A liquid has a density of 2 g/mL. What is the mass of a 15 mL sample?", unit:"g", ans:30,
+   sol:"We want m → Machine outfit #2: m = D × V = 2 × 15 = 30 g. The V 'floated across' by multiplying both sides."},
+  {stem:"<b>3.</b> A metal cube has a mass of 54 g and a density of 6 g/mL. What is its volume?", unit:"mL", ans:9,
+   sol:"We want V → outfit #3: V = m/D = 54 ÷ 6 = 9 mL. Two algebra moves got V off the bottom — replay the Machine if this felt shaky."},
+  {stem:"<b>4.</b> You pour exactly 42 mL of pure water into a beaker. What is the water's mass?", unit:"g", ans:42,
+   sol:"Water's superpower: D = 1 g/mL, so m = D × V = 1 × 42 = 42 g. For pure water, the mL number IS the gram number. This is not a coincidence — the gram was originally DEFINED from water."},
+  {stem:"<b>5.</b> Convert 3,200 grams to kilograms.", unit:"kg", ans:3.2,
+   sol:"Kilo- means 1,000: there are 1,000 g in 1 kg. Going from small unit to big unit → DIVIDE: 3,200 ÷ 1,000 = 3.2 kg. Sanity check: kilograms should be a SMALLER number than grams for the same stuff."},
+  {stem:"<b>6.</b> Convert 1.8 kilometers to meters.", unit:"m", ans:1800,
+   sol:"Big unit to small unit → MULTIPLY: 1.8 × 1,000 = 1,800 m. The decimal just slides three places right. Ask yourself which way the number should grow BEFORE you compute — that instinct catches most conversion errors."}
+];
+numProbs.forEach((p,i)=>{
+  const d=document.createElement("div"); d.className="prob";
+  d.innerHTML=`<div class="stem">${p.stem}</div><div class="numrow"><label>Answer:</label><input id="np${i}" inputmode="text"><label>${p.unit}</label></div><div class="sol">${p.sol}</div>`;
+  $("numbox").appendChild(d);
+});
+document.querySelectorAll("#numbox input").forEach(i=>i.addEventListener("input",refreshChips));
+function gradeNums(){
+  let right=0;
+  numProbs.forEach((p,i)=>{
+    const el=$("np"+i); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-p.ans)<=0.05;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+    el.closest(".prob").querySelector(".sol").classList.add("show");
+  });
+  // float/sink dropdown
+  const row=$("floatrow"), sel=$("floatsel");
+  const ok=sel.value===row.dataset.key;
+  row.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+  sel.disabled=true;
+  row.querySelector(".sol").classList.add("show");
+  return right;
+}
+
+/* ===== 8 INTRO REVIEW ===== */
+const introQs=[
+  {q:"The whole point of the scientific method is to...",
+   opts:["Prove the scientist's first idea correct","Remove bias from the findings","Make experiments cheaper","Replace observation with math"], a:1,
+   e:"People stay biased — the METHOD protects the findings from the people. If you remember one sentence from the intro unit, it's this one."},
+  {q:"In an experiment, the difference between CONSTANTS and the CONTROL is...",
+   opts:["Nothing — two words for the same thing","Constants are conditions kept the same in every trial; the control is its own untouched comparison group","The control is what you change on purpose","Constants are what you measure at the end"], a:1,
+   e:"Most-confused pair in the unit. Constants live INSIDE every trial (same bread, same bags). The control IS a whole trial — the untouched one that shows what 'no change' looks like (the room-temperature bag)."},
+  {q:"Your trial data: 2, 5, 2, 8. The MODE is...",
+   opts:["2","5","8","4.25"], a:0,
+   e:"Mode = the value that appears MOST often, and 2 shows up twice. (4.25 is the mean, 8 is the max, and 3.5 would be the median — each stat answers a different question.)"}
+];
+buildMCGroup("introbox", introQs, "iq");
+
+/* ===== chips ===== */
+function refreshChips(){
+  const states={
+    pc: drowsFilled("pcbox"),
+    match: matterM.complete(),
+    classify: drowsFilled("clbox"),
+    sep: drowsFilled("sepbox"),
+    dm: dmDone.D && dmDone.m && dmDone.V,
+    mc: document.querySelectorAll('.mcq[data-group="mq"][data-picked]').length===mcQs.length,
+    num: numProbs.every((p,i)=>$("np"+i).value.trim()!=="") && $("floatsel").value!=="",
+    intro: document.querySelectorAll('.mcq[data-group="iq"][data-picked]').length===introQs.length
+  };
+  Object.entries(states).forEach(([k,v])=>$("chip-"+k).classList.toggle("filled",v));
+  return states;
+}
+
+/* ===== GRADE ===== */
+let warned=false;
+function gradeAll(){
+  if(GRADED) return;
+  const states=refreshChips();
+  const names={pc:"Prop or Change",match:"Matter Match",classify:"Classify It",sep:"Separation",dm:"Density Machine (run all three!)",mc:"Multiple Choice",num:"Number Crunch",intro:"Intro Review"};
+  const missing=Object.entries(states).filter(([k,v])=>!v).map(([k])=>names[k]);
+  if(missing.length && !warned){
+    warned=true;
+    $("gradewarn").textContent="Not finished: "+missing.join(", ")+". Blanks count as wrong — press GRADE ME again to grade anyway, or go finish first.";
+    return;
+  }
+  GRADED=true;
+  $("gradebtn").disabled=true; $("gradebtn").style.opacity=.5; $("gradewarn").textContent="";
+  const parts=[
+    ["Prop/Change", gradeDrows("pcbox"), pcItems.length],
+    ["Matter Match", matterM.grade(), matterM.total],
+    ["Classify", gradeDrows("clbox"), clItems.length],
+    ["Separation", gradeDrows("sepbox"), sepItems.length],
+    ["Multiple Choice", gradeMCGroup("mq"), mcQs.length],
+    ["Numbers", gradeNums(), numProbs.length+1],
+    ["Intro", gradeMCGroup("iq"), introQs.length]
+  ];
+  $("mmSol").classList.add("show");
+  const got=parts.reduce((s,p)=>s+p[1],0), tot=parts.reduce((s,p)=>s+p[2],0);
+  const pct=Math.round(100*got/tot);
+  const name=($("stuname").value.trim()||"(no name entered)");
+  const msg = pct>=90 ? "Outstanding — matter has no mysteries left for you. Show this off." :
+              pct>=75 ? "Solid — read the explanations on your reds; that's tonight's list." :
+              pct>=50 ? "Halfway — every red item now has its explanation open. Read them, reload, rebuild." :
+              "The explanations below are your roadmap. Read every one, then reload and try again.";
+  $("scName").textContent=name;
+  $("scScore").textContent=`${got} / ${tot}`;
+  $("scPct").textContent=pct+"%";
+  $("scMsg").textContent=msg+"  ·  "+parts.map(p=>`${p[0]} ${p[1]}/${p[2]}`).join("  ·  ");
+  $("scMeta").textContent="Graded " + new Date().toLocaleString() + " · Density Machine runs completed: " + ((dmDone.D?1:0)+(dmDone.m?1:0)+(dmDone.V?1:0)) + "/3";
+  $("scorecard").style.display="block";
+  $("locknote").style.display="block";
+  $("stuname").disabled=true;
+  $("scorecard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+refreshChips();
+</script>
+</body>
+</html>
