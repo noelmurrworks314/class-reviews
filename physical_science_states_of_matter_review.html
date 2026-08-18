@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical Science · States of Matter Review — Graded</title>
+<style>
+  :root{
+    --main:#1e6b46; --main-dark:#154d32; --accent:#d98e2b; --accent-soft:#f7ead4;
+    --ink:#22303e; --soft:#55636f; --paper:#f3f7f2; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d5ddd2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 16px 40px}
+  header{background:var(--main);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:#ffd9a0;font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.9}
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.filled{background:var(--main);border-color:var(--main);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(30,60,40,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--main-dark);margin-bottom:4px}
+  h3{font-size:15px;color:#8a4a2b;margin:14px 0 6px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  .pts{font-size:13px;color:var(--soft)}
+  .drow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow>span{flex:1;min-width:200px}
+  .drow select{font-size:13.5px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff}
+  .drow.g-ok{background:var(--good-bg)} .drow.g-no{background:var(--bad-bg)}
+  .sol{display:none;width:100%;font-size:13px;color:var(--soft);background:#f2f5f0;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:7px 11px;margin-top:5px}
+  .sol.show{display:block}
+  .matchcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mitem{position:relative;border:2px solid var(--main);border-radius:10px;padding:8px 26px 8px 10px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none;margin-bottom:8px}
+  .mitem.sel{background:var(--accent-soft);border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+  .mitem.paired{background:#e2ecdf}
+  .mitem .badge{position:absolute;top:6px;right:7px;font-weight:800;font-size:13px;color:var(--main)}
+  .mitem.g-ok{background:var(--good-bg);border-color:var(--good)}
+  .mitem.g-no{background:var(--bad-bg);border-color:var(--bad)}
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .opt.g-right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.g-wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f2f5f0;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+  /* particle diagrams */
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:8px 0}
+  .pcard{border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:#fff}
+  .pcard svg{display:block;margin:0 auto 6px}
+  .pcard select{width:100%;font-size:13px;padding:6px;border-radius:8px;border:2px solid var(--line)}
+  .pcard.g-ok{border-color:var(--good);background:var(--good-bg)}
+  .pcard.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  .pcard .sol{text-align:left}
+  /* relationship arrows */
+  .relrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .relrow .lhs{flex:1;min-width:210px}
+  .relrow select{font-size:14px;padding:6px 10px;border-radius:8px;border:2px solid var(--line);background:#fff;font-weight:700}
+  .relrow.g-ok{background:var(--good-bg)} .relrow.g-no{background:var(--bad-bg)}
+  /* heating curve */
+  .gwrap{text-align:center;margin:8px 0}
+  .numrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0}
+  .numrow label{font-weight:700;font-size:14px}
+  .numrow input{width:95px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.g-ok{border-color:var(--good);background:var(--good-bg)}
+  input.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  /* grade bar */
+  .gradebar{background:var(--main);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .gradebar input{font-size:16px;padding:9px 12px;border-radius:9px;border:none;width:min(280px,90%);text-align:center;margin-bottom:10px}
+  .bigbtn{background:var(--accent);color:#3a2508;border:none;border-radius:10px;padding:13px 34px;font-size:18px;font-weight:800;cursor:pointer}
+  .bigbtn:active{transform:scale(.97)}
+  .warn{color:#ffd9a0;font-size:13.5px;margin-top:10px}
+  .scorecard{display:none;background:#fff;color:var(--ink);border:4px solid var(--accent);border-radius:14px;padding:20px;margin-top:14px;text-align:center}
+  .scorecard .sc-name{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-score{font-family:Georgia,serif;font-size:52px;font-weight:800;color:var(--accent);line-height:1.1;margin:6px 0}
+  .scorecard .sc-pct{font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-msg{font-size:15px;margin-top:6px}
+  .scorecard .sc-meta{font-size:12px;color:var(--soft);margin-top:8px}
+  .locknote{display:none;text-align:center;font-size:13px;color:var(--soft);font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physical Science · States of Matter — Graded Mode</div>
+  <h1>Solids, Liquids, Gases &amp; the Energy Between Them</h1>
+  <p><b>How this works:</b> answer EVERYTHING with no feedback, just like the test. When every chip up top is filled, type your name at the bottom and hit GRADE ME for your score card. THEN every answer lights up green or red with a full explanation. Read the explanations on your reds — that's the studying.</p>
+</header>
+
+<div class="progress">
+  <span class="chip" id="chip-particles">Particle Pictures</span>
+  <span class="chip" id="chip-vocab">Vocab Match</span>
+  <span class="chip" id="chip-changes">Name the Change</span>
+  <span class="chip" id="chip-props">Liquid Properties</span>
+  <span class="chip" id="chip-rel">Relationships</span>
+  <span class="chip" id="chip-curve">Heating Curve</span>
+  <span class="chip" id="chip-mc">Multiple Choice</span>
+</div>
+
+<!-- 1 PARTICLE PICTURES -->
+<section>
+  <h2>1 · Particle Pictures <span class="pts">(4 pts)</span></h2>
+  <div class="dir">Each picture shows particles of a substance. Identify what each one is.</div>
+  <div class="pgrid" id="pgrid"></div>
+</section>
+
+<!-- 2 VOCAB MATCH -->
+<section>
+  <h2>2 · Vocab Match <span class="pts">(8 pts)</span></h2>
+  <div class="dir">Tap a term, then tap its meaning — matching ① badges appear on both. Tap a paired card to un-pair. No feedback until grading.</div>
+  <div class="matchcols"><div id="vmL"></div><div id="vmR"></div></div>
+</section>
+
+<!-- 3 NAME THE CHANGE -->
+<section>
+  <h2>3 · Name the Change of State <span class="pts">(7 pts)</span></h2>
+  <div class="dir">Which change is happening in each scene?</div>
+  <div id="chbox"></div>
+</section>
+
+<!-- 4 LIQUID PROPERTIES -->
+<section>
+  <h2>4 · Liquid Properties — Surface Tension &amp; Viscosity <span class="pts">(5 pts)</span></h2>
+  <div class="dir">Which liquid property explains each observation?</div>
+  <div id="propbox"></div>
+</section>
+
+<!-- 5 RELATIONSHIPS -->
+<section>
+  <h2>5 · Relationships — Which Way Does It Go? <span class="pts">(7 pts)</span></h2>
+  <div class="dir">No math — just direction. Complete each statement.</div>
+  <div id="relbox"></div>
+</section>
+
+<!-- 6 HEATING CURVE -->
+<section>
+  <h2>6 · Reading a Heating Curve <span class="pts">(6 pts)</span></h2>
+  <div class="dir">A pot of ice is heated steadily on a stove. The graph shows its temperature over time.</div>
+  <div class="gwrap">
+    <svg viewBox="0 0 520 300" width="480">
+      <style>.ax{stroke:#22303e;stroke-width:2}.gl{stroke:#e0e0e0;stroke-width:1}.cv{stroke:#7a2e2a;stroke-width:3;fill:none}.lb{font-family:sans-serif;font-size:12px;fill:#22303e}.seg{font-family:sans-serif;font-size:13px;font-weight:bold;fill:#1e6b46}</style>
+      <line class="gl" x1="60" y1="60" x2="480" y2="60"/><line class="gl" x1="60" y1="120" x2="480" y2="120"/><line class="gl" x1="60" y1="180" x2="480" y2="180"/>
+      <line class="ax" x1="60" y1="250" x2="490" y2="250"/><line class="ax" x1="60" y1="40" x2="60" y2="250"/>
+      <polyline class="cv" points="60,225 120,180 220,180 300,80 400,80 470,45"/>
+      <text class="lb" x="30" y="184">0</text><text class="lb" x="22" y="84">100</text><text class="lb" x="10" y="150" transform="rotate(-90 20 150)">Temp (°C)</text>
+      <text class="lb" x="230" y="275">Time (heat added steadily) →</text>
+      <text class="seg" x="78" y="212">A</text><text class="seg" x="163" y="170">B</text><text class="seg" x="250" y="135">C</text><text class="seg" x="343" y="70">D</text><text class="seg" x="440" y="52">E</text>
+    </svg>
+  </div>
+  <div id="curvebox"></div>
+</section>
+
+<!-- 7 MC -->
+<section>
+  <h2>7 · Multiple Choice <span class="pts">(6 pts)</span></h2>
+  <div class="dir">One pick each; change your mind freely until grading.</div>
+  <div id="mcbox"></div>
+</section>
+
+<!-- GRADE BAR -->
+<section class="gradebar" id="gradebar">
+  <h2 style="color:#ffd9a0;margin-bottom:8px">Ready? Grade it.</h2>
+  <p style="font-size:13.5px;opacity:.9;margin-bottom:12px">All seven chips filled? Type your name, hit the button, show your teacher the score card. Answers + explanations reveal AFTER grading, then everything locks.</p>
+  <input id="stuname" placeholder="Your name" autocomplete="off"><br>
+  <button class="bigbtn" id="gradebtn" onclick="gradeAll()">GRADE ME</button>
+  <div class="warn" id="gradewarn"></div>
+  <div class="scorecard" id="scorecard">
+    <div class="sc-name" id="scName"></div>
+    <div class="sc-score" id="scScore"></div>
+    <div class="sc-pct" id="scPct"></div>
+    <div class="sc-msg" id="scMsg"></div>
+    <div class="sc-meta" id="scMeta"></div>
+  </div>
+  <div class="locknote" id="locknote">Answers and explanations are revealed above — green = right, red = wrong. READ THE EXPLANATIONS ON YOUR REDS. Everything is locked; reload to start fresh.</div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+let GRADED=false;
+const BADGES=["\u2460","\u2461","\u2462","\u2463","\u2464","\u2465","\u2466","\u2467"];
+
+/* generic dropdown rows w/ post-grade explanations */
+function buildDrows(boxId, items, opts){
+  const box=$(boxId);
+  items.forEach((it,i)=>{
+    const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+    const sel=document.createElement("select");
+    sel.innerHTML=`<option value="">— choose —</option>`+opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+    sel.addEventListener("change",refreshChips);
+    r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`; r.appendChild(sel);
+    const s=document.createElement("div"); s.className="sol"; s.innerHTML=it.sol; r.appendChild(s);
+    box.appendChild(r);
+  });
+}
+function gradeDrows(boxId){
+  let right=0;
+  $(boxId).querySelectorAll(".drow").forEach(r=>{
+    const s=r.querySelector("select"); const ok=s.value===r.dataset.key;
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true; r.querySelector(".sol").classList.add("show");
+  });
+  return right;
+}
+function drowsFilled(boxId){ let ok=true; $(boxId).querySelectorAll(".drow select").forEach(s=>{ if(!s.value) ok=false; }); return ok; }
+
+/* ===== 1 PARTICLE PICTURES ===== */
+function dots(list, r=6, col="#1e6b46"){ return list.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`).join(""); }
+const lattice=[]; for(let i=0;i<5;i++) for(let j=0;j<4;j++) lattice.push([20+i*22, 18+j*22]);
+const amorph=[[18,20],[42,16],[64,26],[88,14],[110,24],[26,42],[52,48],[78,40],[100,50],[16,66],[40,70],[66,62],[92,72],[112,64],[30,88],[58,90],[84,86],[106,92]];
+const liquid=[[20,44],[44,38],[68,46],[92,40],[112,48],[30,64],[56,70],[80,62],[104,70],[18,86],[42,90],[66,84],[90,92],[112,86],[52,52],[96,56]];
+const gas=[[22,22],[98,30],[60,58],[110,80],[30,90],[75,15]];
+const pItems=[
+  {svg:`<svg viewBox="0 0 130 105" width="150"><rect x="2" y="2" width="126" height="101" fill="#fafaf6" stroke="#bbb"/>${dots(lattice)}</svg>`, key:"cryst"},
+  {svg:`<svg viewBox="0 0 130 105" width="150"><rect x="2" y="2" width="126" height="101" fill="#fafaf6" stroke="#bbb"/>${dots(amorph)}</svg>`, key:"amorph"},
+  {svg:`<svg viewBox="0 0 130 105" width="150"><rect x="2" y="2" width="126" height="101" fill="#fafaf6" stroke="#bbb"/><line x1="2" y1="32" x2="128" y2="32" stroke="#9bb" stroke-dasharray="4,3"/>${dots(liquid,6,"#1f4e79")}</svg>`, key:"liquid"},
+  {svg:`<svg viewBox="0 0 130 105" width="150"><rect x="2" y="2" width="126" height="101" fill="#fafaf6" stroke="#bbb"/>${dots(gas,6,"#b3392e")}<g stroke="#b3392e" stroke-width="1.2"><line x1="22" y1="22" x2="34" y2="12"/><line x1="98" y1="30" x2="86" y2="40"/><line x1="60" y1="58" x2="70" y2="66"/><line x1="110" y1="80" x2="100" y2="70"/><line x1="30" y1="90" x2="40" y2="82"/><line x1="75" y1="15" x2="66" y2="24"/></g></svg>`, key:"gas"}
+];
+const pOpts=[["cryst","Crystalline solid"],["amorph","Amorphous solid"],["liquid","Liquid"],["gas","Gas"]];
+const pSols={
+  cryst:"Neat rows and columns — a repeating pattern (a lattice). Crystalline solids (salt, ice, sugar, metals) have that order, which is why they have SHARP melting points: every bond breaks at the same temperature.",
+  amorph:"Packed and locked in place — a solid — but with NO repeating pattern. Amorphous solids (glass, rubber, plastic, wax) soften over a range of temperatures instead of melting sharply. Some call glass a very slow liquid; treat it as a solid with disorganized particles.",
+  liquid:"Close together (touching) but no fixed positions — particles slide past each other. That's why a liquid keeps its VOLUME but takes the shape of its container (note the level surface at the top).",
+  gas:"Far apart, moving fast in every direction, filling all available space. Definite volume? No. Definite shape? No. The particles bounce off the walls — that's PRESSURE."
+};
+shuffle(pItems).forEach((it,i)=>{
+  const c=document.createElement("div"); c.className="pcard"; c.dataset.key=it.key;
+  const sel=document.createElement("select");
+  sel.innerHTML=`<option value="">— what is it? —</option>`+pOpts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  c.innerHTML=it.svg; c.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=pSols[it.key]; c.appendChild(s);
+  $("pgrid").appendChild(c);
+});
+function gradeParticles(){
+  let right=0;
+  document.querySelectorAll("#pgrid .pcard").forEach(c=>{
+    const s=c.querySelector("select"); const ok=s.value===c.dataset.key;
+    c.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true; c.querySelector(".sol").classList.add("show");
+  });
+  return right;
+}
+function particlesFilled(){ let ok=true; document.querySelectorAll("#pgrid select").forEach(s=>{ if(!s.value) ok=false; }); return ok; }
+
+/* ===== 2 VOCAB MATCH ===== */
+function makePairMatcher(leftId, rightId, pairsData){
+  const st={selL:null, selR:null, pairs:[]};
+  function badgeRefresh(){
+    document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{ el.querySelector(".badge").textContent=""; el.classList.remove("paired"); });
+    st.pairs.forEach((p,i)=>{ [p.l,p.r].forEach(el=>{ el.classList.add("paired"); el.querySelector(".badge").textContent=BADGES[i]||("#"+(i+1)); }); });
+  }
+  function unpair(el){ const idx=st.pairs.findIndex(p=>p.l===el||p.r===el); if(idx>-1){ st.pairs.splice(idx,1); badgeRefresh(); refreshChips(); return true; } return false; }
+  function tap(el, side){
+    if(GRADED) return; if(unpair(el)) return;
+    const key = side==="L"?"selL":"selR";
+    if(st[key]) st[key].classList.remove("sel");
+    st[key]=(st[key]===el?null:el); if(st[key]) st[key].classList.add("sel");
+    if(st.selL && st.selR){ st.selL.classList.remove("sel"); st.selR.classList.remove("sel"); st.pairs.push({l:st.selL,r:st.selR}); st.selL=null; st.selR=null; badgeRefresh(); refreshChips(); }
+  }
+  const L=$(leftId), R=$(rightId);
+  shuffle(pairsData.map((p,i)=>({h:p[0],i}))).forEach(o=>{ const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i; d.addEventListener("click",()=>tap(d,"L")); L.appendChild(d); });
+  shuffle(pairsData.map((p,i)=>({h:p[1],i}))).forEach(o=>{ const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i; d.addEventListener("click",()=>tap(d,"R")); R.appendChild(d); });
+  return {
+    complete: ()=> st.pairs.length===pairsData.length,
+    grade: ()=>{ let right=0; st.pairs.forEach(p=>{ const ok=p.l.dataset.i===p.r.dataset.i; [p.l,p.r].forEach(el=>el.classList.add(ok?"g-ok":"g-no")); if(ok) right++; });
+      document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{ if(!el.classList.contains("g-ok")&&!el.classList.contains("g-no")) el.classList.add("g-no"); }); return right; },
+    total: pairsData.length
+  };
+}
+const vocabPairs=[
+  ["<b>Thermal energy</b>","The TOTAL energy of all the particles' motion in an object — depends on how many particles AND how fast"],
+  ["<b>Temperature</b>","The AVERAGE energy of motion per particle — how fast they're jiggling, not how many there are"],
+  ["<b>Pressure</b>","Force spread over an area: P = force ÷ area. In a gas, particles hitting the walls"],
+  ["<b>Surface tension</b>","The 'skin' on a liquid's surface — particles pull inward on each other, resisting being broken"],
+  ["<b>Viscosity</b>","A liquid's resistance to FLOWING — honey high, water low"],
+  ["<b>Boiling point</b>","The temperature where vapor pressure equals the pressure pushing down on the liquid — bubbles form throughout"],
+  ["<b>Condensation</b>","Gas → liquid; particles lose energy and pull back together (dew, fogged mirror)"],
+  ["<b>Sublimation</b>","Solid → gas directly, skipping liquid (dry ice, frost vanishing on a cold sunny day)"]
+];
+const vocabM = makePairMatcher("vmL","vmR",vocabPairs);
+
+/* ===== 3 NAME THE CHANGE ===== */
+const chOpts=[["melt","Melting"],["freeze","Freezing"],["evap","Evaporation"],["boil","Boiling"],["cond","Condensation"],["subl","Sublimation"],["depo","Deposition"]];
+const chItems=[
+  {text:"A cold can of soda 'sweats' on a hot day — droplets form on the outside.", key:"cond", sol:"The droplets are NOT leaking through the can. Water vapor in the warm air touches the cold metal, loses energy, and turns to liquid — condensation. Same thing on your bathroom mirror after a shower."},
+  {text:"A puddle disappears over a sunny afternoon without ever getting hot enough to boil.", key:"evap", sol:"Evaporation happens at the SURFACE, at any temperature — the fastest-moving particles at the top escape. Boiling is the whole-liquid version at one specific temperature. Puddles evaporate; they don't boil."},
+  {text:"Frost forms on a windshield overnight — ice crystals appear without any liquid first.", key:"depo", sol:"Water vapor → solid ice directly, skipping the liquid stage: DEPOSITION, the reverse of sublimation. Snowflakes form the same way high in clouds."},
+  {text:"A block of dry ice shrinks on a table, giving off white fog, but never leaves a wet spot.", key:"subl", sol:"Solid CO₂ → gas directly at ordinary pressure — sublimation. No puddle because it never becomes liquid. (The 'fog' is actually water vapor from the air condensing in the cold — bonus condensation!)"},
+  {text:"Chocolate left in a hot car turns to goo.", key:"melt", sol:"Solid → liquid as particles gain enough energy to break out of fixed positions — melting. Chocolate is a great example of an AMORPHOUS-ish solid: it softens over a range rather than snapping to liquid at one temperature."},
+  {text:"Bubbles form throughout a pot of water at 100 °C and rise to the surface.", key:"boil", sol:"Bubbles from WITHIN the liquid — not just the surface — is the signature of boiling. Vapor pressure has caught up with the air pressure pushing down, so vapor can form anywhere in the pot."},
+  {text:"A pond's surface turns solid on the first hard-freeze night of winter.", key:"freeze", sol:"Liquid → solid as particles lose energy and lock into place — freezing. Water's weird trick: it freezes at the TOP first, because ice is less dense than liquid water and floats (Unit 2 callback!)."}
+];
+buildDrows("chbox", chItems, chOpts);
+
+/* ===== 4 LIQUID PROPERTIES ===== */
+const propOpts=[["st","Surface tension"],["visc","Viscosity"],["neither","Neither — that's a solid or gas property"]];
+const propItems=[
+  {text:"A water strider insect walks across a pond without sinking.", key:"st", sol:"Its legs press down on the water's 'skin' — the surface's inward pull resists being broken. Surface tension. Nothing to do with floating by density; the strider is denser than water and would sink if it broke through."},
+  {text:"Cold maple syrup pours in a slow, thick stream; warm syrup pours fast.", key:"visc", sol:"Viscosity — resistance to flow. Heat gives particles more energy to slide past each other, so viscosity DROPS as temperature rises. That's why you warm honey to pour it and why engines use thinner oil in winter."},
+  {text:"Water forms round beads on a freshly waxed car instead of spreading flat.", key:"st", sol:"Surface tension pulls a small amount of liquid into the shape with the least surface area — a sphere. The wax refuses to grip the water, so the water's own inward pull wins and it beads up."},
+  {text:"Motor oil labeled '10W-40' is chosen for how easily it flows at different engine temperatures.", key:"visc", sol:"Those numbers are a viscosity rating. Oil that flows too easily won't protect the engine; oil too thick won't circulate on a cold morning. Viscosity is the whole game in lubricants."},
+  {text:"You can slightly overfill a glass of water and it 'domes' above the rim without spilling.", key:"st", sol:"Surface tension again — the top layer holds together like a stretched skin, letting water pile a little higher than the rim. Add a drop of dish soap (which weakens the skin) and it spills instantly."}
+];
+buildDrows("propbox", propItems, propOpts);
+
+/* ===== 5 RELATIONSHIPS ===== */
+const relItems=[
+  {lhs:"Squeeze a sealed bag of air to HALF its volume (temperature constant). Its pressure…", key:"up", sol:"Boyle's Law: less space, same number of particles → they hit the walls more often → pressure goes UP. Volume down, pressure up — they move opposite ways (inversely). Half the volume ≈ double the pressure."},
+  {lhs:"Let a sealed gas expand into a bigger container (temperature constant). Its pressure…", key:"down", sol:"Same particles, more room, fewer wall-hits per second → pressure DOWN. Boyle again, run the other way. Rising balloon: outside pressure drops as it climbs, so it expands until it pops."},
+  {lhs:"Heat a gas in a rigid steel tank (volume can't change). Its pressure…", key:"up", sol:"Hotter particles move faster and slam the walls harder and more often → pressure UP. This is why aerosol cans warn 'do not incinerate' — the can can't expand, so pressure climbs until it bursts."},
+  {lhs:"Cool a substance's particles down. Their AVERAGE speed…", key:"down", sol:"Temperature IS the average particle motion. Cool it → particles slow down. Keep cooling and they lock into a solid: freezing is just particles too slow to escape each other's grip."},
+  {lhs:"Compare a bathtub of lukewarm water to a teacup of boiling water. The BATHTUB's total thermal energy is…", key:"up", sol:"Temperature says the teacup's particles are faster on AVERAGE — but the tub has vastly MORE particles. Total thermal energy = all of them added up, so the tub wins by a landslide. Temperature is per-particle; thermal energy is the whole team."},
+  {lhs:"Take water up a tall mountain, where air pressure is lower. Its boiling point…", key:"down", sol:"Boiling happens when the liquid's vapor pressure equals the pressure pushing down on it. Less air pressure pushing down → the liquid wins that fight sooner → boils at a LOWER temperature (Denver ~95 °C, Everest ~70 °C). Cooking takes longer up high because the water is cooler while boiling."},
+  {lhs:"Seal water in a pressure cooker, raising the pressure above the liquid. Its boiling point…", key:"up", sol:"More pressure pushing down → water must get HOTTER before its vapor pressure can match it → boiling point goes UP (~120 °C inside a cooker). Hotter water = food cooks faster. Same rule as the mountain, run backward."}
+];
+relItems.forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="relrow"; r.dataset.key=it.key;
+  r.innerHTML=`<span class="lhs"><b>${i+1}.</b> ${it.lhs}</span>`;
+  const sel=document.createElement("select");
+  sel.innerHTML=`<option value="">— goes… —</option><option value="up">↑ goes UP</option><option value="down">↓ goes DOWN</option><option value="same">→ stays the SAME</option>`;
+  sel.addEventListener("change",refreshChips); r.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=it.sol; r.appendChild(s);
+  $("relbox").appendChild(r);
+});
+function gradeRel(){
+  let right=0;
+  document.querySelectorAll("#relbox .relrow").forEach(r=>{
+    const s=r.querySelector("select"); const ok=s.value===r.dataset.key;
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true; r.querySelector(".sol").classList.add("show");
+  });
+  return right;
+}
+function relFilled(){ let ok=true; document.querySelectorAll("#relbox select").forEach(s=>{ if(!s.value) ok=false; }); return ok; }
+
+/* ===== 6 HEATING CURVE ===== */
+const curveOpts=[["solid","Solid only (ice warming up)"],["melting","Melting — solid AND liquid together"],["liquid","Liquid only (water warming up)"],["boiling","Boiling — liquid AND gas together"],["gas","Gas only (steam heating up)"]];
+const curveItems=[
+  {text:"Segment A is:", key:"solid", sol:"Temperature rising, below 0 °C — ice getting warmer but still solid. Added heat makes particles jiggle faster in place."},
+  {text:"Segment B is:", key:"melting", sol:"FLAT at 0 °C. Heat is still going in — but instead of raising temperature, it's breaking the bonds that hold particles in the lattice. Ice and liquid water coexist here. Flat = phase change."},
+  {text:"Segment C is:", key:"liquid", sol:"Temperature rising from 0 to 100 °C — all liquid, particles speeding up. The pot's water heating on the stove."},
+  {text:"Segment D is:", key:"boiling", sol:"FLAT at 100 °C. Heat is spent pulling particles fully apart into gas, not raising temperature. A pot at a rolling boil stays at 100 °C no matter how high you crank the burner — turning it up just boils it away faster."},
+  {text:"Why are B and D flat, even though the stove keeps adding heat?", key:"phase", sol:"During a phase change, the added energy goes into changing the ARRANGEMENT of particles (breaking them free) rather than into their SPEED. Temperature measures speed — so it holds steady until the change is complete."},
+  {text:"Cook this pot in Denver instead. Which segment shifts, and which way?", key:"denver", sol:"Segment D moves DOWN — it flattens at about 95 °C instead of 100. Lower air pressure → lower boiling point (Section 5's rule). Melting (B) barely budges; pressure affects boiling far more than melting."}
+];
+const curveOptsAll={
+  default: curveOpts,
+  phase:[["speed","Because the stove's heat can't get in during those times"],["phase","Because the energy is breaking particles apart (changing arrangement), not speeding them up"],["broken","Because the thermometer stops working at 0 and 100"]],
+  denver:[["denver","Segment D moves DOWN to about 95 °C"],["dup","Segment D moves UP to about 105 °C"],["bmove","Segment B moves down to about −5 °C"],["none","Nothing changes — boiling is always 100 °C"]]
+};
+curveItems.forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+  const opts = curveOptsAll[it.key==="phase"?"phase":it.key==="denver"?"denver":"default"];
+  const sel=document.createElement("select");
+  sel.innerHTML=`<option value="">— choose —</option>`+opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`; r.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=it.sol; r.appendChild(s);
+  $("curvebox").appendChild(r);
+});
+
+/* ===== 7 MC ===== */
+const mcQs=[
+  {q:"A metal spoon and a wooden spoon sit in the same room for a day. Which is true?",
+   opts:["The metal spoon is colder — its temperature is lower","They are the SAME temperature; metal just conducts heat away from your hand faster, so it FEELS colder","The wooden spoon has more thermal energy per particle","Metal can't reach room temperature"], a:1,
+   e:"Objects in the same room end up at the same temperature. Metal feels colder because it pulls heat out of your skin quickly (good conductor). Your hand is a bad thermometer — it senses heat FLOW, not temperature."},
+  {q:"Which best explains why a crystalline solid like ice has a sharp melting point while glass softens gradually?",
+   opts:["Ice is colder than glass","In a crystal every particle sits in the same kind of position, so all the bonds give way at one temperature; glass is disordered, with a range of bond strengths","Glass is actually a liquid","Ice is a compound and glass is an element"], a:1,
+   e:"Order = uniformity = one melting temperature. Disorder = a spread of bond strengths = softening across a range. That's the crystalline/amorphous distinction in one sentence."},
+  {q:"A balloon inflated indoors is taken outside on a freezing day. What happens, and why?",
+   opts:["It expands — cold air pushes in","It shrinks — its gas particles slow down and press outward less, so outside air pressure squeezes it smaller","Nothing — balloons are sealed","It pops — cold makes rubber brittle"], a:1,
+   e:"Cooler gas particles hit the balloon wall less hard and less often; the outside air, unchanged, wins the push and the balloon shrinks. Bring it back inside and it re-inflates. Temperature and gas volume move together."},
+  {q:"Water boils at 100 °C at sea level. At the top of a tall mountain, water boils at:",
+   opts:["A higher temperature, because it's colder up there so it needs more heat","The same 100 °C — that's just what water does","A LOWER temperature, because there's less air pressure pushing down on the liquid","It can't boil at altitude"], a:2,
+   e:"Boiling point isn't a fixed property of water — it depends on the pressure above the liquid. Less pressure = boils sooner = lower temperature. Pasta takes longer in Denver because the 'boiling' water is only ~95 °C."},
+  {q:"Which pair correctly matches a property to its definition?",
+   opts:["Viscosity — the skin on a liquid's surface","Surface tension — a liquid's resistance to flow","Pressure — force divided by area","Temperature — total energy of all particles"], a:2,
+   e:"P = F/A is the one true pairing here. The others are deliberately swapped: viscosity is resistance to FLOW, surface tension is the SKIN, and temperature is the AVERAGE energy per particle (total energy is thermal energy)."},
+  {q:"A nail and a needle are pushed with the same force. Why does the needle go in more easily?",
+   opts:["The needle is sharper, so the same force acts on a much smaller AREA — pressure is far higher","The needle is heavier","Nails are made of softer metal","Force isn't involved in pushing things"], a:0,
+   e:"Pressure = force ÷ area. Shrink the area (a sharp point) and pressure skyrockets even with the same push. Same reason snowshoes keep you on top of snow: spread the force over more area, and pressure drops."}
+];
+function buildMCGroup(boxId, qs, prefix){
+  const box=$(boxId);
+  qs.forEach((m,qi)=>{
+    const d=document.createElement("div"); d.className="mcq"; d.dataset.a=m.a; d.dataset.group=prefix;
+    d.innerHTML=`<div class="q">${qi+1}. ${m.q}</div>`;
+    const wrap=document.createElement("div"); wrap.className="opts";
+    shuffle(m.opts.map((t,i)=>({t,i}))).forEach(o=>{
+      const b=document.createElement("button"); b.className="opt"; b.innerHTML=o.t; b.dataset.i=o.i;
+      b.addEventListener("click",()=>{ if(GRADED) return; wrap.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); d.dataset.picked=o.i; refreshChips(); });
+      wrap.appendChild(b);
+    });
+    d.appendChild(wrap);
+    const ex=document.createElement("div"); ex.className="expl"; ex.innerHTML=m.e; d.appendChild(ex);
+    box.appendChild(d);
+  });
+}
+function gradeMCGroup(prefix){
+  let right=0;
+  document.querySelectorAll(`.mcq[data-group="${prefix}"]`).forEach(d=>{
+    const a=+d.dataset.a, picked=d.dataset.picked!==undefined?+d.dataset.picked:null;
+    d.querySelectorAll(".opt").forEach(b=>{ b.disabled=true; if(+b.dataset.i===a) b.classList.add("g-right"); else if(picked!==null && +b.dataset.i===picked) b.classList.add("g-wrongpick"); });
+    if(picked===a) right++;
+    d.querySelector(".expl").classList.add("show");
+  });
+  return right;
+}
+buildMCGroup("mcbox", mcQs, "mq");
+
+/* ===== chips ===== */
+function refreshChips(){
+  const states={
+    particles: particlesFilled(),
+    vocab: vocabM.complete(),
+    changes: drowsFilled("chbox"),
+    props: drowsFilled("propbox"),
+    rel: relFilled(),
+    curve: drowsFilled("curvebox"),
+    mc: document.querySelectorAll('.mcq[data-group="mq"][data-picked]').length===mcQs.length
+  };
+  Object.entries(states).forEach(([k,v])=>$("chip-"+k).classList.toggle("filled",v));
+  return states;
+}
+
+/* ===== GRADE ===== */
+let warned=false;
+function gradeAll(){
+  if(GRADED) return;
+  const states=refreshChips();
+  const names={particles:"Particle Pictures",vocab:"Vocab Match",changes:"Name the Change",props:"Liquid Properties",rel:"Relationships",curve:"Heating Curve",mc:"Multiple Choice"};
+  const missing=Object.entries(states).filter(([k,v])=>!v).map(([k])=>names[k]);
+  if(missing.length && !warned){ warned=true; $("gradewarn").textContent="Not finished: "+missing.join(", ")+". Blanks count as wrong — press GRADE ME again to grade anyway, or go finish first."; return; }
+  GRADED=true;
+  $("gradebtn").disabled=true; $("gradebtn").style.opacity=.5; $("gradewarn").textContent="";
+  const parts=[
+    ["Particles", gradeParticles(), 4],
+    ["Vocab", vocabM.grade(), vocabM.total],
+    ["Changes", gradeDrows("chbox"), chItems.length],
+    ["Liquid Props", gradeDrows("propbox"), propItems.length],
+    ["Relationships", gradeRel(), relItems.length],
+    ["Heating Curve", gradeDrows("curvebox"), curveItems.length],
+    ["MC", gradeMCGroup("mq"), mcQs.length]
+  ];
+  const got=parts.reduce((s,p)=>s+p[1],0), tot=parts.reduce((s,p)=>s+p[2],0);
+  const pct=Math.round(100*got/tot);
+  const name=($("stuname").value.trim()||"(no name entered)");
+  const msg = pct>=90 ? "Outstanding — states of matter, mastered. Show this off." :
+              pct>=75 ? "Solid — read the explanations on your reds; that's tonight's list." :
+              pct>=50 ? "Halfway — every red now has its explanation open. Read, reload, rebuild." :
+              "The explanations are your roadmap. Read every one, then reload and try again.";
+  $("scName").textContent=name;
+  $("scScore").textContent=`${got} / ${tot}`;
+  $("scPct").textContent=pct+"%";
+  $("scMsg").textContent=msg+"  ·  "+parts.map(p=>`${p[0]} ${p[1]}/${p[2]}`).join("  ·  ");
+  $("scMeta").textContent="Graded " + new Date().toLocaleString();
+  $("scorecard").style.display="block";
+  $("locknote").style.display="block";
+  $("stuname").disabled=true;
+  $("scorecard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+refreshChips();
+</script>
+</body>
+</html>
