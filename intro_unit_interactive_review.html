@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intro Unit · Interactive Review</title>
+<style>
+  :root{
+    --navy:#1F4E79; --navy2:#153A5C; --gold:#c8952d; --gold-soft:#f6ead2;
+    --ink:#22303e; --soft:#55636f; --paper:#f7f5ef; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d9d4c8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:22px 16px 90px}
+
+  header{background:var(--navy);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:var(--gold);font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.85}
+
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.done{background:var(--gold);border-color:var(--gold);color:#3a2a08}
+
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(30,40,60,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--navy);margin-bottom:4px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  button.check{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:9px 20px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px}
+  button.check:active{transform:scale(.97)}
+  button.reset{background:#fff;color:var(--soft);border:2px solid var(--line);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;margin:12px 0 0 8px}
+  .verdict{margin-top:10px;font-weight:700;font-size:15px}
+  .verdict.good{color:var(--good)} .verdict.bad{color:var(--bad)}
+
+  /* timeline */
+  .slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .slot{display:flex;align-items:center;gap:10px}
+  .slot .num{font-family:Georgia,serif;font-weight:700;color:var(--gold);font-size:18px;width:24px;text-align:center}
+  .slot .drop{flex:1;min-height:46px;border:2px dashed #b9b09a;border-radius:10px;background:#fbfaf5;display:flex;align-items:center;padding:4px 8px;cursor:pointer}
+  .pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px;background:#eef0f2;border-radius:10px;padding:10px}
+  .tcard{background:#fff;border:2px solid var(--navy);border-radius:9px;padding:8px 12px;font-size:13.5px;cursor:pointer;user-select:none}
+  .tcard.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .slot .drop .tcard{width:100%;border-style:solid}
+  .slot.ok .drop{border:2px solid var(--good);background:var(--good-bg)}
+  .slot.no .drop{border:2px solid var(--bad);background:var(--bad-bg)}
+
+  /* concept map */
+  .mapwrap{text-align:center}
+  .mapnodes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:12px}
+  .mnode{border:2.5px solid var(--navy);border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:var(--navy)}
+  .mnode.center{background:var(--navy);color:#fff;font-size:15px}
+  .mnode.active{background:var(--gold);border-color:var(--gold);color:#3a2a08}
+  .mapdetail{border-left:4px solid var(--gold);background:var(--gold-soft);border-radius:0 10px 10px 0;padding:12px 16px;text-align:left;font-size:14.5px;min-height:60px}
+  .mapdetail b{color:#7a5410}
+
+  /* matching */
+  .matchcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mitem{border:2px solid var(--navy);border-radius:10px;padding:10px 12px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none}
+  .mitem.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .mitem.locked{background:var(--good-bg);border-color:var(--good);color:#1d4d33;cursor:default}
+  .mitem.wrong{animation:shake .3s;border-color:var(--bad);background:var(--bad-bg)}
+  @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+  /* flashcards */
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .flash{perspective:800px;height:130px;cursor:pointer}
+  .finner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+  .flash.flip .finner{transform:rotateY(180deg)}
+  .fface{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center}
+  .ffront{background:var(--navy);color:#fff;font-weight:700;font-size:15px}
+  .fback{background:var(--gold-soft);border:2px solid var(--gold);color:var(--ink);transform:rotateY(180deg);font-size:12.5px;line-height:1.35}
+
+  /* MC */
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq:first-of-type{border-top:none;margin-top:0}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .opt:disabled{cursor:default;opacity:.9}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f4f2ec;border-radius:8px;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+
+  /* detective */
+  .scen{background:#f4f2ec;border-radius:10px;padding:12px 14px;font-size:14px;font-style:italic;margin-bottom:10px}
+  .drow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow select{font-size:14px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff}
+  .drow.ok{background:var(--good-bg)} .drow.no{background:var(--bad-bg)}
+
+  /* buckets */
+  .bpool{display:flex;flex-wrap:wrap;gap:8px;background:#eef0f2;border-radius:10px;padding:10px;min-height:48px;margin-bottom:10px}
+  .bcard{background:#fff;border:2px solid var(--navy);border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;user-select:none}
+  .bcard.sel{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .buckets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bucket{border:2.5px solid var(--navy);border-radius:12px;min-height:120px;padding:10px;cursor:pointer}
+  .bucket h3{font-size:13px;color:var(--navy);text-align:center;margin-bottom:8px;letter-spacing:.04em}
+  .bucket .blist{display:flex;flex-direction:column;gap:6px}
+  .bcard.ok{border-color:var(--good);background:var(--good-bg)}
+  .bcard.no{border-color:var(--bad);background:var(--bad-bg)}
+
+  /* numbers */
+  .numrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
+  .numrow label{font-weight:700;font-size:14px}
+  .numrow input{width:90px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.ok{border-color:var(--good);background:var(--good-bg)}
+  input.no{border-color:var(--bad);background:var(--bad-bg)}
+  .dataline{font-family:Georgia,serif;font-size:18px;text-align:center;background:#f4f2ec;border-radius:9px;padding:8px;margin-bottom:6px}
+  select.vsel{font-size:14px;padding:6px 8px;border-radius:8px;border:2px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physics &amp; Physical Science · Test Review</div>
+  <h1>Intro Unit — Interactive Review</h1>
+  <p>From the gods to the scientific method. Work every section — chips up top turn gold when you've beaten one. Nothing here is graded; wrong answers are free. Retry until it's all gold.</p>
+</header>
+
+<div class="progress" id="progress">
+  <span class="chip" id="chip-timeline">Timeline</span>
+  <span class="chip" id="chip-match">Five Changes</span>
+  <span class="chip" id="chip-mc">Multiple Choice</span>
+  <span class="chip" id="chip-det">Variable Detective</span>
+  <span class="chip" id="chip-sort">Reach of Science</span>
+  <span class="chip" id="chip-num">Number Crunch</span>
+</div>
+
+<!-- ============ TIMELINE ============ -->
+<section>
+  <h2>1 · The Road to Modern Science — Build the Timeline</h2>
+  <div class="dir">Tap a card to pick it up, then tap the slot where it belongs (1 = earliest). Tap a placed card to send it back. Then hit Check.</div>
+  <div class="slots" id="tslots"></div>
+  <div class="pool" id="tpool"></div>
+  <button class="check" onclick="checkTimeline()">Check my order</button>
+  <button class="reset" onclick="buildTimeline()">Reset</button>
+  <div class="verdict" id="tverdict"></div>
+</section>
+
+<!-- ============ CONCEPT MAP ============ -->
+<section>
+  <h2>2 · The Mind Map — Tap Every Branch</h2>
+  <div class="dir">Tap each node and read its branch. Can you say the contents out loud BEFORE tapping? That's the real test.</div>
+  <div class="mapwrap">
+    <div class="mapnodes" id="mapnodes"></div>
+    <div class="mapdetail" id="mapdetail">Tap a node above to open its branch…</div>
+  </div>
+</section>
+
+<!-- ============ FIVE CHANGES MATCH ============ -->
+<section>
+  <h2>3 · The Five Changes — Match Each to Why It Mattered</h2>
+  <div class="dir">Tap a change on the left, then its meaning on the right. Correct pairs lock green; wrong pairs shake it off.</div>
+  <div class="matchcols">
+    <div id="mleft"></div>
+    <div id="mright"></div>
+  </div>
+  <button class="reset" onclick="buildMatch()">Reset</button>
+  <div class="verdict" id="mverdict"></div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section>
+  <h2>4 · Flashcards — Tap to Flip</h2>
+  <div class="dir">Say the definition before you flip. Shuffle for a fresh order.</div>
+  <div class="fgrid" id="fgrid"></div>
+  <button class="reset" onclick="buildFlash()">Shuffle</button>
+</section>
+
+<!-- ============ MULTIPLE CHOICE ============ -->
+<section>
+  <h2>5 · Multiple Choice — Instant Feedback</h2>
+  <div class="dir">One try per question; the explanation appears either way. Reset to run it again clean.</div>
+  <div id="mcbox"></div>
+  <button class="reset" onclick="buildMC()">Reset all</button>
+  <div class="verdict" id="mcverdict"></div>
+</section>
+
+<!-- ============ VARIABLE DETECTIVE ============ -->
+<section>
+  <h2>6 · Variable Detective</h2>
+  <div class="dir">Read the experiment, then label every item. Both scenarios must be perfect for the chip.</div>
+  <div id="detbox"></div>
+  <button class="check" onclick="checkDet()">Check my labels</button>
+  <button class="reset" onclick="buildDet()">Reset</button>
+  <div class="verdict" id="dverdict"></div>
+</section>
+
+<!-- ============ REACH OF SCIENCE ============ -->
+<section>
+  <h2>7 · The Reach of Science — Sort It</h2>
+  <div class="dir">Tap a question card, then tap the bucket it belongs in. Remember the limits: science handles the observable, measurable, repeatable — not "should," meaning, or beauty.</div>
+  <div class="bpool" id="bpool"></div>
+  <div class="buckets">
+    <div class="bucket" data-b="can" onclick="bucketTap('can')"><h3>SCIENCE CAN ANSWER</h3><div class="blist" id="bcan"></div></div>
+    <div class="bucket" data-b="out" onclick="bucketTap('out')"><h3>OUTSIDE SCIENCE'S REACH</h3><div class="blist" id="bout"></div></div>
+  </div>
+  <button class="check" onclick="checkSort()">Check my buckets</button>
+  <button class="reset" onclick="buildSort()">Reset</button>
+  <div class="verdict" id="sverdict"></div>
+</section>
+
+<!-- ============ NUMBER CRUNCH ============ -->
+<section>
+  <h2>8 · Number Crunch</h2>
+  <div class="dir">Friendly numbers — no calculator. Type answers, then Check. (One decimal place is fine.)</div>
+  <p style="font-weight:700;font-size:15px">A. Five paper airplane throws, in meters:</p>
+  <div class="dataline">2.0 &nbsp; 3.5 &nbsp; 2.0 &nbsp; 4.5 &nbsp; 3.0</div>
+  <div class="numrow"><label>Mean:</label><input id="nmean" inputmode="decimal"> <label>Median:</label><input id="nmedian" inputmode="decimal"> <label>Mode:</label><input id="nmode" inputmode="decimal"> <label>Range:</label><input id="nrange" inputmode="decimal"></div>
+  <p style="font-weight:700;font-size:15px;margin-top:12px">B. Percent error: the accepted value is 20; you measured 19.</p>
+  <div class="numrow"><label>% error:</label><input id="nperr" inputmode="decimal"> <label>Verdict (10% rule):</label>
+    <select class="vsel" id="nverd"><option value="">— choose —</option><option value="s">Supports the hypothesis</option><option value="n">Does NOT support</option></select></div>
+  <p style="font-weight:700;font-size:15px;margin-top:12px">C. Solve: &nbsp; 2x + 4 = 14</p>
+  <div class="numrow"><label>x =</label><input id="nalg" inputmode="decimal"></div>
+  <button class="check" onclick="checkNum()">Check my numbers</button>
+  <div class="verdict" id="nverdict"></div>
+</section>
+
+<section style="text-align:center;background:var(--navy);color:#fff">
+  <h2 style="color:var(--gold)">All gold up top?</h2>
+  <p style="font-size:14.5px">Then close this, open your notes, and recite the Five Changes and the purpose of the scientific method out loud one more time. See you at the test.</p>
+</section>
+
+</div>
+
+<script>
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+const done = {timeline:false, match:false, mc:false, det:false, sort:false, num:false};
+function markDone(key){ done[key]=true; $("chip-"+key==="chip-timeline"?"chip-timeline":"chip-"+key); const el=$("chip-"+key); if(el) el.classList.add("done"); }
+
+// ---------- 1 TIMELINE ----------
+const tEvents = [
+  "One basket of understanding: gods, kings, family & farming all explain each other",
+  "Democritus divides matter down to the smallest piece: atomos",
+  "The Crusades: cultures meet, compare, and begin separating ideas from worldviews",
+  "Printing press, guilds & limited kings spread knowledge and protect inventors",
+  "Alchemy tests specific things for specific, repeatable results",
+  "The scientific method: a full system built to remove bias"
+];
+let tSel = null; // selected card element in pool
+function buildTimeline(){
+  $("tverdict").textContent=""; tSel=null;
+  const slots=$("tslots"); slots.innerHTML="";
+  for(let i=0;i<6;i++){
+    const s=document.createElement("div"); s.className="slot"; s.dataset.i=i;
+    s.innerHTML=`<div class="num">${i+1}</div><div class="drop" data-i="${i}"></div>`;
+    s.querySelector(".drop").addEventListener("click",()=>slotTap(i));
+    slots.appendChild(s);
+  }
+  const pool=$("tpool"); pool.innerHTML="";
+  shuffle(tEvents.map((t,i)=>({t,i}))).forEach(o=>{
+    const c=document.createElement("div"); c.className="tcard"; c.textContent=o.t; c.dataset.i=o.i;
+    c.addEventListener("click",e=>{ e.stopPropagation(); cardTap(c); });
+    pool.appendChild(c);
+  });
+}
+function cardTap(c){
+  if(c.parentElement.classList.contains("drop")){ // placed → return to pool
+    c.classList.remove("sel"); $("tpool").appendChild(c);
+    c.parentElement && c.parentElement.classList; return;
+  }
+  if(tSel===c){ c.classList.remove("sel"); tSel=null; return; }
+  if(tSel) tSel.classList.remove("sel");
+  tSel=c; c.classList.add("sel");
+}
+function slotTap(i){
+  const drop=document.querySelector(`.drop[data-i="${i}"]`);
+  if(!tSel){ // tapping a filled slot returns its card
+    const occ=drop.querySelector(".tcard");
+    if(occ){ $("tpool").appendChild(occ); }
+    return;
+  }
+  const occ=drop.querySelector(".tcard");
+  if(occ) $("tpool").appendChild(occ);
+  tSel.classList.remove("sel"); drop.appendChild(tSel); tSel=null;
+}
+function checkTimeline(){
+  let allFilled=true, allRight=true;
+  document.querySelectorAll("#tslots .slot").forEach(s=>{
+    const i=+s.dataset.i, c=s.querySelector(".tcard");
+    s.classList.remove("ok","no");
+    if(!c){ allFilled=false; return; }
+    if(+c.dataset.i===i){ s.classList.add("ok"); } else { s.classList.add("no"); allRight=false; }
+  });
+  const v=$("tverdict");
+  if(!allFilled){ v.className="verdict bad"; v.textContent="Fill every slot first!"; return; }
+  if(allRight){ v.className="verdict good"; v.textContent="Perfect — that's the whole 5,000-year story in order."; done.timeline=true; $("chip-timeline").classList.add("done"); }
+  else { v.className="verdict bad"; v.textContent="Red slots are out of order — tap them to send cards back and retry."; }
+}
+
+// ---------- 2 CONCEPT MAP ----------
+const mapData = [
+  ["THE SCIENTIFIC METHOD", "<b>The center of the map.</b> A step-by-step, one-field-at-a-time procedure producing measurable, repeatable results — humanity's answer to its own bias.", true],
+  ["Purpose", "<b>The purpose of the scientific method is to remove bias.</b> People stay biased; the method protects the FINDINGS from the people. If the test asks why the method exists — this is the answer."],
+  ["The Steps", "Observe &amp; question → research → <b>hypothesis</b> → controlled experiment → collect &amp; analyze data → conclude → <b>report</b> so others can repeat and check you. Simple version: idea → test it → right or wrong? → conclusions."],
+  ["Hypothesis", "<b>IF</b> (the thing you change) / <b>THEN</b> (what you predict you'll measure) / <b>BECAUSE</b> (your genuine reason). No reason = not a full hypothesis."],
+  ["Variables", "<b>Independent</b> = what YOU change, one at a time · <b>Dependent</b> = what responds; what you measure · <b>Constants</b> = conditions held the same in every trial · <b>Control</b> = the untouched comparison group. Constants ≠ control!"],
+  ["Limits", "Science can't answer <b>should</b>, can't measure meaning/purpose/beauty, handles only the observable &amp; repeatable, studies one strand at a time, and is <b>always provisional</b> — best answer so far."],
+  ["Data Tools", "<b>Mean</b> = add ÷ count (outliers wreck it) · <b>Median</b> = middle when sorted (ignores outliers) · <b>Mode</b> = most frequent (needs a repeat) · <b>Range</b> = max − min · <b>% error</b> = |measured − accepted| ÷ accepted × 100; under 10% supports."],
+  ["Where It Came From", "The basket of understanding → Democritus divides → Crusades compare → the Five Changes spread &amp; protect knowledge → alchemy starts testing → the method crystallizes. ~90% of recorded history ran the OLD way."]
+];
+function buildMap(){
+  const box=$("mapnodes"); box.innerHTML="";
+  mapData.forEach((d,i)=>{
+    const n=document.createElement("div"); n.className="mnode"+(d[2]?" center":""); n.textContent=d[0];
+    n.addEventListener("click",()=>{
+      document.querySelectorAll(".mnode").forEach(x=>x.classList.remove("active"));
+      n.classList.add("active");
+      $("mapdetail").innerHTML=d[1];
+    });
+    box.appendChild(n);
+  });
+}
+
+// ---------- 3 FIVE CHANGES MATCH ----------
+const pairs = [
+  ["The Crusades","People crossed culture after culture and back — comparison began"],
+  ["The printing press","Information spreads without you, and lasts as long as the book"],
+  ["Guilds & businesses","Knowledge passes beyond your direct descendants"],
+  ["Limitation of kings' powers","Your invention stays yours — people control science, not the king"],
+  ["Speed of travel & communication","Get there, share ideas, get back — and still be alive"]
+];
+let mSelL=null, mSelR=null, mLocked=0;
+function buildMatch(){
+  mSelL=null; mSelR=null; mLocked=0; $("mverdict").textContent="";
+  const L=$("mleft"), R=$("mright"); L.innerHTML=""; R.innerHTML="";
+  shuffle(pairs.map((p,i)=>({t:p[0],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.textContent=o.t; d.dataset.i=o.i; d.style.marginBottom="8px";
+    d.addEventListener("click",()=>matchTap(d,"L")); L.appendChild(d);
+  });
+  shuffle(pairs.map((p,i)=>({t:p[1],i}))).forEach(o=>{
+    const d=document.createElement("div"); d.className="mitem"; d.textContent=o.t; d.dataset.i=o.i; d.style.marginBottom="8px";
+    d.addEventListener("click",()=>matchTap(d,"R")); R.appendChild(d);
+  });
+}
+function matchTap(el, side){
+  if(el.classList.contains("locked")) return;
+  if(side==="L"){ if(mSelL) mSelL.classList.remove("sel"); mSelL=(mSelL===el?null:el); if(mSelL) mSelL.classList.add("sel"); }
+  else { if(mSelR) mSelR.classList.remove("sel"); mSelR=(mSelR===el?null:el); if(mSelR) mSelR.classList.add("sel"); }
+  if(mSelL && mSelR){
+    if(mSelL.dataset.i===mSelR.dataset.i){
+      mSelL.classList.remove("sel"); mSelR.classList.remove("sel");
+      mSelL.classList.add("locked"); mSelR.classList.add("locked");
+      mLocked++;
+      if(mLocked===5){ const v=$("mverdict"); v.className="verdict good"; v.textContent="All five locked — now recite them with eyes closed."; done.match=true; $("chip-match").classList.add("done"); }
+    } else {
+      const a=mSelL, b=mSelR;
+      a.classList.add("wrong"); b.classList.add("wrong");
+      setTimeout(()=>{a.classList.remove("wrong","sel"); b.classList.remove("wrong","sel");},350);
+    }
+    mSelL=null; mSelR=null;
+  }
+}
+
+// ---------- 4 FLASHCARDS ----------
+const cards = [
+  ["atomos","Democritus' word for the smallest, undividable piece of matter — the atom's ancestor"],
+  ["Basket of understanding","The ancient holistic way: gods, kings, family, farming, and meaning all woven into ONE explanatory web"],
+  ["Alchemy","A very early modern science — testing specific things for specific, repeatable results. Chemistry & physics grow from it"],
+  ["Hypothesis format","IF (what you change) / THEN (what you predict) / BECAUSE (your reason)"],
+  ["Independent variable","What YOU deliberately change — one at a time, on purpose"],
+  ["Dependent variable","What responds — the thing you measure. It DEPENDS on your change"],
+  ["Constants","Everything kept the same in EVERY trial, so the test stays fair"],
+  ["Control","The untouched comparison group — shows what 'no change' looks like"],
+  ["Median","The middle value when data is sorted — ignores one crazy outlier"],
+  ["% error","|measured − accepted| ÷ accepted × 100 · under 10% = supports the hypothesis"],
+  ["Purpose of the method","TO REMOVE BIAS — protecting the findings from the biased people doing the finding"],
+  ["\u201CHuman error\u201D","BANNED as an error source — name the actual thing (reaction time, release angle, air currents…)"]
+];
+function buildFlash(){
+  const g=$("fgrid"); g.innerHTML="";
+  shuffle(cards).forEach(c=>{
+    const f=document.createElement("div"); f.className="flash";
+    f.innerHTML=`<div class="finner"><div class="fface ffront">${c[0]}</div><div class="fface fback">${c[1]}</div></div>`;
+    f.addEventListener("click",()=>f.classList.toggle("flip"));
+    g.appendChild(f);
+  });
+}
+
+// ---------- 5 MULTIPLE CHOICE ----------
+const mcqs = [
+  {q:"Why does the scientific method exist at all?", opts:["To make science look organized","To keep bias out of the findings","To guarantee experiments succeed","To replace religion and philosophy"], a:1,
+   e:"The people stay biased — the METHOD protects the findings. This is the unit's thesis sentence."},
+  {q:"What did Democritus' word atomos describe?", opts:["The center of the universe","The energy in living things","The smallest, undividable piece of matter","The first scientific instrument"], a:2,
+   e:"He divided ideas — and matter — into pieces until he hit the undividable. Division-as-method is born."},
+  {q:"Why do we call alchemy 'a very early modern science'?", opts:["It produced real gold","It tested specific things for specific, repeatable results","Kings funded it generously","It ignored the supernatural"], a:1,
+   e:"Testing enters the story with alchemy — and chemistry and physics grow out of it."},
+  {q:"Which question sits OUTSIDE science's reach?", opts:["How fast does sugar dissolve in hot water?","What is the average of these flights?","Is it right to clone a human?","At what temperature does water boil?"], a:2,
+   e:"Science says what we CAN do, never what we SHOULD do. Ethics comes from elsewhere."},
+  {q:"Roughly what fraction of recorded history ran on the OLD, holistic way?", opts:["About 10%","About half","About 90%","None of it"], a:2,
+   e:"~5,000+ years holistic vs. ~400–500 modern. Modern science is the new kid."},
+  {q:"Constants vs. the control — what's the difference?", opts:["No difference — two names, one thing","Constants are conditions in every trial; the control is its own untouched comparison group","The control is what you change; constants are what you measure","Constants only matter in chemistry"], a:1,
+   e:"Most-confused pair on the test. Constants live INSIDE every trial; the control IS a whole baseline trial/group."},
+  {q:"Your data: 3, 5, 3, 8, 3. Which statistic is guaranteed to exist here and why?", opts:["Mode — because a value repeats","Median — because the data is even","Mean — because there are outliers","Range — because the data is sorted"], a:0,
+   e:"Mode = most frequent value, and it only exists when something repeats. Here, 3 repeats — mode is 3. (Median and mean exist too, but the QUESTION is about the repeat.)"},
+  {q:"In IF / THEN / BECAUSE, what job does BECAUSE do?", opts:["States the result of the experiment","Gives your genuine reason for the prediction","Names the control group","Lists your constants"], a:1,
+   e:"A prediction without a reason is a guess. BECAUSE is what makes it a hypothesis."}
+];
+let mcAnswered=0, mcRight=0;
+function buildMC(){
+  mcAnswered=0; mcRight=0; $("mcverdict").textContent="";
+  const box=$("mcbox"); box.innerHTML="";
+  mcqs.forEach((m,qi)=>{
+    const d=document.createElement("div"); d.className="mcq";
+    d.innerHTML=`<div class="q">${qi+1}. ${m.q}</div>`;
+    const wrap=document.createElement("div"); wrap.className="opts";
+    shuffle(m.opts.map((t,i)=>({t,i}))).forEach(o=>{
+      const b=document.createElement("button"); b.className="opt"; b.textContent=o.t;
+      b.addEventListener("click",()=>{
+        if(d.dataset.done) return;
+        d.dataset.done="1"; mcAnswered++;
+        wrap.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; });
+        if(o.i===m.a){ b.classList.add("right"); mcRight++; }
+        else { b.classList.add("wrongpick");
+          wrap.querySelectorAll(".opt").forEach(x=>{ if(x.textContent===m.opts[m.a]) x.classList.add("right"); });
+        }
+        d.querySelector(".expl").classList.add("show");
+        if(mcAnswered===mcqs.length){
+          const v=$("mcverdict");
+          if(mcRight===mcqs.length){ v.className="verdict good"; v.textContent=`Perfect ${mcRight}/${mcqs.length}!`; done.mc=true; $("chip-mc").classList.add("done"); }
+          else { v.className="verdict bad"; v.textContent=`${mcRight}/${mcqs.length} — read the explanations, reset, and go for perfect.`; }
+        }
+      });
+      wrap.appendChild(b);
+    });
+    d.appendChild(wrap);
+    const ex=document.createElement("div"); ex.className="expl"; ex.innerHTML=m.e; d.appendChild(ex);
+    box.appendChild(d);
+  });
+}
+
+// ---------- 6 VARIABLE DETECTIVE ----------
+const scens = [
+  {text:"A student tests whether music volume affects how fast classmates solve a puzzle. Every group gets the same puzzle, in the same room, with the same time limit — and one group solves in total silence.",
+   items:[["Music volume","iv"],["Time to solve the puzzle","dv"],["Same puzzle for every group","con"],["The group in total silence","ctl"],["Same room for every group","con"]]},
+  {text:"Bread slices are sealed in identical bags and kept at different temperatures, checked daily for mold. All slices come from the same loaf — and one bag stays at plain room temperature.",
+   items:[["Temperature of each bag","iv"],["Amount of mold each day","dv"],["Same loaf of bread","con"],["The room-temperature bag","ctl"],["Identical bags","con"]]}
+];
+const labels={iv:"Independent variable",dv:"Dependent variable",con:"Constant",ctl:"Control"};
+function buildDet(){
+  $("dverdict").textContent="";
+  const box=$("detbox"); box.innerHTML="";
+  scens.forEach((s,si)=>{
+    const sc=document.createElement("div");
+    sc.innerHTML=`<div class="scen">Scenario ${si+1}: ${s.text}</div>`;
+    shuffle(s.items.map((it,i)=>({it,i}))).forEach(o=>{
+      const r=document.createElement("div"); r.className="drow"; r.dataset.key=o.it[1];
+      const sel=document.createElement("select");
+      sel.innerHTML=`<option value="">— label it —</option>`+Object.entries(labels).map(([k,v])=>`<option value="${k}">${v}</option>`).join("");
+      r.innerHTML=`<span>${o.it[0]}</span>`; r.appendChild(sel);
+      sc.appendChild(r);
+    });
+    sc.style.marginBottom="14px";
+    box.appendChild(sc);
+  });
+}
+function checkDet(){
+  let all=true, blank=false;
+  document.querySelectorAll("#detbox .drow").forEach(r=>{
+    const sel=r.querySelector("select");
+    r.classList.remove("ok","no");
+    if(!sel.value){ blank=true; all=false; return; }
+    if(sel.value===r.dataset.key){ r.classList.add("ok"); } else { r.classList.add("no"); all=false; }
+  });
+  const v=$("dverdict");
+  if(blank){ v.className="verdict bad"; v.textContent="Label everything first!"; return; }
+  if(all){ v.className="verdict good"; v.textContent="Detective badge earned — both scenarios perfect."; done.det=true; $("chip-det").classList.add("done"); }
+  else { v.className="verdict bad"; v.textContent="Red rows are mislabeled — fix and re-check. (Constants vs. control trips everyone once.)"; }
+}
+
+// ---------- 7 REACH OF SCIENCE ----------
+const sortItems = [
+  ["How fast does ice melt in salt water?","can"],
+  ["What is the average distance of these ten flights?","can"],
+  ["Does mass change how fast objects fall?","can"],
+  ["At what temperature does this liquid boil?","can"],
+  ["Is it wrong to lie to protect a friend?","out"],
+  ["What is the meaning of my life?","out"],
+  ["Is this painting truly beautiful?","out"],
+  ["SHOULD we build the new dam?","out"]
+];
+let bSel=null;
+function buildSort(){
+  bSel=null; $("sverdict").textContent="";
+  $("bcan").innerHTML=""; $("bout").innerHTML="";
+  const pool=$("bpool"); pool.innerHTML="";
+  shuffle(sortItems.map((s,i)=>({s,i}))).forEach(o=>{
+    const c=document.createElement("div"); c.className="bcard"; c.textContent=o.s[0]; c.dataset.key=o.s[1];
+    c.addEventListener("click",e=>{ e.stopPropagation();
+      if(c.parentElement.id!=="bpool"){ $("bpool").appendChild(c); c.classList.remove("sel","ok","no"); if(bSel===c) bSel=null; return; }
+      if(bSel===c){ c.classList.remove("sel"); bSel=null; return; }
+      if(bSel) bSel.classList.remove("sel");
+      bSel=c; c.classList.add("sel");
+    });
+    pool.appendChild(c);
+  });
+}
+function bucketTap(which){
+  if(!bSel) return;
+  bSel.classList.remove("sel");
+  $(which==="can"?"bcan":"bout").appendChild(bSel);
+  bSel=null;
+}
+function checkSort(){
+  let all=true, unplaced=$("bpool").children.length>0;
+  ["bcan","bout"].forEach(bid=>{
+    const key = bid==="bcan"?"can":"out";
+    $(bid).querySelectorAll(".bcard").forEach(c=>{
+      c.classList.remove("ok","no");
+      if(c.dataset.key===key) c.classList.add("ok"); else { c.classList.add("no"); all=false; }
+    });
+  });
+  const v=$("sverdict");
+  if(unplaced){ v.className="verdict bad"; v.textContent="Sort every card first!"; return; }
+  if(all){ v.className="verdict good"; v.textContent="Exactly right — 'should,' meaning, and beauty live outside the lab."; done.sort=true; $("chip-sort").classList.add("done"); }
+  else { v.className="verdict bad"; v.textContent="Red cards are in the wrong bucket — tap them to send back and retry."; }
+}
+
+// ---------- 8 NUMBER CRUNCH ----------
+function near(val, target, tol=0.05){ const n=parseFloat(val); return !isNaN(n) && Math.abs(n-target)<=tol; }
+function checkNum(){
+  const checks=[
+    ["nmean",3.0],["nmedian",3.0],["nmode",2.0],["nrange",2.5],["nperr",5.0],["nalg",5.0]
+  ];
+  let all=true;
+  checks.forEach(([id,t])=>{
+    const el=$(id); el.classList.remove("ok","no");
+    if(near(el.value,t)){ el.classList.add("ok"); } else { el.classList.add("no"); all=false; }
+  });
+  const verd=$("nverd"); verd.classList.remove("ok","no");
+  if(verd.value==="s"){ verd.classList.add("ok"); } else { verd.classList.add("no"); all=false; }
+  const v=$("nverdict");
+  if(all){ v.className="verdict good"; v.textContent="All correct — mean 3.0, median 3.0, mode 2.0, range 2.5; 1÷20 = 5% (supports); x = 5."; done.num=true; $("chip-num").classList.add("done"); }
+  else { v.className="verdict bad"; v.textContent="Red boxes need another look. Hints: sort before finding the median; % error = difference ÷ accepted × 100."; }
+}
+
+// ---------- init ----------
+buildTimeline(); buildMap(); buildMatch(); buildFlash(); buildMC(); buildDet(); buildSort();
+</script>
+</body>
+</html>
