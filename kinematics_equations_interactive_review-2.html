@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics · Kinematics Equations Review — Graded</title>
+<style>
+  :root{
+    --navy:#1F4E79; --gold:#c8952d; --gold-soft:#f6ead2;
+    --ink:#22303e; --soft:#55636f; --paper:#f7f5ef; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d9d4c8; --oxblood:#7a2e2a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 16px 40px}
+  header{background:var(--navy);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:var(--gold);font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.85}
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.filled{background:var(--navy);border-color:var(--navy);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(30,40,60,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--navy);margin-bottom:4px}
+  h3{font-size:15px;color:#8a4a2b;margin:14px 0 6px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  .pts{font-size:13px;color:var(--soft)}
+  .formula-strip{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#f4f2ec;border-radius:10px;padding:10px;margin-bottom:12px}
+  .fpill{background:#fff;border:2px solid var(--navy);border-radius:8px;padding:6px 12px;font-family:Georgia,serif;font-size:15px}
+  .scen{background:#f4f2ec;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 14px;font-size:14.5px;font-style:italic;margin-bottom:10px}
+  .gwrap{text-align:center;margin:8px 0}
+  /* guided example */
+  .stepPool{display:flex;flex-wrap:wrap;gap:8px;background:#eef0f2;border-radius:10px;padding:10px;margin-bottom:10px;min-height:46px}
+  .stepBtn{background:#fff;border:2px solid var(--navy);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;user-select:none}
+  .stepBtn.used{opacity:.25;pointer-events:none}
+  .stepBtn.shake{animation:shake .3s;border-color:var(--bad);background:var(--bad-bg)}
+  @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .revealed{display:flex;flex-direction:column;gap:8px}
+  .stepCard{border:2px solid var(--gold);background:var(--gold-soft);border-radius:10px;padding:10px 14px;font-size:14px}
+  .stepCard .sn{font-weight:800;color:var(--oxblood);margin-right:6px}
+  .stepCard .alg{font-family:Georgia,serif;font-size:15px;display:block;margin-top:3px}
+  .doneNote{display:none;font-weight:700;color:var(--good);margin-top:8px;font-size:14.5px}
+  .doneNote.show{display:block}
+  .nudge{font-size:12.5px;color:var(--bad);font-weight:700;min-height:16px;margin-bottom:6px}
+  /* MC deferred */
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.sel{border-color:var(--gold);background:var(--gold-soft);font-weight:700}
+  .opt.g-right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.g-wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f4f2ec;border-radius:8px;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+  /* inputs + dropdowns */
+  .prob{border-top:1px solid var(--line);padding:12px 0 8px}
+  .prob .stem{font-size:14.5px;margin-bottom:6px}
+  .prob .stem b{color:var(--navy)}
+  .numrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0}
+  .numrow label{font-weight:700;font-size:14px}
+  .numrow input{width:95px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.g-ok{border-color:var(--good);background:var(--good-bg)}
+  input.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  .hintbox{font-size:12.5px;color:var(--soft);font-style:italic}
+  .drow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow select{font-size:13.5px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff;max-width:55%}
+  .drow.g-ok{background:var(--good-bg)} .drow.g-no{background:var(--bad-bg)}
+  /* grade bar */
+  .gradebar{background:var(--navy);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .gradebar input{font-size:16px;padding:9px 12px;border-radius:9px;border:none;width:min(280px,90%);text-align:center;margin-bottom:10px}
+  .bigbtn{background:var(--gold);color:#3a2a08;border:none;border-radius:10px;padding:13px 34px;font-size:18px;font-weight:800;cursor:pointer}
+  .bigbtn:active{transform:scale(.97)}
+  .warn{color:#ffd9a0;font-size:13.5px;margin-top:10px}
+  .scorecard{display:none;background:#fff;color:var(--ink);border:4px solid var(--gold);border-radius:14px;padding:20px;margin-top:14px;text-align:center}
+  .scorecard .sc-name{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--navy)}
+  .scorecard .sc-score{font-family:Georgia,serif;font-size:52px;font-weight:800;color:var(--gold);line-height:1.1;margin:6px 0}
+  .scorecard .sc-pct{font-size:22px;font-weight:700;color:var(--navy)}
+  .scorecard .sc-msg{font-size:15px;margin-top:6px}
+  .scorecard .sc-meta{font-size:12px;color:var(--soft);margin-top:8px}
+  .locknote{display:none;text-align:center;font-size:13px;color:var(--soft);font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physics · Kinematics Equations — Graded Mode</div>
+  <h1>The Equations of Motion — Problem Review</h1>
+  <p><b>How this works:</b> Sections 1 and 2 are guided worked examples — click the solving steps in the right order and watch the algebra appear (these aren't scored, but do them first; they ARE the method). Then answer everything else with no feedback, fill every chip, and hit GRADE ME at the bottom for your score card. Answers reveal after grading, then everything locks.</p>
+</header>
+
+<div class="formula-strip">
+  <span class="fpill"><b>1.</b>&nbsp; v = d/t</span>
+  <span class="fpill"><b>2.</b>&nbsp; a = Δv/t</span>
+  <span class="fpill"><b>3.</b>&nbsp; d<sub>f</sub> − d<sub>i</sub> = v<sub>i</sub>t + ½at²</span>
+  <span class="fpill"><b>4.</b>&nbsp; v<sub>f</sub>² − v<sub>i</sub>² = 2ad</span>
+</div>
+
+<div class="progress">
+  <span class="chip" id="chip-exA">Example A</span>
+  <span class="chip" id="chip-exB">Example B</span>
+  <span class="chip" id="chip-tool">Choose the Weapon</span>
+  <span class="chip" id="chip-mc">Multiple Choice</span>
+  <span class="chip" id="chip-solve">Solve It</span>
+  <span class="chip" id="chip-graphs">Graph It</span>
+</div>
+
+<!-- ============ 1 GUIDED EXAMPLE A ============ -->
+<section>
+  <h2>1 · Worked Example A — The Braking Semi <span class="pts">(guided — not scored)</span></h2>
+  <div class="scen">A fully loaded semi truck is rolling down the highway at <b>25 m/s</b> (about 56 mph). The driver sees stopped traffic and brakes hard: <b>a = −5 m/s²</b>. How much road does the truck need to stop?</div>
+  <div class="gwrap">
+    <svg viewBox="0 0 460 90" width="440"><rect x="10" y="58" width="440" height="4" fill="#22303e"/><rect x="30" y="22" width="90" height="34" rx="4" fill="#1F4E79"/><rect x="118" y="30" width="30" height="26" rx="3" fill="#3a6ea5"/><circle cx="52" cy="60" r="9" fill="#22303e"/><circle cx="100" cy="60" r="9" fill="#22303e"/><circle cx="132" cy="60" r="9" fill="#22303e"/><line x1="160" y1="38" x2="235" y2="38" stroke="#7a2e2a" stroke-width="3"/><polygon points="235,32 249,38 235,44" fill="#7a2e2a"/><text x="168" y="30" font-size="12" fill="#7a2e2a" font-weight="bold">v&#8305; = 25 m/s</text><line x1="300" y1="70" x2="330" y2="70" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,3"/><line x1="336" y1="70" x2="366" y2="70" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,3"/><text x="300" y="86" font-size="11" fill="#c0392b">skid... d = ?</text><rect x="408" y="34" width="26" height="24" rx="3" fill="#8a6a1f"/><text x="404" y="30" font-size="11" fill="#8a6a1f">stopped traffic</text></svg>
+  </div>
+  <div class="dir">Tap the steps below in the order a physicist would take them. Correct order → the actual algebra appears. Wrong step → try again.</div>
+  <div class="nudge" id="nudge-exA"></div>
+  <div class="stepPool" id="pool-exA"></div>
+  <div class="revealed" id="rev-exA"></div>
+  <div class="doneNote" id="done-exA">That's the whole ritual — and step 2 is the one most people skip. Elimination FIRST, algebra second. 62.5 m ≈ 15 car lengths. Now you know why trucks leave following distance.</div>
+</section>
+
+<!-- ============ 2 GUIDED EXAMPLE B ============ -->
+<section>
+  <h2>2 · Worked Example B — The Dropped Phone <span class="pts">(guided — not scored)</span></h2>
+  <div class="scen">A phone slips out of a pocket at the top of a canyon lookout and falls for <b>3.0 seconds</b> before hitting the rocks. Free-fall acceleration: <b>a = 10 m/s²</b>. How far did it fall — and how fast was it going at the end?</div>
+  <div class="gwrap">
+    <svg viewBox="0 0 200 150" width="190"><rect x="10" y="20" width="52 " height="120" fill="#8a6a1f" opacity=".75"/><rect x="10" y="14" width="60" height="10" fill="#6f5416"/><rect x="74" y="26" width="12" height="20" rx="2" fill="#22303e"/><line x1="80" y1="52" x2="80" y2="118" stroke="#7a2e2a" stroke-width="2.5"/><polygon points="74,118 80,132 86,118" fill="#7a2e2a"/><text x="92" y="70" font-size="12" fill="#7a2e2a" font-weight="bold">v&#8305; = 0</text><text x="92" y="86" font-size="12" fill="#7a2e2a">a = 10 m/s&#178;</text><text x="92" y="102" font-size="12" fill="#7a2e2a">t = 3.0 s</text><text x="92" y="126" font-size="12" fill="#22303e" font-weight="bold">d = ?</text><path d="M 8 142 q 12 -7 24 0 q 12 7 24 0 q 12 -7 24 0 q 12 7 24 0 q 12 -7 24 0 q 12 7 24 0 q 12 -7 24 0" stroke="#3a6ea5" fill="none" stroke-width="2"/></svg>
+  </div>
+  <div class="dir">Tap the steps in order.</div>
+  <div class="nudge" id="nudge-exB"></div>
+  <div class="stepPool" id="pool-exB"></div>
+  <div class="revealed" id="rev-exB"></div>
+  <div class="doneNote" id="done-exB">Notice the chain at the end: one story, two equations, each pulling its own weight. 30 m/s is about 67 mph — that phone is not okay.</div>
+</section>
+
+<!-- ============ 3 CHOOSE THE WEAPON ============ -->
+<section>
+  <h2>3 · Choose the Weapon</h2>
+  <div class="dir">Pick the correct equation AND the correct reason for each situation. You can change selections until you grade.</div>
+  <div id="toolbox"></div>
+</section>
+
+<!-- ============ 4 MULTIPLE CHOICE ============ -->
+<section>
+  <h2>4 · Multiple Choice</h2>
+  <div class="dir">Work each on paper first, then select an answer.</div>
+  <div id="mcbox"></div>
+</section>
+
+<!-- ============ 5 SOLVE IT ============ -->
+<section>
+  <h2>5 · Solve It</h2>
+  <div class="dir">Full written format on paper (given/find → eliminate → equation → substitute with units → solve), then enter answers. One decimal place is fine; include a minus sign if it's negative.</div>
+  <div id="probbox"></div>
+</section>
+
+<!-- ============ 6 GRAPH IT ============ -->
+<section>
+  <h2>6 · Graph It</h2>
+  <div class="dir">Slope of a v–t graph gives acceleration; area under the line gives displacement. Use the graphs to answer each question.</div>
+
+  <h3>A. The braking semi, as a graph</h3>
+  <div class="gwrap">
+    <svg viewBox="0 0 440 240" width="430"><g stroke="#ddd" stroke-width="1"><line x1="50" y1="60" x2="410" y2="60"/><line x1="50" y1="108" x2="410" y2="108"/><line x1="50" y1="156" x2="410" y2="156"/><line x1="122" y1="40" x2="122" y2="204"/><line x1="194" y1="40" x2="194" y2="204"/><line x1="266" y1="40" x2="266" y2="204"/><line x1="338" y1="40" x2="338" y2="204"/><line x1="410" y1="40" x2="410" y2="204"/></g><line x1="50" y1="204" x2="420" y2="204" stroke="#22303e" stroke-width="2"/><line x1="50" y1="204" x2="50" y2="40" stroke="#22303e" stroke-width="2"/><polygon points="50,60 410,204 50,204" fill="#c8952d" opacity=".18"/><line x1="50" y1="60" x2="410" y2="204" stroke="#7a2e2a" stroke-width="2.8"/><g font-size="11" fill="#22303e"><text x="46" y="219">0</text><text x="118" y="219">1</text><text x="190" y="219">2</text><text x="262" y="219">3</text><text x="334" y="219">4</text><text x="406" y="219">5</text><text x="28" y="208">0</text><text x="28" y="160">5</text><text x="22" y="112">15</text><text x="22" y="64">25</text><text x="200" y="234">time (s)</text><text x="6" y="130" transform="rotate(-90 12 130)">v (m/s)</text></g></svg>
+  </div>
+  <div class="numrow"><label>How long does the truck take to stop (where the line hits zero)?</label><input id="g1t" inputmode="text"><label>s</label></div>
+  <div class="numrow"><label>Displacement = area of the shaded triangle = ½ × base × height =</label><input id="g1d" inputmode="text"><label>m</label></div>
+  <div class="drow" id="gdd1" data-key="match"><span>Compare with Worked Example A's equation answer (62.5 m):</span>
+    <select id="g1sel" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="match">They match exactly — area under v–t IS the displacement</option>
+      <option value="graphbig">The graph's answer is bigger — graphs overestimate</option>
+      <option value="eqbig">The equation's answer is bigger — algebra is more accurate</option>
+      <option value="unrelated">Coincidence — the two methods measure different things</option>
+    </select></div>
+
+  <h3>B. The highway merge, as a graph</h3>
+  <div class="scen">Same story as one of your multiple-choice problems: a car enters the on-ramp at 15 m/s and accelerates at 2 m/s² for 5 seconds.</div>
+  <div class="gwrap">
+    <svg viewBox="0 0 440 250" width="430"><g stroke="#ddd" stroke-width="1"><line x1="50" y1="64" x2="410" y2="64"/><line x1="50" y1="120" x2="410" y2="120"/><line x1="50" y1="148" x2="410" y2="148"/><line x1="122" y1="44" x2="122" y2="214"/><line x1="194" y1="44" x2="194" y2="214"/><line x1="266" y1="44" x2="266" y2="214"/><line x1="338" y1="44" x2="338" y2="214"/><line x1="410" y1="44" x2="410" y2="214"/></g><line x1="50" y1="214" x2="420" y2="214" stroke="#22303e" stroke-width="2"/><line x1="50" y1="214" x2="50" y2="44" stroke="#22303e" stroke-width="2"/><polygon points="50,130 410,130 410,214 50,214" fill="#1F4E79" opacity=".14"/><polygon points="50,130 410,64 410,130" fill="#c8952d" opacity=".25"/><line x1="50" y1="130" x2="410" y2="64" stroke="#7a2e2a" stroke-width="2.8"/><line x1="50" y1="130" x2="410" y2="130" stroke="#1F4E79" stroke-width="1.5" stroke-dasharray="5,4"/><g font-size="11" fill="#22303e"><text x="46" y="229">0</text><text x="118" y="229">1</text><text x="190" y="229">2</text><text x="262" y="229">3</text><text x="334" y="229">4</text><text x="406" y="229">5</text><text x="28" y="218">0</text><text x="22" y="134">15</text><text x="22" y="68">25</text><text x="200" y="244">time (s)</text><text x="6" y="140" transform="rotate(-90 12 140)">v (m/s)</text><text x="150" y="185" font-weight="bold" fill="#1F4E79">rectangle</text><text x="255" y="112" font-weight="bold" fill="#8a6a1f">triangle</text></g></svg>
+  </div>
+  <div class="numrow"><label>Final velocity, read straight off the graph at t = 5 s:</label><input id="g2v" inputmode="text"><label>m/s</label></div>
+  <div class="numrow"><label>Area of the rectangle (the v<sub>i</sub>t part):</label><input id="g2r" inputmode="text"><label>m</label></div>
+  <div class="numrow"><label>Area of the triangle (the ½at² part):</label><input id="g2tr" inputmode="text"><label>m</label></div>
+  <div class="numrow"><label>Total displacement = rectangle + triangle =</label><input id="g2d" inputmode="text"><label>m</label></div>
+  <div class="drow" id="gdd2" data-key="eq3"><span>The rectangle + triangle calculation matches which equation?</span>
+    <select id="g2sel" onchange="refreshChips()"><option value="">— choose —</option>
+      <option value="eq1">Eq 1 — v = d/t</option>
+      <option value="eq2">Eq 2 — a = Δv/t</option>
+      <option value="eq3">Eq 3 — the v&#7522;t rectangle plus the ½at² triangle</option>
+      <option value="eq4">Eq 4 — v_f² − v_i² = 2ad</option>
+    </select></div>
+</section>
+
+<!-- ============ GRADE BAR ============ -->
+<section class="gradebar" id="gradebar">
+  <h2 style="color:var(--gold);margin-bottom:8px">Ready? Grade it.</h2>
+  <p style="font-size:13.5px;opacity:.85;margin-bottom:12px">All six chips filled? Type your name, then hit the button. Your score card appears here — show the screen or screenshot it. Answers reveal AFTER grading, and everything locks.</p>
+  <input id="stuname" placeholder="Your name" autocomplete="off"><br>
+  <button class="bigbtn" id="gradebtn" onclick="gradeAll()">GRADE ME</button>
+  <div class="warn" id="gradewarn"></div>
+  <div class="scorecard" id="scorecard">
+    <div class="sc-name" id="scName"></div>
+    <div class="sc-score" id="scScore"></div>
+    <div class="sc-pct" id="scPct"></div>
+    <div class="sc-msg" id="scMsg"></div>
+    <div class="sc-meta" id="scMeta"></div>
+  </div>
+  <div class="locknote" id="locknote">Answers are now revealed above — green = right, red = wrong. Everything is locked; reload the page to start completely fresh.</div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+let GRADED=false;
+
+/* ============ GUIDED EXAMPLES ============ */
+const guided={
+  exA:{
+    steps:[
+      {btn:"List givens & target", alg:"<b>Given:</b> v<sub>i</sub> = 25 m/s · v<sub>f</sub> = 0 (it stops) · a = −5 m/s² &nbsp; <b>Find:</b> d &nbsp; <b>Missing:</b> t"},
+      {btn:"Eliminate equations", alg:"<b>Eq 1</b> v = d/t ✗ <i>(needs t — and v isn't constant)</i><br><b>Eq 2</b> a = Δv/t ✗ <i>(we already know a; digging out t is the slow road)</i><br><b>Eq 3</b> d<sub>f</sub> − d<sub>i</sub> = v<sub>i</sub>t + ½at² ✗ <i>(needs t)</i><br><b>Eq 4</b> v<sub>f</sub>² − v<sub>i</sub>² = 2ad ✓ <i>(no t anywhere — the timeless equation)</i>"},
+      {btn:"Write the equation", alg:"<b>Equation 4:</b> &nbsp;v<sub>f</sub>² − v<sub>i</sub>² = 2ad"},
+      {btn:"Rearrange for the target", alg:"d = (v<sub>f</sub>² − v<sub>i</sub>²) / (2a)"},
+      {btn:"Substitute with units", alg:"d = (0² − (25 m/s)²) / (2 × −5 m/s²)"},
+      {btn:"Solve", alg:"d = (−625) / (−10) = <b>62.5 m</b>"},
+      {btn:"Sanity-check", alg:"Positive distance ✓ — the two negatives cancel. 62.5 m to stop a semi from highway speed is reasonable."}
+    ], next:0
+  },
+  exB:{
+    steps:[
+      {btn:"List givens & target", alg:"<b>Given:</b> v<sub>i</sub> = 0 (dropped, not thrown!) · a = 10 m/s² · t = 3.0 s &nbsp; <b>Find:</b> d"},
+      {btn:"Eliminate equations", alg:"<b>Eq 1</b> v = d/t ✗ <i>(speed isn't constant in free fall)</i><br><b>Eq 2</b> a = Δv/t ✗ <i>(gives speed, not distance — save it for later)</i><br><b>Eq 4</b> v<sub>f</sub>² − v<sub>i</sub>² = 2ad ✗ <i>(needs v<sub>f</sub>, which we don't have yet)</i><br><b>Eq 3</b> d<sub>f</sub> − d<sub>i</sub> = v<sub>i</sub>t + ½at² ✓ <i>(contains exactly our knowns and our target)</i>"},
+      {btn:"Write the equation", alg:"<b>Equation 3:</b> &nbsp;d<sub>f</sub> − d<sub>i</sub> = v<sub>i</sub>t + ½at²"},
+      {btn:"Simplify (vᵢ = 0, dᵢ = 0)", alg:"d<sub>f</sub> = ½at² &nbsp; <i>(measure from the drop point, so d<sub>i</sub> = 0 — and the v<sub>i</sub>t term dies because v<sub>i</sub> = 0)</i>"},
+      {btn:"Substitute with units", alg:"d<sub>f</sub> = ½ × (10 m/s²) × (3.0 s)²"},
+      {btn:"Solve", alg:"d<sub>f</sub> = ½ × 10 × 9 = <b>45 m</b>"},
+      {btn:"Chain: impact speed", alg:"Equation 2, rearranged: a = Δv/t → v<sub>f</sub> = v<sub>i</sub> + at = 0 + (10)(3.0) = <b>30 m/s</b> (~67 mph)"}
+    ], next:0
+  }
+};
+function buildGuided(key){
+  const g=guided[key];
+  const pool=$("pool-"+key); pool.innerHTML="";
+  shuffle(g.steps.map((s,i)=>({s,i}))).forEach(o=>{
+    const b=document.createElement("div"); b.className="stepBtn"; b.textContent=o.s.btn; b.dataset.i=o.i;
+    b.addEventListener("click",()=>{
+      if(GRADED) return;
+      if(+b.dataset.i===g.next){
+        b.classList.add("used");
+        const c=document.createElement("div"); c.className="stepCard";
+        c.innerHTML=`<span class="sn">Step ${g.next+1} — ${g.steps[g.next].btn}:</span><span class="alg">${g.steps[g.next].alg}</span>`;
+        $("rev-"+key).appendChild(c);
+        g.next++;
+        $("nudge-"+key).textContent="";
+        if(g.next===g.steps.length){ $("done-"+key).classList.add("show"); refreshChips(); }
+      } else {
+        b.classList.add("shake");
+        $("nudge-"+key).textContent = g.next===0 ? "Start where every problem starts…" : "Not yet — what has to happen before that?";
+        setTimeout(()=>b.classList.remove("shake"),350);
+      }
+    });
+    pool.appendChild(b);
+  });
+}
+buildGuided("exA"); buildGuided("exB");
+
+/* ============ 3 CHOOSE THE WEAPON (MC-style, deferred) ============ */
+const toolQs=[
+  {q:"A moving walkway carries you at a steady 1.5 m/s. You want the time to cross the 90 m concourse.",
+   opts:["Eq 1 (v = d/t) — constant speed, so the simplest tool wins","Eq 2 (a = Δv/t) — because time is involved","Eq 3 (d_f − d_i = v_i t + ½at²) — because we want a distance relationship","Eq 4 (v_f² − v_i² = 2ad) — because no time is given"], a:0,
+   e:"Constant speed = no acceleration = the other three are overkill. t = d/v = 90/1.5 = 60 s."},
+  {q:"A sprinter explodes from the blocks (rest) at 3 m/s² for 4 seconds. You want her top speed.",
+   opts:["Eq 1 (v = d/t) — speed is the target","Eq 2 (a = Δv/t), rearranged to v_f = v_i + at — we have v_i, a, t; we want v_f","Eq 3 (d_f − d_i = v_i t + ½at²) — sprinting means distance","Eq 4 (v_f² − v_i² = 2ad) — sprints are timeless"], a:1,
+   e:"Inventory: v_i ✓ a ✓ t ✓, want v_f. Equation 2 rearranged (v_f = v_i + at) contains exactly those four: v_f = 0 + (3)(4) = 12 m/s."},
+  {q:"An airliner touches down at 70 m/s and brakes at −2.5 m/s². The engineer wants the runway length needed — no stopwatch anywhere in the problem.",
+   opts:["Eq 1 (v = d/t) — runway length is a distance","Eq 2 (a = Δv/t) — braking changes velocity","Eq 3 (d_f − d_i = v_i t + ½at²) — it has d in it","Eq 4 (v_f² − v_i² = 2ad) — no time given, and none needed"], a:3,
+   e:"'No time given' is the flashing arrow. Equation 4 — the timeless one — connects speeds, acceleration, and distance directly."},
+  {q:"A wrench slips from a scaffold (v_i = 0) and falls for 2.0 s at 10 m/s². The safety officer wants to know how far it fell.",
+   opts:["Eq 1 (v = d/t) — divide and done","Eq 2 (a = Δv/t) — falling changes speed","Eq 3 (d_f − d_i = v_i t + ½at²) — we have v_i, a, t and want d","Eq 4 (v_f² − v_i² = 2ad) — gravity is timeless"], a:2,
+   e:"Have v_i, a, t; want d — that's Equation 3's exact job description. d_f = 0 + 0 + ½(10)(4) = 20 m."}
+];
+buildMCGroup("toolbox", toolQs, "tq");
+
+/* ============ 4 REAL-WORLD MC (deferred) ============ */
+const mcQs=[
+  {q:"Carrier catapult: a fighter jet goes from rest to 80 m/s in just 100 m of deck. What acceleration does the pilot feel?",
+   opts:["32 m/s²","64 m/s²","0.8 m/s²","6,400 m/s²"], a:0,
+   e:"No time given → Equation 4 → a = v_f²/(2d) = 6400/200 = 32 m/s² (over 3 g!). 64 forgot the 2; 0.8 divided the wrong way; 6,400 forgot to divide at all."},
+  {q:"A cliff diver steps off (v_i = 0) and free-falls for 2.0 s at 10 m/s². How fast is she moving when she hits the water?",
+   opts:["10 m/s","20 m/s","40 m/s","5 m/s"], a:1,
+   e:"Equation 2 rearranged: v_f = v_i + at = 0 + (10)(2.0) = 20 m/s. The 40 doubled it; the 10 forgot to multiply by the full time; 5 halved for no reason."},
+  {q:"Highway merge: a car enters the ramp at 15 m/s and accelerates at 2 m/s² for 5.0 s. How much ramp does it use?",
+   opts:["75 m","25 m","100 m","125 m"], a:2,
+   e:"Equation 3 (with d_i = 0): d_f = v_i t + ½at² = (15)(5) + ½(2)(25) = 75 + 25 = 100 m. The 75 forgot the acceleration triangle; the 25 forgot the cruising rectangle. Remember this one — it returns in Section 6."},
+  {q:"A freight train at 30 m/s brakes at −2 m/s². How much track does it need to stop?",
+   opts:["15 m","112.5 m","450 m","225 m"], a:3,
+   e:"No time → Equation 4: d = (v_f² − v_i²)/(2a) = (0 − 900)/(−4) = 225 m. The 450 forgot the 2; the 15 is the stopping TIME in seconds, not distance; 112.5 halved the right answer."},
+  {q:"Error analysis. Jamal's problem: a ball is dropped (v_i = 0, a = 10 m/s²) and falls for 3.0 s; find the distance. Jamal writes: d = (10)(3.0) = 30 m. What went wrong?",
+   opts:["He forgot the ½ — the answer should be 90 m","Nothing — 30 m is correct","He computed a × t, which is the final VELOCITY (30 m/s), not a distance. Correct: Equation 3 → d_f = ½(10)(3.0)² = 45 m","He should have divided: d = a/t ≈ 3.3 m"], a:2,
+   e:"a·t has units of m/s — it's v_f wearing a distance costume. The ½at² structure exists because distance grows with t², not t. (And 'forgot the ½' alone would give ½ of 90 = 45 only after squaring — the squaring is the real missing move.)"}
+];
+buildMCGroup("mcbox", mcQs, "mq");
+
+function buildMCGroup(boxId, qs, prefix){
+  const box=$(boxId);
+  qs.forEach((m,qi)=>{
+    const d=document.createElement("div"); d.className="mcq"; d.dataset.a=m.a; d.dataset.group=prefix;
+    d.innerHTML=`<div class="q">${qi+1}. ${m.q}</div>`;
+    const wrap=document.createElement("div"); wrap.className="opts";
+    shuffle(m.opts.map((t,i)=>({t,i}))).forEach(o=>{
+      const b=document.createElement("button"); b.className="opt"; b.innerHTML=o.t; b.dataset.i=o.i;
+      b.addEventListener("click",()=>{
+        if(GRADED) return;
+        wrap.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+        b.classList.add("sel"); d.dataset.picked=o.i; refreshChips();
+      });
+      wrap.appendChild(b);
+    });
+    d.appendChild(wrap);
+    const ex=document.createElement("div"); ex.className="expl"; ex.innerHTML=m.e; d.appendChild(ex);
+    box.appendChild(d);
+  });
+}
+function gradeMCGroup(prefix){
+  let right=0;
+  document.querySelectorAll(`.mcq[data-group="${prefix}"]`).forEach(d=>{
+    const a=+d.dataset.a, picked=d.dataset.picked!==undefined?+d.dataset.picked:null;
+    d.querySelectorAll(".opt").forEach(b=>{
+      b.disabled=true;
+      if(+b.dataset.i===a) b.classList.add("g-right");
+      else if(picked!==null && +b.dataset.i===picked) b.classList.add("g-wrongpick");
+    });
+    if(picked===a) right++;
+    d.querySelector(".expl").classList.add("show");
+  });
+  return right;
+}
+
+/* ============ 5 SOLVE IT ============ */
+const probs=[
+  {stem:"<b>1.</b> A rocket sled starts from rest and hits 50 m/s over a 250 m track. Find its acceleration.", unit:"m/s²", ans:5, id:"p1", sol:"No time given → Equation 4: a = (v_f² − v_i²)/(2d) = (2500 − 0)/500 = 5 m/s²."},
+  {stem:"<b>2a.</b> A cyclist rolling at 4 m/s starts pedaling hard: a = 1.5 m/s² for 6.0 s. Find her final velocity.", unit:"m/s", ans:13, id:"p2", sol:"Equation 2 rearranged: v_f = v_i + at = 4 + (1.5)(6.0) = 13 m/s."},
+  {stem:"<b>2b.</b> Same cyclist, same 6.0 seconds — how far did she travel during the acceleration?", unit:"m", ans:51, id:"p3", sol:"Equation 3 (d_i = 0): d_f = v_i t + ½at² = (4)(6.0) + ½(1.5)(36) = 24 + 27 = 51 m."},
+  {stem:"<b>3.</b> A marble rolls UP a ramp at 6 m/s, slowing at 2 m/s² (so a = −2 m/s²). How far up the ramp does it get before stopping?", unit:"m", ans:9, id:"p4", sol:"Stops → v_f = 0; no time given → Equation 4: d = (0 − 36)/(2 × −2) = 9 m. The two negatives cancel, giving a positive distance."},
+  {stem:"<b>4.</b> A rock dropped from a sea cliff hits the water moving at 24 m/s (a = 10 m/s², v<sub>i</sub> = 0). How tall is the cliff?", unit:"m", ans:28.8, id:"p5", sol:"Free fall, no time → Equation 4: d = (v_f² − 0)/(2a) = 576/20 = 28.8 m."},
+  {stem:"<b>5.</b> A delivery drone descends at a steady 3 m/s from 45 m up. How long until it lands?", unit:"s", ans:15, id:"p6", sol:"Constant speed → Equation 1: t = d/v = 45/3 = 15 s."},
+  {stem:"<b>6.</b> A ball is thrown straight DOWN off a bridge at 5 m/s (v<sub>i</sub> = 5 m/s, a = 10 m/s²). How far does it fall in 2.0 s?", unit:"m", ans:30, id:"p7", sol:"Thrown, not dropped — v_i is NOT zero. Equation 3 (d_i = 0): d_f = (5)(2.0) + ½(10)(4.0) = 10 + 20 = 30 m."},
+  {stem:"<b>7.</b> A car slows from 24 m/s to 6 m/s in 4.5 s. Find its acceleration.", unit:"m/s²", ans:-4, id:"p8", sol:"Equation 2: a = Δv/t = (6 − 24)/4.5 = −18/4.5 = −4 m/s². Negative because Δv is FINAL minus initial — the car is losing speed."}
+];
+probs.forEach(p=>{
+  const d=document.createElement("div"); d.className="prob";
+  d.innerHTML=`<div class="stem">${p.stem}</div><div class="numrow"><label>Answer:</label><input id="${p.id}" inputmode="text"><label>${p.unit}</label></div><div class="expl">${p.sol}</div>`;
+  $("probbox").appendChild(d);
+});
+document.querySelectorAll("#probbox input").forEach(i=>i.addEventListener("input",refreshChips));
+function gradeProbs(){
+  let right=0;
+  probs.forEach(p=>{
+    const el=$(p.id); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-p.ans)<=0.05;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+    el.closest(".prob").querySelector(".expl").classList.add("show");
+  });
+  return right;
+}
+
+/* ============ 6 GRAPH IT ============ */
+const graphChecks=[["g1t",5],["g1d",62.5],["g2v",25],["g2r",75],["g2tr",25],["g2d",100]];
+const graphDrops=[["gdd1","g1sel"],["gdd2","g2sel"]];
+graphChecks.forEach(([id])=>$(id).addEventListener("input",refreshChips));
+function gradeGraphs(){
+  let right=0;
+  graphChecks.forEach(([id,t])=>{
+    const el=$(id); const n=parseFloat(el.value);
+    const ok=!isNaN(n)&&Math.abs(n-t)<=0.05;
+    el.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    el.disabled=true;
+  });
+  graphDrops.forEach(([rid,sid])=>{
+    const row=$(rid), sel=$(sid);
+    const ok=sel.value===row.dataset.key;
+    row.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    sel.disabled=true;
+  });
+  return right;
+}
+
+/* ============ chips ============ */
+function inputsFilled(ids){ return ids.every(id=>$(id).value.trim()!==""); }
+function refreshChips(){
+  const states={
+    exA: guided.exA.next===guided.exA.steps.length,
+    exB: guided.exB.next===guided.exB.steps.length,
+    tool: document.querySelectorAll('.mcq[data-group="tq"][data-picked]').length===toolQs.length,
+    mc: document.querySelectorAll('.mcq[data-group="mq"][data-picked]').length===mcQs.length,
+    solve: inputsFilled(probs.map(p=>p.id)),
+    graphs: inputsFilled(graphChecks.map(c=>c[0])) && $("g1sel").value!=="" && $("g2sel").value!==""
+  };
+  Object.entries(states).forEach(([k,v])=>$("chip-"+k).classList.toggle("filled",v));
+  return states;
+}
+
+/* ============ GRADE ============ */
+let warned=false;
+function gradeAll(){
+  if(GRADED) return;
+  const states=refreshChips();
+  const names={exA:"Example A",exB:"Example B",tool:"Choose the Weapon",mc:"Multiple Choice",solve:"Solve It",graphs:"Graph It"};
+  const missing=Object.entries(states).filter(([k,v])=>!v).map(([k])=>names[k]);
+  if(missing.length && !warned){
+    warned=true;
+    $("gradewarn").textContent="Not finished: "+missing.join(", ")+". Blanks count as wrong — press GRADE ME again to grade anyway, or go finish first.";
+    return;
+  }
+  GRADED=true;
+  $("gradebtn").disabled=true; $("gradebtn").style.opacity=.5; $("gradewarn").textContent="";
+  const parts=[
+    ["Choose the Weapon", gradeMCGroup("tq"), toolQs.length],
+    ["Multiple Choice", gradeMCGroup("mq"), mcQs.length],
+    ["Solve It", gradeProbs(), probs.length],
+    ["Graph It", gradeGraphs(), 8]
+  ];
+  const got=parts.reduce((s,p)=>s+p[1],0), tot=parts.reduce((s,p)=>s+p[2],0);
+  const pct=Math.round(100*got/tot);
+  const name=($("stuname").value.trim()||"(no name entered)");
+  const msg = pct>=90 ? "Excellent work." :
+              pct>=75 ? "Good work — review the explanations on the items you missed." :
+              pct>=50 ? "Review the explanations on the items you missed, then redo the worked examples." :
+              "Review every explanation below, then reload and try again.";
+  $("scName").textContent=name;
+  $("scScore").textContent=`${got} / ${tot}`;
+  $("scPct").textContent=pct+"%";
+  $("scMsg").textContent=msg+"  ·  "+parts.map(p=>`${p[0]} ${p[1]}/${p[2]}`).join("  ·  ");
+  $("scMeta").textContent="Graded " + new Date().toLocaleString() + " · Guided examples completed: " + ((guided.exA.next===7?1:0)+(guided.exB.next===7?1:0)) + "/2";
+  $("scorecard").style.display="block";
+  $("locknote").style.display="block";
+  $("stuname").disabled=true;
+  $("scorecard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+refreshChips();
+</script>
+</body>
+</html>

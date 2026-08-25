@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics · The Astronomers Review — Graded</title>
+<style>
+  :root{
+    --main:#1F4E79; --main-dark:#163a5c; --accent:#c8952d; --accent-soft:#f5ead2;
+    --ink:#22303e; --soft:#55636f; --paper:#f4f6f8; --card:#ffffff;
+    --good:#2e7d4f; --good-bg:#e3f2e9; --bad:#b3392e; --bad-bg:#f9e5e2;
+    --line:#d5dbe3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 16px 40px}
+  header{background:var(--main);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  header .kicker{font-size:11px;letter-spacing:.22em;color:#e8c987;font-weight:700;text-transform:uppercase}
+  header h1{font-family:Georgia,serif;font-size:26px;margin:4px 0 4px}
+  header p{font-size:13.5px;opacity:.92}
+  .progress{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+  .chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--soft)}
+  .chip.filled{background:var(--main);border-color:var(--main);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(20,40,70,.05)}
+  h2{font-family:Georgia,serif;font-size:20px;color:var(--main-dark);margin-bottom:4px}
+  .dir{font-size:13.5px;color:var(--soft);font-style:italic;margin-bottom:12px}
+  .drow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 6px;border-bottom:1px dotted var(--line);font-size:14px}
+  .drow>span{flex:1;min-width:200px}
+  .drow select{font-size:13.5px;padding:6px 8px;border-radius:8px;border:2px solid var(--line);background:#fff}
+  .drow.g-ok{background:var(--good-bg)} .drow.g-no{background:var(--bad-bg)}
+  .sol{display:none;width:100%;font-size:13px;color:var(--soft);background:#f1f4f8;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:7px 11px;margin-top:5px}
+  .sol.show{display:block}
+  .matchcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mitem{position:relative;border:2px solid var(--main);border-radius:10px;padding:8px 26px 8px 10px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none;margin-bottom:8px}
+  .mitem.sel{background:var(--accent-soft);border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+  .mitem.paired{background:#e6ecf3}
+  .mitem .badge{position:absolute;top:6px;right:7px;font-weight:800;font-size:13px;color:var(--main)}
+  .mitem.g-ok{background:var(--good-bg);border-color:var(--good)}
+  .mitem.g-no{background:var(--bad-bg);border-color:var(--bad)}
+  .mcq{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:8px}
+  .mcq .q{font-weight:700;font-size:15px;margin-bottom:8px}
+  .opts{display:flex;flex-direction:column;gap:6px}
+  .opt{border:2px solid var(--line);border-radius:9px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;text-align:left}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .opt.g-right{border-color:var(--good);background:var(--good-bg);font-weight:700}
+  .opt.g-wrongpick{border-color:var(--bad);background:var(--bad-bg)}
+  .expl{display:none;font-size:13px;color:var(--soft);background:#f1f4f8;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:7px}
+  .expl.show{display:block}
+  .numrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0;padding:6px;border-bottom:1px dotted var(--line)}
+  .numrow .stem{flex:1;min-width:220px;font-size:14px}
+  .numrow input{width:95px;font-size:16px;padding:7px 9px;border-radius:8px;border:2px solid var(--line);text-align:center}
+  input.g-ok{border-color:var(--good);background:var(--good-bg)}
+  input.g-no{border-color:var(--bad);background:var(--bad-bg)}
+  .gradebar{background:var(--main);color:#fff;border-radius:14px;padding:20px;text-align:center}
+  .gradebar input{font-size:16px;padding:9px 12px;border-radius:9px;border:none;width:min(280px,90%);text-align:center;margin-bottom:10px}
+  .bigbtn{background:var(--accent);color:#2a1d06;border:none;border-radius:10px;padding:13px 34px;font-size:18px;font-weight:800;cursor:pointer}
+  .bigbtn:active{transform:scale(.97)}
+  .warn{color:#e8c987;font-size:13.5px;margin-top:10px}
+  .scorecard{display:none;background:#fff;color:var(--ink);border:4px solid var(--accent);border-radius:14px;padding:20px;margin-top:14px;text-align:center}
+  .scorecard .sc-name{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-score{font-family:Georgia,serif;font-size:52px;font-weight:800;color:var(--accent);line-height:1.1;margin:6px 0}
+  .scorecard .sc-pct{font-size:22px;font-weight:700;color:var(--main-dark)}
+  .scorecard .sc-msg{font-size:15px;margin-top:6px}
+  .scorecard .sc-meta{font-size:12px;color:var(--soft);margin-top:8px}
+  .locknote{display:none;text-align:center;font-size:13px;color:var(--soft);font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Physics · The Astronomers — Graded Mode</div>
+  <h1>Ptolemy, Copernicus, Kepler &amp; Galileo</h1>
+  <p><b>How this works:</b> answer everything with no feedback, like a test. When every chip is filled, enter your name and press GRADE ME. After grading, every answer shows green or red with a full explanation. Read the explanations on anything you missed.</p>
+</header>
+
+<div class="progress">
+  <span class="chip" id="chip-who">Who Did What</span>
+  <span class="chip" id="chip-time">Timeline</span>
+  <span class="chip" id="chip-retro">Retrograde &amp; Models</span>
+  <span class="chip" id="chip-evid">Evidence</span>
+  <span class="chip" id="chip-gal">Galileo's Misses</span>
+  <span class="chip" id="chip-kep">Kepler's Laws</span>
+  <span class="chip" id="chip-mc">Multiple Choice</span>
+</div>
+
+<!-- 1 WHO DID WHAT -->
+<section>
+  <h2>1 · Who Did What</h2>
+  <div class="dir">Tap a name, then tap its matching description. Tap a paired card to un-pair.</div>
+  <div class="matchcols"><div id="wL"></div><div id="wR"></div></div>
+</section>
+
+<!-- 2 TIMELINE -->
+<section>
+  <h2>2 · Timeline</h2>
+  <div class="dir">Number these events 1 (earliest) through 6 (latest).</div>
+  <div id="timebox"></div>
+</section>
+
+<!-- 3 RETROGRADE & MODELS -->
+<section>
+  <h2>3 · Retrograde &amp; the Two Models</h2>
+  <div class="dir">Select the best completion for each statement.</div>
+  <div id="retrobox"></div>
+</section>
+
+<!-- 4 EVIDENCE -->
+<section>
+  <h2>4 · Evidence — What Did Each Observation Show?</h2>
+  <div class="dir">For each observation, choose what it established.</div>
+  <div id="evidbox"></div>
+</section>
+
+<!-- 5 GALILEO'S MISSES -->
+<section>
+  <h2>5 · What Galileo Got Wrong</h2>
+  <div class="dir">Galileo's observations were sound, but several of his arguments were not. Select the correct completion for each.</div>
+  <div id="galbox"></div>
+</section>
+
+<!-- 6 KEPLER -->
+<section>
+  <h2>6 · Kepler's Laws</h2>
+  <div class="dir">Tap a term, then tap its matching description. Tap a paired card to un-pair.</div>
+  <div class="matchcols"><div id="kL"></div><div id="kR"></div></div>
+</section>
+
+<!-- 7 MC -->
+<section>
+  <h2>7 · Multiple Choice</h2>
+  <div class="dir">One selection each; you can change answers until you grade.</div>
+  <div id="mcbox"></div>
+</section>
+
+<section class="gradebar" id="gradebar">
+  <h2 style="color:#e8c987;margin-bottom:8px">Grade it</h2>
+  <p style="font-size:13.5px;opacity:.9;margin-bottom:12px">All six chips filled? Enter your name and press the button. Answers and explanations appear after grading, then the page locks.</p>
+  <input id="stuname" placeholder="Your name" autocomplete="off"><br>
+  <button class="bigbtn" id="gradebtn" onclick="gradeAll()">GRADE ME</button>
+  <div class="warn" id="gradewarn"></div>
+  <div class="scorecard" id="scorecard">
+    <div class="sc-name" id="scName"></div>
+    <div class="sc-score" id="scScore"></div>
+    <div class="sc-pct" id="scPct"></div>
+    <div class="sc-msg" id="scMsg"></div>
+    <div class="sc-meta" id="scMeta"></div>
+  </div>
+  <div class="locknote" id="locknote">Green = correct, red = incorrect. Explanations are shown under each item. The page is locked; reload to start over.</div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+let GRADED=false;
+const BADGES=["\u2460","\u2461","\u2462","\u2463","\u2464","\u2465","\u2466"];
+
+function makePairMatcher(leftId, rightId, pairsData){
+  const st={selL:null, selR:null, pairs:[]};
+  function badgeRefresh(){
+    document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{ el.querySelector(".badge").textContent=""; el.classList.remove("paired"); });
+    st.pairs.forEach((p,i)=>{ [p.l,p.r].forEach(el=>{ el.classList.add("paired"); el.querySelector(".badge").textContent=BADGES[i]||("#"+(i+1)); }); });
+  }
+  function unpair(el){ const idx=st.pairs.findIndex(p=>p.l===el||p.r===el); if(idx>-1){ st.pairs.splice(idx,1); badgeRefresh(); refreshChips(); return true; } return false; }
+  function tap(el, side){
+    if(GRADED) return; if(unpair(el)) return;
+    const key = side==="L"?"selL":"selR";
+    if(st[key]) st[key].classList.remove("sel");
+    st[key]=(st[key]===el?null:el); if(st[key]) st[key].classList.add("sel");
+    if(st.selL && st.selR){ st.selL.classList.remove("sel"); st.selR.classList.remove("sel"); st.pairs.push({l:st.selL,r:st.selR}); st.selL=null; st.selR=null; badgeRefresh(); refreshChips(); }
+  }
+  const L=$(leftId), R=$(rightId);
+  shuffle(pairsData.map((p,i)=>({h:p[0],i}))).forEach(o=>{ const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i; d.addEventListener("click",()=>tap(d,"L")); L.appendChild(d); });
+  shuffle(pairsData.map((p,i)=>({h:p[1],i}))).forEach(o=>{ const d=document.createElement("div"); d.className="mitem"; d.innerHTML=o.h+`<span class="badge"></span>`; d.dataset.i=o.i; d.addEventListener("click",()=>tap(d,"R")); R.appendChild(d); });
+  return {
+    complete: ()=> st.pairs.length===pairsData.length,
+    grade: ()=>{ let right=0; st.pairs.forEach(p=>{ const ok=p.l.dataset.i===p.r.dataset.i; [p.l,p.r].forEach(el=>el.classList.add(ok?"g-ok":"g-no")); if(ok) right++; });
+      document.querySelectorAll(`#${leftId} .mitem, #${rightId} .mitem`).forEach(el=>{ if(!el.classList.contains("g-ok")&&!el.classList.contains("g-no")) el.classList.add("g-no"); }); return right; },
+    total: pairsData.length
+  };
+}
+const whoPairs=[
+  ["<b>Aristotle</b>","Argued Earth must be central and still; heavens are perfect, so celestial motion must be circular"],
+  ["<b>Ptolemy</b>","Built the working Earth-centered mathematical model (~150 AD) using deferents and epicycles"],
+  ["<b>Copernicus</b>","Proposed the Sun-centered arrangement (1543) — kept circles, so it was simpler but not more accurate"],
+  ["<b>Tycho Brahe</b>","Spent ~30 years making the most precise naked-eye measurements of planet positions ever taken"],
+  ["<b>Kepler</b>","Used Tycho's data to replace circles with ellipses; planets sweep equal areas in equal times"],
+  ["<b>Galileo</b>","First astronomical telescope: moons of Jupiter, phases of Venus, craters on the Moon, sunspots"],
+  ["<b>Newton</b>","Explained WHY orbits are ellipses: gravitation plus the laws of motion (1687)"]
+];
+const whoM = makePairMatcher("wL","wR",whoPairs);
+
+/* TIMELINE */
+const timeItems=[
+  {text:"Ptolemy publishes the mature Earth-centered model.", ord:2, sol:"~150 AD. It reigned for about 1,400 years because it made accurate predictions."},
+  {text:"Aristotle argues Earth is central and the heavens are perfect circles.", ord:1, sol:"~350 BC — the philosophical foundation everything else was built on."},
+  {text:"Copernicus publishes the Sun-centered model.", ord:3, sol:"1543, the year he died. A hypothesis at this stage — no new data, no telescope."},
+  {text:"Kepler publishes the ellipse laws using Tycho's data.", ord:4, sol:"1609. Tycho measured (1576–1601); Kepler inherited the data and let it overrule the circles."},
+  {text:"Galileo observes the moons of Jupiter and the phases of Venus.", ord:5, sol:"1610. The telescope evidence arrives — one year after Kepler's ellipses."},
+  {text:"Newton publishes the physics that explains elliptical orbits.", ord:6, sol:"1687, the Principia. Kepler's rules become consequences of gravity and the laws of motion."}
+];
+shuffle(timeItems.slice()).forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=String(it.ord);
+  const sel=document.createElement("select");
+  sel.innerHTML='<option value="">—</option>'+[1,2,3,4,5,6].map(n=>`<option value="${n}">${n}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span>${it.text}</span>`; r.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=it.sol; r.appendChild(s);
+  $("timebox").appendChild(r);
+});
+
+/* RETROGRADE & MODELS */
+const retroItems=[
+  {text:"Watched over many months, Mars occasionally appears to…", key:"b", opts:[["a","speed up and fly off"],["b","stop, move backward for a while, then continue forward"],["c","change color"],["d","vanish for a year"]],
+   sol:"Retrograde motion: the normal eastward drift pauses, reverses (westward) for about two months, then resumes. Every model of the sky had to explain this."},
+  {text:"Ptolemy's model handled retrograde motion using…", key:"c", opts:[["a","ellipses"],["b","the Moon's gravity"],["c","epicycles — a small circle riding on a larger circle"],["d","measurement error"]],
+   sol:"The epicycle-on-deferent construction makes the planet loop as it travels, reproducing the backward drift. It worked — at the cost of extra machinery for every planet."},
+  {text:"In the Sun-centered model, retrograde motion happens because…", key:"a", opts:[["a","Earth, on a faster inner orbit, passes the outer planet — our line of sight sweeps backward"],["b","the planet actually reverses direction"],["c","the planet slows near the Sun"],["d","the stars shift position"]],
+   sol:"Like passing a slower car: the car you overtake appears to drift backward against the distant scenery even though it never stops moving forward. Mars never reverses — the appearance comes from our own motion."},
+  {text:"The epicycles Ptolemy assigned to Mars, Jupiter, and Saturn all secretly share…", key:"d", opts:[["a","the same color"],["b","the Moon's orbital period"],["c","random sizes"],["d","the size and one-year period of Earth's orbit"]],
+   sol:"For the model to match the sky, each outer planet's epicycle must copy Earth's orbit — same size, same one-year period. Ptolemy's model treats that as separate coincidences; Copernicus recognized them as one thing: the orbit we're standing on."},
+  {text:"Copernicus's 1543 model, compared to Ptolemy's, was…", key:"b", opts:[["a","more accurate in its predictions"],["b","simpler, but no more accurate — he kept circular orbits"],["c","based on telescope observations"],["d","immediately accepted everywhere"]],
+   sol:"He kept perfect circles, so his predictions were about as good as Ptolemy's, not better. The accuracy advantage arrived only with Kepler's ellipses in 1609."}
+];
+retroItems.forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+  const sel=document.createElement("select");
+  sel.innerHTML='<option value="">— choose —</option>'+it.opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`; r.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=it.sol; r.appendChild(s);
+  $("retrobox").appendChild(r);
+});
+
+/* EVIDENCE */
+const evidOpts=[["kill_univ","Showed that NOT everything orbits Earth"],["kill_ptol","Showed that Venus orbits the SUN — Ptolemy's arrangement is impossible"],["imperfect","Showed the heavens are not perfect and unchanging"],["consistent","Consistent with BOTH arrangements — decides nothing by itself"],["earthmoves","Direct proof that EARTH itself moves"]];
+const evidItems=[
+  {text:"Four points of light orbiting Jupiter (January 1610).", key:"kill_univ",
+   sol:"Objects circling Jupiter contradict the claim that everything orbits Earth. Important limit: this does NOT prove Earth orbits the Sun — a geocentrist can accept Jupiter's moons and keep Earth at the center."},
+  {text:"Venus shows a full set of phases, from crescent to nearly full.", key:"kill_ptol",
+   sol:"In Ptolemy's arrangement Venus sits permanently between Earth and Sun and could only ever show crescents. The full set of phases requires Venus to circle the Sun. This is the observation that breaks Ptolemy's geometry."},
+  {text:"Mountains and craters on the Moon; spots moving across the Sun.", key:"imperfect",
+   sol:"The heavens were supposed to be perfect and unchanging. Rough terrain and changing blemishes contradict that premise — damage to Aristotle's foundation rather than proof of any particular orbit."},
+  {text:"Retrograde motion of Mars, recorded for centuries.", key:"consistent",
+   sol:"Both models explain it — Ptolemy with epicycles, Copernicus with Earth passing Mars. An observation both sides can explain cannot decide between them; it only made one explanation simpler."},
+  {text:"Stars shift position slightly over the year (measured by Bessel, 1838).", key:"earthmoves",
+   sol:"Stellar parallax is the direct geometric signature of Earth's motion — the effect geocentrists correctly demanded and nobody could detect for centuries, because the stars are so far away that the shift is tiny. It settled the last honest objection."}
+];
+evidItems.forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+  const sel=document.createElement("select");
+  sel.innerHTML='<option value="">— choose —</option>'+evidOpts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`; r.appendChild(sel);
+  const s=document.createElement("div"); s.className="sol"; s.textContent=it.sol; r.appendChild(s);
+  $("evidbox").appendChild(r);
+});
+
+/* GALILEO'S MISSES */
+const galItems=[
+  {text:"Galileo's favorite argument that Earth really moves was his theory of the tides. The problem:", key:"a",
+   opts:[["a","his mechanism predicts ONE high tide per day, and there are two — and he dismissed the correct cause (the Moon) as astrological nonsense"],["b","tides had not been discovered yet"],["c","the tides actually do prove Earth moves"],["d","he never wrote about tides"]],
+   sol:"The climactic section of his 1632 Dialogue argues the tides come from Earth's rotation plus revolution sloshing the oceans. It predicts one daily high tide; there are two. Kepler had already suggested the Moon's attraction — the essentially correct idea — and Galileo mocked it. The centerpiece of his case for Earth's motion was a bad argument, and his opponents knew it."},
+  {text:"Even after Kepler published the ellipse laws — and sent him the work — Galileo:", key:"c",
+   opts:[["a","immediately adopted ellipses"],["b","proved the laws with his telescope"],["c","kept defending perfect circular orbits for the rest of his life"],["d","disproved the ellipse laws"]],
+   sol:"Galileo corresponded with Kepler and had access to the ellipse laws for decades, yet defended Copernican circles to the end. The specific system he championed was partly obsolete on arrival — the version that actually out-predicted everyone was Kepler's."},
+  {text:"In The Assayer (1623), Galileo argued that comets are:", key:"b",
+   opts:[["a","moons that escaped Jupiter"],["b","atmospheric optical effects, not real celestial objects — which was wrong"],["c","falling stars"],["d","proof of heliocentrism"]],
+   sol:"On the comet question his Jesuit opponent Grassi was closer to the truth. Being a great observer did not make Galileo right about everything — each claim has to stand on its own evidence."},
+  {text:"Galileo often argued as if his telescope discoveries settled the Copernican question. Strictly, they did not, because:", key:"d",
+   opts:[["a","his telescope was broken"],["b","the moons of Jupiter were later disproven"],["c","nobody else could repeat the observations"],["d","Tycho's hybrid model — planets orbit the Sun, the Sun orbits a stationary Earth — matched every telescope observation he ever made"]],
+   sol:"The moons of Jupiter and even the phases of Venus are fully compatible with Tycho's arrangement. Many skilled astronomers of the day accepted Galileo's data completely and simply moved to Tycho's system. The observations eliminated Ptolemy — not geocentrism itself."},
+  {text:"Opponents objected: if stars are far enough away to show no parallax, their apparent disk sizes mean each star must be larger than the whole solar system. Galileo answered that the disks are an optical illusion. That answer was:", key:"a",
+   opts:[["a","correct — but he could not prove it, and the question stayed open until parallax was finally measured in 1838"],["b","wrong — stars really are that large"],["c","never given — he ignored the objection"],["d","proven immediately with a better telescope"]],
+   sol:"The star-size objection was good science, pressed hardest by Tycho. The disks really are instrument artifacts, but that understanding came much later. Both sides were arguing past the available evidence — the debate was not settled by evidence in Galileo's lifetime."}
+];
+galItems.forEach((it,i)=>{
+  const r=document.createElement("div"); r.className="drow"; r.dataset.key=it.key;
+  const sel=document.createElement("select");
+  sel.innerHTML='<option value="">— choose —</option>'+it.opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  sel.addEventListener("change",refreshChips);
+  r.innerHTML=`<span><b>${i+1}.</b> ${it.text}</span>`; r.appendChild(sel);
+  const sd=document.createElement("div"); sd.className="sol"; sd.textContent=it.sol; r.appendChild(sd);
+  $("galbox").appendChild(r);
+});
+
+/* KEPLER — matching */
+const kepPairs=[
+  ["<b>Kepler's 1st Law</b>","Orbits are ellipses with the Sun at one focus"],
+  ["<b>The other focus</b>","Empty — nothing sits there"],
+  ["<b>Kepler's 2nd Law</b>","Equal areas in equal times — fastest near the Sun, slowest far away"],
+  ["<b>Eccentricity</b>","How stretched an ellipse is: 0 is a circle; close to 1 is long and thin"],
+  ["<b>Earth's orbit (e = 0.017)</b>","So nearly circular you cannot tell by eye — part of why circular models survived so long"],
+  ["<b>The 8 arcminutes</b>","A small error Kepler refused to ignore, because Tycho's data was more precise than that"],
+  ["<b>Io fast, Callisto slow</b>","The closer-means-faster pattern appearing again among Jupiter's moons"]
+];
+const kepM = makePairMatcher("kL","kR",kepPairs);
+
+/* MC */
+const mcQs=[
+  {q:"Why did the geocentric model survive for about 1,400 years?",
+   opts:["Nobody was allowed to question it","It made accurate predictions, matched everyday experience, and no star shift could be detected","Astronomers were not intelligent yet","It was never actually written down"], a:1,
+   e:"It predicted eclipses and planet positions well, agreed with the feeling that the ground is still, and its strongest argument — no detectable stellar parallax — was not answered until 1838. It was a successful theory, which is exactly why replacing it required strong evidence."},
+  {q:"Which statement about Copernicus is accurate?",
+   opts:["He used a telescope to prove Earth moves","He proposed the Sun-centered arrangement but kept circles, so his model was not more accurate than Ptolemy's","He discovered the moons of Jupiter","He measured stellar parallax"], a:1,
+   e:"No telescope existed in his lifetime. His contribution was the arrangement — a simpler explanation of the same data. Accuracy came later, from Kepler; telescope evidence came from Galileo."},
+  {q:"Kepler's decision to trust an 8-arcminute discrepancy over the 2,000-year tradition of circles is an example of…",
+   opts:["stubbornness","letting the conclusion follow the evidence, because the data's precision was known and trusted","guessing","loyalty to Copernicus"], a:1,
+   e:"Tycho's measurements were known to be better than 8 arcminutes. A model that misses by more than the data's uncertainty is wrong. That standard — evidence over tradition — is the reasoning the whole unit is teaching."},
+  {q:"A student writes: 'Galileo's discovery of Jupiter's moons proved that Earth orbits the Sun.' The most accurate correction is:",
+   opts:["The statement is correct as written","The moons proved the heavens are perfect","The moons proved that not everything orbits Earth — which breaks the old model's universal claim but does not by itself prove Earth moves","Galileo never observed Jupiter"], a:2,
+   e:"The moons eliminate 'everything orbits Earth.' Proving that Earth itself moves required more: the phases of Venus broke Ptolemy's arrangement, Kepler's ellipses won on accuracy, and stellar parallax (1838) gave the direct proof. Careful claims are the skill here."},
+  {q:"The phases of Venus were decisive evidence because…",
+   opts:["Venus is the brightest planet","in Ptolemy's arrangement Venus could only ever show crescents, but the telescope showed the full set of phases","Venus has moons","the phases repeat monthly"], a:1,
+   e:"Ptolemy fixes Venus between Earth and the Sun, so we would always face mostly its dark side. A gibbous or full Venus is geometrically impossible in that model — and Galileo observed the full set. Venus must circle the Sun."},
+  {q:"Which sequence puts the Cycle of Scientific Enterprise in the order it ran during this story?",
+   opts:["New data → old theory → hypothesis → revision","Reigning theory → competing hypothesis → better data forces revision → decisive observations → new theory accepted","Hypothesis → theory → hypothesis → theory with no data involved","Decisive observations → hypothesis → theory → data"], a:1,
+   e:"Ptolemy (reigning theory) → Copernicus (competing hypothesis) → Tycho's data + Kepler's ellipses (revision driven by data) → Galileo's telescope (decisive observations) → acceptance, then Newton explaining the mechanics. The unit is one full turn of the Cycle."}
+];
+const letters=null;
+mcQs.forEach((m,qi)=>{
+  const d=document.createElement("div"); d.className="mcq"; d.dataset.a=m.a; d.dataset.group="mq";
+  d.innerHTML=`<div class="q">${qi+1}. ${m.q}</div>`;
+  const wrap=document.createElement("div"); wrap.className="opts";
+  shuffle(m.opts.map((t,i)=>({t,i}))).forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.innerHTML=o.t; b.dataset.i=o.i;
+    b.addEventListener("click",()=>{ if(GRADED) return; wrap.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); d.dataset.picked=o.i; refreshChips(); });
+    wrap.appendChild(b);
+  });
+  d.appendChild(wrap);
+  const ex=document.createElement("div"); ex.className="expl"; ex.innerHTML=m.e; d.appendChild(ex);
+  $("mcbox").appendChild(d);
+});
+
+/* grading helpers */
+function gradeDrows(boxId){
+  let right=0;
+  $(boxId).querySelectorAll(".drow").forEach(r=>{
+    const s=r.querySelector("select"); const ok=s.value===r.dataset.key;
+    r.classList.add(ok?"g-ok":"g-no"); if(ok) right++;
+    s.disabled=true; r.querySelector(".sol").classList.add("show");
+  });
+  return right;
+}
+function drowsFilled(boxId){ let ok=true; $(boxId).querySelectorAll(".drow select").forEach(s=>{ if(!s.value) ok=false; }); return ok; }
+function gradeMC(){
+  let right=0;
+  document.querySelectorAll('.mcq[data-group="mq"]').forEach(d=>{
+    const a=+d.dataset.a, picked=d.dataset.picked!==undefined?+d.dataset.picked:null;
+    d.querySelectorAll(".opt").forEach(b=>{ b.disabled=true; if(+b.dataset.i===a) b.classList.add("g-right"); else if(picked!==null && +b.dataset.i===picked) b.classList.add("g-wrongpick"); });
+    if(picked===a) right++;
+    d.querySelector(".expl").classList.add("show");
+  });
+  return right;
+}
+
+function refreshChips(){
+  const states={
+    who: whoM.complete(),
+    time: drowsFilled("timebox"),
+    retro: drowsFilled("retrobox"),
+    evid: drowsFilled("evidbox"),
+    gal: drowsFilled("galbox"),
+    kep: kepM.complete(),
+    mc: document.querySelectorAll('.mcq[data-picked]').length===mcQs.length
+  };
+  Object.entries(states).forEach(([k,v])=>$("chip-"+k).classList.toggle("filled",v));
+  return states;
+}
+
+let warned=false;
+function gradeAll(){
+  if(GRADED) return;
+  const states=refreshChips();
+  const names={who:"Who Did What",time:"Timeline",retro:"Retrograde & Models",evid:"Evidence",gal:"Galileo's Misses",kep:"Kepler's Laws",mc:"Multiple Choice"};
+  const missing=Object.entries(states).filter(([k,v])=>!v).map(([k])=>names[k]);
+  if(missing.length && !warned){ warned=true; $("gradewarn").textContent="Not finished: "+missing.join(", ")+". Blanks count as wrong — press GRADE ME again to grade anyway, or finish first."; return; }
+  GRADED=true;
+  $("gradebtn").disabled=true; $("gradebtn").style.opacity=.5; $("gradewarn").textContent="";
+  const parts=[
+    ["Who Did What", whoM.grade(), whoM.total],
+    ["Timeline", gradeDrows("timebox"), timeItems.length],
+    ["Retrograde", gradeDrows("retrobox"), retroItems.length],
+    ["Evidence", gradeDrows("evidbox"), evidItems.length],
+    ["Galileo", gradeDrows("galbox"), galItems.length],
+    ["Kepler", kepM.grade(), kepM.total],
+    ["MC", gradeMC(), mcQs.length]
+  ];
+  const got=parts.reduce((s,p)=>s+p[1],0), tot=parts.reduce((s,p)=>s+p[2],0);
+  const pct=Math.round(100*got/tot);
+  const name=($("stuname").value.trim()||"(no name entered)");
+  const msg = pct>=90 ? "Excellent work." :
+              pct>=75 ? "Good work — review the explanations on the items you missed." :
+              pct>=50 ? "Review the explanations on the items you missed, then try again after a reload." :
+              "Review every explanation below, then reload and try again.";
+  $("scName").textContent=name;
+  $("scScore").textContent=`${got} / ${tot}`;
+  $("scPct").textContent=pct+"%";
+  $("scMsg").textContent=msg+"  ·  "+parts.map(p=>`${p[0]} ${p[1]}/${p[2]}`).join("  ·  ");
+  $("scMeta").textContent="Graded " + new Date().toLocaleString();
+  $("scorecard").style.display="block";
+  $("locknote").style.display="block";
+  $("stuname").disabled=true;
+  $("scorecard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+refreshChips();
+</script>
+</body>
+</html>
