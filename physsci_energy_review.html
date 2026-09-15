@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical Science · Energy Review</title>
+<style>
+:root{--green:#1e6b46;--green-dk:#164f34;--amber:#d98e2b;--amber-soft:#fbf0dc;
+ --ink:#25302b;--soft:#5b6862;--paper:#f6f4ee;--card:#fff;
+ --good:#2e7d4f;--good-bg:#e4f2e9;--bad:#b3392e;--bad-bg:#f9e6e3;--line:#d8d3c6;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--paper);color:var(--ink);
+ line-height:1.55;padding-bottom:130px;}
+header{background:var(--green);color:#fff;padding:20px 18px;}
+header h1{font-size:1.3rem;} header p{font-size:.88rem;opacity:.9;margin-top:5px;}
+#chipbar{position:sticky;top:0;z-index:40;background:var(--green-dk);padding:9px 10px;
+ display:flex;gap:6px;overflow-x:auto;}
+.chip{flex:0 0 auto;font-size:.72rem;font-family:system-ui,-apple-system,sans-serif;
+ padding:5px 11px;border-radius:11px;background:rgba(255,255,255,.16);color:#fff;white-space:nowrap;}
+.chip.done{background:var(--amber);color:#2b1d05;font-weight:600;}
+main{max-width:840px;margin:0 auto;padding:16px 14px;}
+section{margin-bottom:26px;}
+.shead{font-size:1.05rem;color:var(--green);border-bottom:2px solid var(--amber);
+ padding-bottom:5px;margin-bottom:13px;font-weight:700;}
+.q{background:var(--card);border:1px solid var(--line);padding:14px 15px;margin-bottom:12px;}
+.qn{font-family:system-ui,-apple-system,sans-serif;font-size:.7rem;color:var(--soft);
+ letter-spacing:.9px;text-transform:uppercase;margin-bottom:6px;}
+.stem{font-size:1rem;margin-bottom:11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{display:block;width:100%;text-align:left;font-family:Georgia,serif;font-size:.96rem;
+ padding:10px 13px;background:#fbfaf6;border:1.5px solid var(--line);border-radius:6px;color:var(--ink);cursor:pointer;}
+.opt.sel{background:var(--amber-soft);border-color:var(--amber);font-weight:600;}
+.numwrap{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.numwrap input{font-family:Georgia,serif;font-size:1.05rem;padding:9px 11px;width:160px;
+ border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;}
+.unit{font-size:.95rem;color:var(--soft);}
+/* drag and drop */
+.tray{display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:#f1eee5;border:1px dashed var(--line);
+ border-radius:6px;min-height:52px;margin-bottom:12px;}
+.tok{background:#fff;border:1.5px solid var(--line);border-radius:6px;padding:7px 11px;
+ font-size:.93rem;cursor:grab;user-select:none;}
+.tok:active{cursor:grabbing;}
+.tok.drag{opacity:.4;}
+.bins{display:flex;gap:10px;flex-wrap:wrap;}
+.bin{flex:1 1 200px;border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;min-height:110px;padding:8px;}
+.bin.over{border-color:var(--amber);background:var(--amber-soft);}
+.binlab{font-family:system-ui,-apple-system,sans-serif;font-size:.74rem;letter-spacing:.7px;
+ text-transform:uppercase;color:var(--green);margin-bottom:7px;font-weight:700;}
+.bindrop{display:flex;flex-direction:column;gap:6px;min-height:60px;}
+.mrow{display:flex;align-items:stretch;gap:10px;margin-bottom:8px;}
+.mleft{flex:1 1 52%;background:#fbfaf6;border:1.5px solid var(--line);border-radius:6px;padding:9px 11px;font-size:.95rem;}
+.mslot{flex:1 1 44%;border:1.5px dashed var(--line);border-radius:6px;background:#f1eee5;
+ min-height:44px;padding:5px;display:flex;align-items:center;}
+.mslot.over{border-color:var(--amber);background:var(--amber-soft);}
+.mslot .tok{width:100%;}
+.tok.ok{border-color:var(--good);background:var(--good-bg);}
+.tok.bad{border-color:var(--bad);background:var(--bad-bg);}
+.reveal{display:none;margin-top:11px;padding:11px 13px;border-radius:6px;font-size:.92rem;}
+.reveal .verdict{font-weight:700;display:block;margin-bottom:4px;
+ font-family:system-ui,-apple-system,sans-serif;font-size:.78rem;letter-spacing:.7px;text-transform:uppercase;}
+.q.ok{border-color:var(--good);} .q.ok .reveal{display:block;background:var(--good-bg);color:#1d5334;}
+.q.no{border-color:var(--bad);} .q.no .reveal{display:block;background:var(--bad-bg);color:#7d2820;}
+.q.part{border-color:var(--amber);} .q.part .reveal{display:block;background:var(--amber-soft);color:#6b4a10;}
+.q.ok .opt.correct,.q.no .opt.correct{border-color:var(--good);background:var(--good-bg);}
+.q.no .opt.sel{border-color:var(--bad);background:var(--bad-bg);}
+.revlist{margin:6px 0 0 18px;} .revlist li{margin-bottom:3px;}
+#gradebar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--green);
+ padding:10px 12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:0 -3px 14px rgba(0,0,0,.22);}
+#gradebar input{flex:1 1 150px;min-width:130px;font-family:Georgia,serif;font-size:1rem;padding:10px 12px;border:none;border-radius:6px;}
+#gradebtn{font-family:system-ui,-apple-system,sans-serif;font-weight:700;font-size:.9rem;letter-spacing:1.1px;
+ padding:12px 20px;background:var(--amber);color:#2b1d05;border:none;border-radius:6px;cursor:pointer;}
+#overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(20,28,24,.72);padding:22px 16px;overflow-y:auto;}
+#overlay.on{display:block;}
+.modal{max-width:520px;margin:40px auto;background:var(--card);border-radius:9px;padding:22px 20px;border-top:6px solid var(--amber);}
+.modal h2{font-size:1.15rem;color:var(--green);margin-bottom:11px;}
+.modal p{font-size:.95rem;margin-bottom:11px;} .modal ul{margin:0 0 14px 20px;font-size:.95rem;}
+.mbtns{display:flex;gap:10px;flex-wrap:wrap;}
+.mbtn{font-family:system-ui,-apple-system,sans-serif;font-size:.88rem;font-weight:600;padding:11px 17px;border-radius:6px;border:none;cursor:pointer;}
+.mbtn.go{background:var(--green);color:#fff;} .mbtn.any{background:var(--amber);color:#2b1d05;}
+#scorecard{display:none;background:var(--card);border:2px solid var(--green);border-top:8px solid var(--amber);padding:20px 18px;margin-bottom:24px;}
+#scorecard.on{display:block;}
+#scorecard h2{color:var(--green);font-size:1.25rem;margin-bottom:3px;}
+.who{font-size:1rem;margin-bottom:12px;}
+.big{font-size:2.5rem;color:var(--green);font-weight:700;line-height:1.1;}
+.pct{font-size:1.15rem;color:var(--amber);font-weight:700;margin-bottom:14px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:12px;}
+#scorecard th,#scorecard td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);}
+#scorecard th{font-family:system-ui,-apple-system,sans-serif;font-size:.74rem;text-transform:uppercase;color:var(--soft);}
+#scorecard td.sc{text-align:right;}
+.stamp{font-size:.8rem;color:var(--soft);font-style:italic;}
+</style></head><body>
+<header><h1>Energy, Work and Power — Review</h1><p>Physical Science · answer everything, then press GRADE ME</p></header>
+<div id="chipbar"></div>
+<main><div id="scorecard"></div><div id="quiz"></div></main>
+<div id="gradebar"><input id="nameinput" type="text" placeholder="Type your name" autocomplete="off"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div class="modal" id="modalbox"></div></div>
+<script>
+const SECTIONS=[{"name":"Sorting Energy","items":[{"t":"sort","s":"Drag each one into the box where it belongs.","bins":["Kinetic","Potential","Thermal"],"tokens":[{"text":"a bowling ball rolling down the lane","bin":0,"e":"Kinetic. The object itself is moving."},{"text":"a spring squeezed shut and held","bin":1,"e":"Potential. It is stored because of the spring’s condition, and nothing is moving."},{"text":"the particles inside a hot frying pan","bin":2,"e":"Thermal. That is the combined kinetic and potential energy of the particles, not of the pan as an object."},{"text":"the voltage of a fresh battery","bin":1,"e":"Potential. Voltage is stored electrical energy waiting to be released."},{"text":"a current flowing through a wire","bin":0,"e":"Kinetic. A current is charges in motion."},{"text":"the sandwich in your lunch","bin":1,"e":"Potential. Chemical energy is stored in the bonds between atoms."},{"text":"a textbook sitting on a high shelf","bin":1,"e":"Potential. Stored because of its height."},{"text":"a student sprinting down the hall","bin":0,"e":"Kinetic. The student is moving."}]}]},{"name":"Matching","items":[{"t":"match","s":"Drag each answer onto the item it belongs with.","pairs":[{"l":"A battery-powered flashlight is switched on","r":"chemical → electrical → light and thermal","e":"The battery stores chemical energy, which drives a current, which the bulb turns into light and heat."},{"l":"A diver falls from a high platform","r":"gravitational potential → kinetic","e":"Height is traded for speed on the way down."},{"l":"An archer releases a drawn bowstring","r":"elastic potential → kinetic","e":"Drawing the bow stored elastic potential energy; releasing it moves the arrow."},{"l":"A car brakes hard and stops","r":"kinetic → thermal","e":"Friction moves the car’s kinetic energy into the particles of the brakes, tires and road."},{"l":"A toaster is turned on","r":"electrical → thermal and light","e":"Current through the heating elements produces heat, and the glowing elements give off light."}]},{"t":"match","s":"Drag each equation onto the quantity it finds.","pairs":[{"l":"work","r":"W = F × d","e":"Force times the distance moved along that force. Answer in joules."},{"l":"power","r":"P = W ÷ t","e":"Work divided by the time it took. Answer in watts."},{"l":"kinetic energy","r":"KE = ½ × m × v²","e":"Square the speed first, then multiply by the mass, then take half."},{"l":"potential energy","r":"PE = m × g × h","e":"Mass times gravity times height above the reference point."},{"l":"weight","r":"F = m × 10","e":"Weight is a force in newtons. This is the step people skip."}]}]},{"name":"Kinetic, Potential, Mechanical, Thermal","items":[{"t":"mc","s":"The mechanical energy of an object is:","o":["the same thing as its kinetic energy","the sum of its kinetic and potential energy","the energy of the particles inside it","the work done on it"],"a":1,"e":"Mechanical energy is kinetic plus potential, and it describes the object as a whole — a ball, a cart, a diver."},{"t":"mc","s":"The thermal energy of a substance is:","o":["the combined kinetic and potential energy of its particles","the kinetic energy of the whole object","the same as its temperature","a form of chemical energy"],"a":0,"e":"Thermal energy is kinetic plus potential energy, but at the particle level rather than the object level. Temperature is related to it but is not the same quantity — temperature is a measure, thermal energy is an amount."},{"t":"mc","s":"Mechanical energy and thermal energy are built from the same two ingredients. What is the difference between them?","o":["Mechanical energy is larger","They describe different scales — the whole object versus its particles","Thermal energy has no potential part","Mechanical energy cannot be transformed"],"a":1,"e":"Both are kinetic plus potential. Mechanical energy describes the object you can see moving. Thermal energy describes the particles inside it. Same two ingredients, two different levels of description."},{"t":"mc","s":"A cup of hot tea sits motionless on a table. Which statement is correct?","o":["It has no energy because it is not moving","It has thermal energy, and no kinetic energy as a whole object","It has kinetic energy because it is hot","It has only chemical energy"],"a":1,"e":"The cup as an object is not moving, so its kinetic energy is zero. The particles inside it are moving fast, which is thermal energy. Both statements are true at once because they describe different scales."},{"t":"mc","s":"Brake pads get hot when a car stops. The temperature rises because:","o":["heat is created out of nothing","the particles in the brake material are moving faster than before","the brakes gained chemical energy","potential energy was stored in the pads"],"a":1,"e":"Energy is never created. The car's kinetic energy was transferred into the particles of the pads and rotors, increasing their motion, and faster particle motion is what a higher temperature means."}]},{"name":"Work and Power","items":[{"t":"num","s":"A worker pushes a cart with a steady force of 65 N over a distance of 4.0 m. Find the work done.","a":260,"u":"J","e":"W = F × d = (65 N)(4.0 m) = 260 J."},{"t":"num","s":"A stagehand lifts a 14 kg crate straight up to a height of 3.0 m. Find the work done on the crate.","a":420,"u":"J","e":"First convert mass to force: F = (14 kg)(10) = 140 N. Then W = (140 N)(3.0 m) = 420 J. Putting 14 kg straight into W = F × d gives 42 J, which is the most common error on this kind of problem."},{"t":"mc","s":"A student holds a 40 N box perfectly still in front of her for 90 seconds. The work done on the box is:","o":["0 J","40 J","3600 J","not enough information"],"a":0,"e":"The box does not move, so the distance is zero, and F × 0 = 0. The 90 seconds is there to be ignored — time does not appear in W = F × d at all."},{"t":"num","s":"A groundskeeper pushes a roller with a steady force of 30 N over a distance of 9.0 m. Find the work done.","a":270,"u":"J","e":"W = (30 N)(9.0 m) = 270 J."},{"t":"num","s":"A machine does 840 J of work in 12 s. Find its power output.","a":70,"u":"W","e":"P = W ÷ t = 840 J ÷ 12 s = 70 W. The answer is in watts, not joules."},{"t":"num","s":"A small motor runs at 45 W for 20 s. Find the work it does in that time.","a":900,"u":"J","e":"Rearrange P = W ÷ t to get W = P × t = (45 W)(20 s) = 900 J. The answer is work, so it is in joules."},{"t":"num","s":"A 35 kg student runs up a stairwell that rises 5.0 m, taking 10 s. Find the student's power output.","a":175,"u":"W","e":"Three steps. F = (35 kg)(10) = 350 N. W = (350 N)(5.0 m) = 1750 J. P = 1750 J ÷ 10 s = 175 W."},{"t":"mc","s":"Two movers each carry an identical crate up the same staircase. The first takes 4 s and the second takes 12 s. Compared with the first mover, the second one does:","o":["less work and less power","the same work and less power","the same work and the same power","more work and less power"],"a":1,"e":"Same crate, same stairs, so the force and the distance are identical and the work is identical. Three times the time means one third the power. Power is a rate; work is not."}]},{"name":"Energy Equations and Conservation","items":[{"t":"num","s":"A 10 kg cart rolls at 4.0 m/s. Find its kinetic energy.","a":80,"u":"J","e":"KE = ½mv² = ½(10 kg)(4.0 m/s)² = ½(10)(16) = 80 J. Square the speed first, then multiply."},{"t":"num","s":"A moving cart has 64 J of kinetic energy and a mass of 2.0 kg. Find its speed.","a":8,"u":"m/s","e":"64 J = ½(2.0 kg)v², so 64 = 1.0v², so v² = 64 m²/s² and v = 8.0 m/s. Stopping at 64 means the square root was skipped."},{"t":"num","s":"A 12 kg toolbox rests on a shelf 6.0 m above the floor. Find its potential energy relative to the floor.","a":720,"u":"J","e":"PE = mgh = (12 kg)(10 m/s²)(6.0 m) = 720 J."},{"t":"num","s":"An 11 kg object has 1210 J of potential energy relative to the ground. Find how high above the ground it is.","a":11,"u":"m","e":"1210 J = (11 kg)(10 m/s²)h, so 1210 = 110h and h = 11 m."},{"t":"num","s":"A 7.0 kg rock is dropped from rest at a height of 2.0 m. Ignoring air resistance, find its kinetic energy just before it lands.","a":140,"u":"J","e":"PE at the top = (7.0 kg)(10 m/s²)(2.0 m) = 140 J. Mechanical energy is conserved, so all of it has become kinetic energy at the bottom: KE = 140 J."},{"t":"num","s":"A 3.0 kg stone is dropped from rest off a 45 m cliff. Ignoring air resistance, find its speed just before it lands.","a":30,"u":"m/s","e":"PE = (3.0 kg)(10 m/s²)(45 m) = 1350 J, so KE at the bottom is 1350 J. Then 1350 = ½(3.0)v², so 1350 = 1.5v², v² = 900 m²/s² and v = 30 m/s."},{"t":"mc","s":"A car doubles its speed while its mass stays the same. Its kinetic energy becomes:","o":["half as large","the same","twice as large","four times as large"],"a":3,"e":"KE depends on the square of the speed. Doubling v multiplies v² by four, so the kinetic energy becomes four times as large. This is why crash severity climbs so sharply with speed."}]}];
+const TOTAL=38;
+let LOCKED=false;const answers={},meta=[];let qnum=0,dragged=null;
+const quiz=document.getElementById('quiz'),chipbar=document.getElementById('chipbar');
+const countOf=it=>it.t==='sort'?it.tokens.length:it.t==='match'?it.pairs.length:1;
+
+function mkTok(text,id){
+ const t=document.createElement('div');t.className='tok';t.textContent=text;t.id=id;t.draggable=true;
+ t.addEventListener('dragstart',e=>{if(LOCKED){e.preventDefault();return;}dragged=t;t.classList.add('drag');
+  e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);});
+ t.addEventListener('dragend',()=>{t.classList.remove('drag');dragged=null;});
+ return t;
+}
+function dropTarget(el,onDrop){
+ el.addEventListener('dragover',e=>{if(LOCKED)return;e.preventDefault();el.classList.add('over');});
+ el.addEventListener('dragleave',()=>el.classList.remove('over'));
+ el.addEventListener('drop',e=>{if(LOCKED)return;e.preventDefault();el.classList.remove('over');
+  if(dragged)onDrop(dragged);});
+}
+
+SECTIONS.forEach((sec,si)=>{
+ const chip=document.createElement('div');chip.className='chip';chip.id='chip'+si;chip.textContent=sec.name;chipbar.appendChild(chip);
+ const el=document.createElement('section');
+ const h=document.createElement('div');h.className='shead';h.textContent=sec.name;el.appendChild(h);
+ sec.items.forEach((item,ii)=>{
+  const key=si+'_'+ii;meta.push({key,si,ii,item});
+  const card=document.createElement('div');card.className='q';card.id='q'+key;
+  const n=document.createElement('div');n.className='qn';
+  const c=countOf(item);
+  n.textContent=c===1?('Question '+(++qnum)):('Questions '+(qnum+1)+'\u2013'+(qnum+=c));
+  card.appendChild(n);
+  const stem=document.createElement('div');stem.className='stem';stem.textContent=item.s;card.appendChild(stem);
+
+  if(item.t==='sort'){
+   answers[key]={};
+   const tray=document.createElement('div');tray.className='tray';tray.id='tray'+key;
+   dropTarget(tray,tok=>{tray.appendChild(tok);delete answers[key][tok.dataset.ti];refreshChips();});
+   item.tokens.forEach((tk,ti)=>{const t=mkTok(tk.text,'tok'+key+'_'+ti);t.dataset.ti=ti;tray.appendChild(t);});
+   card.appendChild(tray);
+   const bins=document.createElement('div');bins.className='bins';
+   item.bins.forEach((bn,bi)=>{
+    const b=document.createElement('div');b.className='bin';
+    const lab=document.createElement('div');lab.className='binlab';lab.textContent=bn;b.appendChild(lab);
+    const dz=document.createElement('div');dz.className='bindrop';b.appendChild(dz);
+    dropTarget(b,tok=>{dz.appendChild(tok);answers[key][tok.dataset.ti]=bi;refreshChips();});
+    bins.appendChild(b);});
+   card.appendChild(bins);
+  }else if(item.t==='match'){
+   answers[key]={};
+   const tray=document.createElement('div');tray.className='tray';
+   dropTarget(tray,tok=>{tray.appendChild(tok);delete answers[key][tok.dataset.pi];refreshChips();});
+   const order=item.pairs.map((_,i)=>i);
+   for(let i=order.length-1;i>0;i--){const j=(i*7+3)%(i+1);[order[i],order[j]]=[order[j],order[i]];}
+   order.forEach(pi=>{const t=mkTok(item.pairs[pi].r,'tok'+key+'_'+pi);t.dataset.pi=pi;tray.appendChild(t);});
+   card.appendChild(tray);
+   item.pairs.forEach((p,pi)=>{
+    const row=document.createElement('div');row.className='mrow';
+    const lft=document.createElement('div');lft.className='mleft';lft.textContent=p.l;row.appendChild(lft);
+    const slot=document.createElement('div');slot.className='mslot';slot.id='slot'+key+'_'+pi;
+    dropTarget(slot,tok=>{
+     const prev=slot.querySelector('.tok');
+     if(prev){tray.appendChild(prev);delete answers[key][prev.dataset.pi];}
+     slot.appendChild(tok);answers[key][tok.dataset.pi]=pi;refreshChips();});
+    row.appendChild(slot);card.appendChild(row);});
+  }else if(item.t==='mc'){
+   const wrap=document.createElement('div');wrap.className='opts';
+   item.o.forEach((txt,oi)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=txt;
+    b.addEventListener('click',()=>{if(LOCKED)return;answers[key]=oi;
+     wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');refreshChips();});
+    wrap.appendChild(b);});
+   card.appendChild(wrap);
+  }else{
+   const wrap=document.createElement('div');wrap.className='numwrap';
+   const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.placeholder='answer';inp.id='in'+key;
+   inp.addEventListener('input',()=>{if(LOCKED)return;answers[key]=inp.value.trim();refreshChips();});
+   const u=document.createElement('span');u.className='unit';u.textContent=item.u;
+   wrap.appendChild(inp);wrap.appendChild(u);card.appendChild(wrap);}
+  const rev=document.createElement('div');rev.className='reveal';rev.id='rev'+key;card.appendChild(rev);
+  el.appendChild(card);});
+ quiz.appendChild(el);});
+
+function placedCount(item,a){
+ if(item.t==='sort')return Object.keys(a||{}).length;
+ if(item.t==='match')return Object.keys(a||{}).length;
+ return (a!==undefined&&a!=='')?1:0;}
+function answeredCount(si){let n=0;SECTIONS[si].items.forEach((it,ii)=>{n+=placedCount(it,answers[si+'_'+ii]);});return n;}
+function sectionTotal(si){let n=0;SECTIONS[si].items.forEach(it=>{n+=countOf(it);});return n;}
+function refreshChips(){SECTIONS.forEach((sec,si)=>{const c=document.getElementById('chip'+si);
+ if(answeredCount(si)===sectionTotal(si))c.classList.add('done');else c.classList.remove('done');});}
+refreshChips();
+
+const overlay=document.getElementById('overlay'),modalbox=document.getElementById('modalbox');
+function closeModal(){overlay.classList.remove('on');}
+document.getElementById('gradebtn').addEventListener('click',()=>{
+ if(LOCKED)return;
+ const name=document.getElementById('nameinput').value.trim();
+ if(!name){modalbox.innerHTML='<h2>Name needed</h2><p>Type your name in the box at the bottom before grading.</p><div class="mbtns"><button class="mbtn go" id="mgo">Go back</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;return;}
+ const missing=[];SECTIONS.forEach((sec,si)=>{const n=answeredCount(si),t=sectionTotal(si);
+  if(n<t)missing.push(sec.name+' \u2014 '+(t-n)+' left');});
+ if(missing.length){modalbox.innerHTML='<h2>Some sections are not finished</h2><p>These still have items left:</p><ul>'+
+   missing.map(m=>'<li>'+m+'</li>').join('')+'</ul><p>Go back and finish, or grade now. If you grade now, anything left counts as wrong and nothing can be changed afterward.</p>'+
+   '<div class="mbtns"><button class="mbtn go" id="mgo">Go back and finish</button><button class="mbtn any" id="many">Grade anyway</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;
+  document.getElementById('many').onclick=()=>{closeModal();doGrade(name);};return;}
+ doGrade(name);});
+
+function numOK(raw,target){if(raw===undefined)return false;const cl=String(raw).replace(/[^0-9.\-]/g,'');
+ if(cl==='')return false;const v=parseFloat(cl);if(isNaN(v))return false;
+ const tol=Math.max(Math.abs(target)*0.01,0.02);return Math.abs(v-target)<=tol;}
+
+function doGrade(name){
+ LOCKED=true;let correct=0;const perSec=SECTIONS.map(()=>({c:0,n:0}));
+ meta.forEach(m=>{const {key,si,item}=m;const card=document.getElementById('q'+key);const rev=document.getElementById('rev'+key);
+  const c=countOf(item);perSec[si].n+=c;
+  document.querySelectorAll('#q'+key+' .tok').forEach(t=>t.draggable=false);
+  if(item.t==='sort'){
+   let got=0;const lines=[];
+   item.tokens.forEach((tk,ti)=>{const el=document.getElementById('tok'+key+'_'+ti);
+    const chosen=(answers[key]||{})[ti];const ok=(chosen===tk.bin);
+    if(el)el.classList.add(ok?'ok':'bad');
+    if(ok){got++;}else{lines.push('<li><b>'+tk.text+'</b> \u2014 '+tk.e+'</li>');}});
+   correct+=got;perSec[si].c+=got;
+   card.classList.add(got===c?'ok':got===0?'no':'part');
+   rev.innerHTML='<span class="verdict">'+got+' of '+c+' correct</span>'+
+    (lines.length?'<ul class="revlist">'+lines.join('')+'</ul>':'Every one placed correctly.');
+   return;}
+  if(item.t==='match'){
+   let got=0;const lines=[];
+   item.pairs.forEach((p,pi)=>{const el=document.getElementById('tok'+key+'_'+pi);
+    const placedAt=(answers[key]||{})[pi];const ok=(placedAt===pi);
+    if(el)el.classList.add(ok?'ok':'bad');
+    if(ok){got++;}else{lines.push('<li><b>'+p.l+'</b> goes with <b>'+p.r+'</b>. '+p.e+'</li>');}});
+   correct+=got;perSec[si].c+=got;
+   card.classList.add(got===c?'ok':got===0?'no':'part');
+   rev.innerHTML='<span class="verdict">'+got+' of '+c+' correct</span>'+
+    (lines.length?'<ul class="revlist">'+lines.join('')+'</ul>':'Every pair matched correctly.');
+   return;}
+  let ok=false;const given=answers[key];
+  if(item.t==='mc'){ok=(given===item.a);card.querySelectorAll('.opt').forEach((b,i)=>{if(i===item.a)b.classList.add('correct');});}
+  else{ok=numOK(given,item.a);const inp=document.getElementById('in'+key);if(inp)inp.disabled=true;}
+  if(ok){correct++;perSec[si].c++;card.classList.add('ok');}else{card.classList.add('no');}
+  const blank=(given===undefined||given==='')?'You left this blank. ':'';
+  const right=item.t==='mc'?('Correct answer: '+item.o[item.a]+'. '):('Correct answer: '+item.a+' '+item.u+'. ');
+  rev.innerHTML='<span class="verdict">'+(ok?'Correct':'Not correct')+'</span>'+blank+(ok?'':right)+item.e;});
+ const pct=Math.round(correct/TOTAL*100),now=new Date();
+ const stamp=now.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' at '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+ const sc=document.getElementById('scorecard');
+ sc.innerHTML='<h2>Score Card</h2><div class="who">'+name.replace(/[&<>]/g,'')+'</div><div class="big">'+correct+' / '+TOTAL+'</div><div class="pct">'+pct+'%</div>'+
+  '<table><tr><th>Section</th><th class="sc">Score</th></tr>'+
+  SECTIONS.map((s,i)=>'<tr><td>'+s.name+'</td><td class="sc">'+perSec[i].c+' / '+perSec[i].n+'</td></tr>').join('')+'</table>'+
+  '<div class="stamp">Completed '+stamp+'</div>';
+ sc.classList.add('on');
+ document.getElementById('gradebar').innerHTML='<div style="color:#fff;width:100%;text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;padding:12px">Graded and locked. Scroll down for the explanations.</div>';
+ sc.scrollIntoView({behavior:'smooth',block:'start'});}
+</script></body></html>
