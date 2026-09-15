@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics · Forces Review</title>
+<style>
+:root{--navy:#1F4E79;--navy-dk:#173a5a;--gold:#c8952d;--gold-soft:#f7edd9;
+ --ink:#22303e;--soft:#55636f;--paper:#f7f5ef;--card:#fff;
+ --good:#2e7d4f;--good-bg:#e3f2e9;--bad:#b3392e;--bad-bg:#f9e5e2;--line:#d9d4c8;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--paper);color:var(--ink);
+ line-height:1.55;padding-bottom:130px;-webkit-text-size-adjust:100%;}
+header{background:var(--navy);color:#fff;padding:20px 18px;}
+header h1{font-size:1.3rem;} header p{font-size:.88rem;opacity:.9;margin-top:5px;}
+#chipbar{position:sticky;top:0;z-index:40;background:var(--navy-dk);padding:9px 10px;
+ display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.chip{flex:0 0 auto;font-size:.72rem;font-family:system-ui,-apple-system,sans-serif;
+ padding:5px 11px;border-radius:11px;background:rgba(255,255,255,.16);color:#fff;white-space:nowrap;}
+.chip.done{background:var(--gold);color:#2b1d05;font-weight:600;}
+main{max-width:820px;margin:0 auto;padding:16px 14px;}
+.eqbar{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);padding:12px 15px;margin-bottom:20px;font-size:.95rem;line-height:1.8;}
+.eqnote{font-size:.85rem;color:var(--soft);}
+section{margin-bottom:28px;}
+.shead{font-size:1.05rem;color:var(--navy);border-bottom:2px solid var(--gold);
+ padding-bottom:5px;margin-bottom:13px;font-weight:700;}
+.snote{font-size:.87rem;color:var(--soft);font-style:italic;margin:-6px 0 13px 0;}
+.q{background:var(--card);border:1px solid var(--line);padding:14px 15px;margin-bottom:12px;}
+.qn{font-family:system-ui,-apple-system,sans-serif;font-size:.7rem;color:var(--soft);
+ letter-spacing:.9px;text-transform:uppercase;margin-bottom:6px;}
+.stem{font-size:1rem;margin-bottom:11px;}
+table.data{border-collapse:collapse;margin:0 0 11px 0;font-size:.92rem;}
+table.data td{border:1px solid var(--line);padding:5px 11px;}
+table.data tr:first-child td{background:var(--gold-soft);font-weight:600;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{display:block;width:100%;text-align:left;font-family:Georgia,serif;font-size:.96rem;
+ padding:10px 13px;background:#fbfaf6;border:1.5px solid var(--line);border-radius:6px;color:var(--ink);}
+.opt.sel{background:var(--gold-soft);border-color:var(--gold);font-weight:600;}
+.numwrap{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.numwrap input{font-family:Georgia,serif;font-size:1.05rem;padding:9px 11px;width:170px;
+ border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;color:var(--ink);}
+.numwrap input:focus{outline:none;border-color:var(--gold);background:#fff;}
+.unit{font-size:.95rem;color:var(--soft);}
+textarea{width:100%;min-height:130px;font-family:Georgia,serif;font-size:.98rem;padding:10px 12px;
+ border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;color:var(--ink);resize:vertical;line-height:1.5;}
+textarea:focus{outline:none;border-color:var(--gold);background:#fff;}
+.reveal{display:none;margin-top:11px;padding:11px 13px;border-radius:6px;font-size:.92rem;}
+.reveal .verdict{font-weight:700;display:block;margin-bottom:4px;
+ font-family:system-ui,-apple-system,sans-serif;font-size:.78rem;letter-spacing:.7px;text-transform:uppercase;}
+.q.ok{border-color:var(--good);} .q.ok .reveal{display:block;background:var(--good-bg);color:#1d5334;}
+.q.no{border-color:var(--bad);} .q.no .reveal{display:block;background:var(--bad-bg);color:#7d2820;}
+.q.self{border-color:var(--navy);} .q.self .reveal{display:block;background:#eaf0f6;color:#1f3a55;}
+.q.ok .opt.correct,.q.no .opt.correct{border-color:var(--good);background:var(--good-bg);}
+.q.no .opt.sel{border-color:var(--bad);background:var(--bad-bg);}
+#gradebar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--navy);
+ padding:10px 12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:0 -3px 14px rgba(0,0,0,.22);}
+#gradebar input{flex:1 1 150px;min-width:130px;font-family:Georgia,serif;font-size:1rem;padding:10px 12px;border:none;border-radius:6px;}
+#gradebtn{font-family:system-ui,-apple-system,sans-serif;font-weight:700;font-size:.9rem;letter-spacing:1.1px;
+ padding:12px 20px;background:var(--gold);color:#2b1d05;border:none;border-radius:6px;}
+#overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(18,26,36,.72);padding:22px 16px;overflow-y:auto;}
+#overlay.on{display:block;}
+.modal{max-width:520px;margin:40px auto;background:var(--card);border-radius:9px;padding:22px 20px;border-top:6px solid var(--gold);}
+.modal h2{font-size:1.15rem;color:var(--navy);margin-bottom:11px;}
+.modal p{font-size:.95rem;margin-bottom:11px;} .modal ul{margin:0 0 14px 20px;font-size:.95rem;}
+.mbtns{display:flex;gap:10px;flex-wrap:wrap;}
+.mbtn{font-family:system-ui,-apple-system,sans-serif;font-size:.88rem;font-weight:600;padding:11px 17px;border-radius:6px;border:none;}
+.mbtn.go{background:var(--navy);color:#fff;} .mbtn.any{background:var(--gold);color:#2b1d05;}
+#scorecard{display:none;background:var(--card);border:2px solid var(--navy);border-top:8px solid var(--gold);padding:20px 18px;margin-bottom:24px;}
+#scorecard.on{display:block;}
+#scorecard h2{color:var(--navy);font-size:1.25rem;margin-bottom:3px;}
+.who{font-size:1rem;margin-bottom:12px;}
+.big{font-size:2.5rem;color:var(--navy);font-weight:700;line-height:1.1;}
+.pct{font-size:1.15rem;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.selfnote{font-size:.9rem;color:var(--soft);margin-bottom:14px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:12px;}
+#scorecard th,#scorecard td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);}
+#scorecard th{font-family:system-ui,-apple-system,sans-serif;font-size:.74rem;letter-spacing:.6px;text-transform:uppercase;color:var(--soft);}
+#scorecard td.sc{text-align:right;}
+.stamp{font-size:.8rem;color:var(--soft);font-style:italic;}
+</style></head><body>
+<header><h1>Forces Review</h1><p>Physics · answer everything, then press GRADE ME</p></header>
+<div id="chipbar"></div>
+<main>
+<div class="eqbar">1. v = d/t &nbsp;&nbsp; 2. a = Δv/t &nbsp;&nbsp; 3. dᶠ − dᵢ = vᵢt + ½at² &nbsp;&nbsp; 4. vᶠ² − vᵢ² = 2ad<br>Fₙₑₜ = ma &nbsp;&nbsp; W = mg &nbsp;&nbsp; g = 9.8 m/s², rounded to 10 m/s² in this class<br><span class="eqnote">Type numbers only. The unit is shown beside each box.</span></div>
+<div id="scorecard"></div><div id="quiz"></div></main>
+<div id="gradebar"><input id="nameinput" type="text" placeholder="Type your name" autocomplete="off"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div class="modal" id="modalbox"></div></div>
+<script>
+const SECTIONS=[{"name":"Choosing the Equation","items":[{"t":"mc","s":"A problem gives you a time and asks how far something traveled. Which equation do you use?","o":["Equation 1","Equation 2","Equation 3","Equation 4"],"a":2,"e":"Equation 3, dᶠ − dᵢ = vᵢt + ½at². It takes a time and returns a distance."},{"t":"mc","s":"A problem has no time in it anywhere and asks for a distance. Which equation do you use?","o":["Equation 1","Equation 2","Equation 3","Equation 4"],"a":3,"e":"Equation 4, vᶠ² − vᵢ² = 2ad. It is the one with no t in it, and it solves only for a or d."},{"t":"mc","s":"A problem gives a time and asks for the final speed. Which equation do you use?","o":["Equation 1","Equation 2 rearranged","Equation 3","Equation 4"],"a":1,"e":"Equation 2 rearranged, vᶠ = vᵢ + at. It is not a fifth equation. It is Equation 2 with the algebra already done."},{"t":"mc","s":"Which equation gives the average speed over a whole trip?","o":["Equation 1","Equation 2","Equation 3","Equation 4"],"a":0,"e":"Equation 1, v = d/t."},{"t":"mc","s":"Which quantity does Fₙₑₜ = ma give you when you divide a force by a mass?","o":["velocity","acceleration","weight","distance"],"a":1,"e":"a = Fₙₑₜ ÷ m. Dividing newtons by kilograms gives m/s²."},{"t":"mc","s":"To turn a mass in kilograms into a weight in newtons you:","o":["divide by 10","multiply by 10","leave it alone","square it"],"a":1,"e":"W = mg, and g = 10 m/s² in this class. A 5 kg object weighs 50 N."}]},{"name":"Forces and Free-Body Diagrams","items":[{"t":"mc","s":"Force is measured in:","o":["joules","newtons","watts","kilograms"],"a":1,"e":"The newton. A kilogram is mass, a joule is energy, a watt is power."},{"t":"mc","s":"Which of these is NOT a force?","o":["friction","tension","velocity","weight"],"a":2,"e":"Velocity describes motion, not a push or a pull. It never appears on a free-body diagram."},{"t":"mc","s":"Which force acts without the two objects touching?","o":["friction","the normal force","gravity","tension"],"a":2,"e":"Gravity is a long-range force. The other three all require contact."},{"t":"mc","s":"A book rests motionless on a level table. Its free-body diagram has:","o":["one arrow, weight down","two arrows, weight down and the normal force up, equal in length","three arrows, including one for the table","two arrows, both pointing down"],"a":1,"e":"Weight down, normal force up, equal length because the book is not accelerating. A third arrow of any kind is an error."},{"t":"mc","s":"A crate slides to the right across a floor and slows down. Nothing is pushing it. The horizontal forces on it are:","o":["friction to the left only","a forward force to the right only","friction left and a forward force right","no horizontal forces"],"a":0,"e":"Once nothing is pushing it, the only horizontal force is friction, acting opposite the motion. There is no such thing as a force of motion."},{"t":"mc","s":"Which of these should never be drawn on a free-body diagram?","o":["the normal force","an arrow showing the direction of motion","air resistance","weight"],"a":1,"e":"Motion is not a force. Drawing a velocity arrow on a free-body diagram is the most common error in this unit."},{"t":"mc","s":"The normal force on an object sitting on a level table is:","o":["the pull of gravity on the object","the surface pushing up on the object","the friction between the object and the table","the weight of the table"],"a":1,"e":"The normal force is the surface pushing perpendicular to itself, on the object. On a level table it points straight up."}]},{"name":"Newton's Laws","items":[{"t":"mc","s":"Newton's First Law says an object in motion stays in motion at constant velocity unless:","o":["friction is removed","it runs out of energy","an unbalanced force acts on it","a force stops pushing it"],"a":2,"e":"Only an unbalanced force changes motion. An object needs no forward push to keep moving."},{"t":"mc","s":"An object's inertia depends on its:","o":["speed","mass","weight on the Moon","acceleration"],"a":1,"e":"Mass is the measure of inertia. More mass means more resistance to a change in motion."},{"t":"mc","s":"A garden hose kicks backward as water shoots forward out of the nozzle. Which law explains this?","o":["First Law","Second Law","Third Law","No law applies"],"a":2,"e":"Two objects push on each other at the same time — the hose on the water and the water on the hose. That is a Third Law pair."},{"t":"mc","s":"The same engine gives a small car a larger acceleration than a heavy truck. Which law explains this?","o":["First Law","Second Law","Third Law","No law applies"],"a":1,"e":"Same force, different mass, different acceleration. That is the Second Law."},{"t":"mc","s":"A passenger slides across the seat when a car turns sharply. Which law explains this?","o":["First Law","Second Law","Third Law","No law applies"],"a":0,"e":"The car changes direction; the passenger keeps going the way they were going. That is inertia, which is the First Law."},{"t":"mc","s":"The two forces in a Third Law pair never cancel out because:","o":["one is always larger","they act on two different objects","they act at different times","friction absorbs one of them"],"a":1,"e":"Forces cancel only when they act on the same object. A Third Law pair always has one force on each of two different objects."},{"t":"mc","s":"A skydiver falls at a constant 50 m/s. The forces on her are:","o":["unbalanced, pointing down","unbalanced, pointing up","balanced, and she is not accelerating","zero, because nothing touches her"],"a":2,"e":"Constant velocity means no change in motion, so the net force is zero. Air resistance has grown until it equals her weight. Moving is not the test; changing is."}]},{"name":"Mass and Weight","items":[{"t":"mc","s":"Which statement is correct?","o":["Mass is measured in newtons and weight in kilograms","Mass and weight are two names for the same thing","Mass is the amount of matter; weight is the force of gravity on it","Weight is the same everywhere in the universe"],"a":2,"e":"Mass is matter, measured in kilograms, and it does not change with location. Weight is a force, measured in newtons, and it depends on the gravity where you are."},{"t":"num","s":"A student has a mass of 32 kg. Find the student's weight.","a":320,"u":"N","e":"W = mg = (32 kg)(10 m/s²) = 320 N."},{"t":"num","s":"A crate weighs 750 N on Earth. Find its mass.","a":75,"u":"kg","e":"m = W ÷ g = 750 N ÷ 10 m/s² = 75 kg. The answer is a mass, so it is in kilograms."},{"t":"num","s":"A bag of flour has a mass of 1.4 kg. Find its weight.","a":14,"u":"N","e":"W = (1.4 kg)(10 m/s²) = 14 N."},{"t":"mc","s":"An astronaut travels from Earth to the Moon. Compared with on Earth, on the Moon the astronaut's:","o":["mass and weight both decrease","mass stays the same and weight decreases","mass decreases and weight stays the same","mass and weight both stay the same"],"a":1,"e":"Mass is the amount of matter and does not change. Weight depends on local gravity, which is weaker on the Moon."}]},{"name":"Net Force and Acceleration","items":[{"t":"mc","s":"When the forces on an object are balanced, the object:","o":["must be at rest","does not change its motion","must be slowing down","must be speeding up"],"a":1,"e":"Balanced forces mean no change in motion. An object at rest stays at rest and a moving object keeps going at constant velocity."},{"t":"num","s":"Two ropes pull a sled along a track in opposite directions, one with 90 N and one with 34 N. Find the net force.","a":56,"u":"N","e":"Fₙₑₜ = 90 N − 34 N = 56 N, in the direction of the larger pull."},{"t":"num","s":"A net force of 45 N acts on a 9.0 kg cart. Find its acceleration.","a":5,"u":"m/s²","e":"a = Fₙₑₜ ÷ m = 45 N ÷ 9.0 kg = 5.0 m/s²."},{"t":"num","s":"A net force of 96 N produces an acceleration of 8.0 m/s². Find the object's mass.","a":12,"u":"kg","e":"m = Fₙₑₜ ÷ a = 96 N ÷ 8.0 m/s² = 12 kg. Answering 12 N is the common error."},{"t":"num","s":"A 2.5 kg cart accelerates at 4.0 m/s². Find the net force on it.","a":10,"u":"N","e":"Fₙₑₜ = ma = (2.5 kg)(4.0 m/s²) = 10 N."},{"t":"num","s":"A 16 kg box is pushed to the right with 75 N while friction pushes back with 27 N. Find the acceleration.","a":3,"u":"m/s²","e":"Fₙₑₜ = 75 N − 27 N = 48 N. Then a = 48 N ÷ 16 kg = 3.0 m/s². Using 75 N instead of the net force gives 4.7 m/s²."},{"t":"num","s":"A 4.0 kg model rocket is pushed upward by 70 N of thrust while its weight pulls down. Find its acceleration.","a":7.5,"u":"m/s²","e":"Weight = (4.0 kg)(10) = 40 N down. Fₙₑₜ = 70 N − 40 N = 30 N up. a = 30 N ÷ 4.0 kg = 7.5 m/s² upward. Forgetting the weight gives 17.5 m/s²."}]},{"name":"Friction","items":[{"t":"mc","s":"Friction between two surfaces always acts:","o":["downward","opposite the motion or attempted motion","in the direction of motion","perpendicular to the surface"],"a":1,"e":"Friction opposes motion, or opposes the motion you are trying to start."},{"t":"mc","s":"Compared with the friction on a box already sliding, the force needed to start that box moving is:","o":["smaller","the same","larger","zero"],"a":2,"e":"The maximum static friction is larger than the kinetic friction, which is why a heavy box lurches once it breaks free."},{"t":"mc","s":"A block is dragged across a table at a steady speed by a spring scale. The scale reads 4 N. The friction force is:","o":["0 N","less than 4 N","exactly 4 N","more than 4 N"],"a":2,"e":"Steady speed means balanced forces, so the pull and the friction are equal. This is how friction gets measured in the lab."},{"t":"num","s":"A block presses on a surface with a normal force of 60 N. The coefficient of friction is 0.25. Find the friction force.","a":15,"u":"N","e":"friction = μ × normal force = (0.25)(60 N) = 15 N."},{"t":"num","s":"A block presses down with 45 N and the friction on it measures 18 N. Find the coefficient of friction.","a":0.4,"u":"(no unit)","e":"μ = friction ÷ normal force = 18 N ÷ 45 N = 0.40. Newtons divided by newtons cancel, so μ has no unit."},{"t":"mc","s":"The same block is turned on its narrow side, so less of it touches the table. The normal force does not change. The friction force:","o":["increases a lot","decreases a lot","stays about the same","drops to zero"],"a":2,"e":"Friction depends on the two surfaces and on how hard they are pressed together, not on how much area is touching."}]},{"name":"Force and Motion Together","items":[{"t":"num","s":"A 5.0 kg cart starts from rest. A net force of 30 N acts on it. Find its acceleration.","a":6,"u":"m/s²","e":"a = 30 N ÷ 5.0 kg = 6.0 m/s²."},{"t":"num","s":"Using the cart from the previous question, use Equation 3 to find how far it travels in 2.0 s.","a":12,"u":"m","e":"d = vᵢt + ½at² = (0)(2.0 s) + ½(6.0 m/s²)(2.0 s)² = ½(6.0)(4.0) = 12 m."},{"t":"num","s":"A 1000 kg car moving at 10 m/s brakes with a net force of 2500 N against the motion until it stops. Find its acceleration.","a":-2.5,"u":"m/s²","e":"a = −2500 N ÷ 1000 kg = −2.5 m/s². The sign is negative because the force opposes the motion."},{"t":"num","s":"Using the car from the previous question, use Equation 4 to find its stopping distance.","a":20,"u":"m","e":"vᶠ² − vᵢ² = 2ad → (0)² − (10 m/s)² = 2(−2.5 m/s²)d → −100 = −5.0d → d = 20 m."},{"t":"num","s":"A 0.60 kg ball at rest is struck with a net force of 4.8 N for 2.5 s. Using Equation 2 rearranged, find its speed at the end of that time.","a":20,"u":"m/s","e":"a = 4.8 N ÷ 0.60 kg = 8.0 m/s². Then vᶠ = vᵢ + at = 0 + (8.0 m/s²)(2.5 s) = 20 m/s."},{"t":"num","s":"A 40 kg sled is already moving at 4.0 m/s when a net force of 80 N is applied in the direction of motion. Using Equation 3, find how far it travels in the next 4.0 s.","a":32,"u":"m","e":"a = 80 N ÷ 40 kg = 2.0 m/s². d = (4.0 m/s)(4.0 s) + ½(2.0 m/s²)(4.0 s)² = 16 m + 16 m = 32 m. Dropping the vᵢt term gives 16 m."},{"t":"num","s":"A ball is dropped from rest and falls for 4.0 s. Using a = 10 m/s², find how far it falls.","a":80,"u":"m","e":"d = (0)(4.0 s) + ½(10 m/s²)(4.0 s)² = ½(10)(16) = 80 m."},{"t":"graph","s":"A cart is pulled with different net forces and the acceleration is measured each time. Net force is plotted on the vertical axis against acceleration on the horizontal axis, giving a straight line through the origin.","rows":[["Acceleration (m/s²)","1.5","3.0","4.5","6.0"],["Net force (N)","9.0","18.0","27.0","36.0"]],"q":"Find the slope of the line.","a":6,"u":"N per m/s²","e":"Slope = (36.0 N − 9.0 N) ÷ (6.0 m/s² − 1.5 m/s²) = 27.0 ÷ 4.5 = 6.0. Any two points on the line give the same value."},{"t":"num","s":"Using the graph from the previous question, predict the acceleration this cart would have under a net force of 30 N.","a":5,"u":"m/s²","e":"a = F ÷ m = 30 N ÷ 6.0 kg = 5.0 m/s²."},{"t":"graph","s":"A 2.0 kg cart speeds up steadily from rest. Its velocity is recorded below.","rows":[["Time (s)","0","3.5"],["Velocity (m/s)","0","14.0"]],"q":"Find the net force acting on the cart during this interval.","a":8,"u":"N","e":"a = Δv ÷ t = 14.0 m/s ÷ 3.5 s = 4.0 m/s². Then Fₙₑₜ = ma = (2.0 kg)(4.0 m/s²) = 8.0 N."}]},{"name":"Draw the Free-Body Diagram","sa":true,"note":"Draw each one in the box. Label every arrow with what causes it.","items":[{"t":"sa","draw":true,"s":"A crate is pushed to the right across a level floor and moves at a steady speed. Draw the free-body diagram. Then state how the lengths of your arrows compare to each other, and why.","m":"Four arrows: weight down, normal force up, the push to the right, friction to the left. The vertical pair are equal in length and the horizontal pair are equal in length. Steady speed means the velocity is not changing, so by the First Law the net force is zero, and that only works if each opposing pair cancels. An arrow labeled motion is wrong — velocity is not a force."},{"t":"sa","draw":true,"s":"A lamp hangs motionless from a cord attached to the ceiling. Draw the free-body diagram.","m":"Two arrows only: weight down and cord tension up, equal in length because the lamp is not accelerating. No third arrow. No horizontal arrows."},{"t":"sa","draw":true,"s":"A skydiver has jumped and is falling, but has not reached terminal velocity yet — she is still speeding up. Draw the free-body diagram.","m":"Two arrows: weight down and air resistance up. The weight arrow must be drawn longer than the air resistance arrow, because she is still speeding up, which means the net force is downward. Equal arrows would be terminal velocity, which is not what is described."}]},{"name":"Short Answer","sa":true,"note":"These are not scored. After you grade, compare what you wrote to the model answer.","items":[{"t":"sa","s":"A cart is pulled with several different net forces and the acceleration is measured each time. Net force is plotted on the vertical axis against acceleration on the horizontal axis, and the points fall on a straight line through the origin. State what the slope of that line represents. Show how the units of the slope work out. Then explain what a steeper line would mean about a second cart tested the same way.","m":"The slope is the mass of the cart. Units: rise over run is newtons divided by m/s², and since a newton is a kg·m/s², the m/s² cancels and what is left is kilograms. A steeper line means more newtons are needed per unit of acceleration, so the second cart has more mass. Students who answer ‘lighter’ are reasoning from an acceleration-versus-mass graph instead."},{"t":"sa","s":"A group drags a wooden block across a lab table. They find that the friction force divided by the force pressing the block down comes out to 0.30 every time, no matter how much mass they stack on the block. Explain what that 0.30 tells them. Then explain why that number stayed the same while the friction force itself did not.","m":"The 0.30 says the friction force is about three tenths of the force pressing the surfaces together. It describes the pair of surfaces — wood on that table — not the block by itself and not the table by itself. Adding mass increases the force pressing down, so the friction force increases in proportion, but the ratio between them does not change. That is why the friction grew and the number held steady."}]}];
+const AUTO=48, SACOUNT=5;
+let LOCKED=false;const answers={},meta=[];let qnum=0;
+const quiz=document.getElementById('quiz'),chipbar=document.getElementById('chipbar');
+SECTIONS.forEach((sec,si)=>{
+ const chip=document.createElement('div');chip.className='chip';chip.id='chip'+si;chip.textContent=sec.name;chipbar.appendChild(chip);
+ const el=document.createElement('section');
+ const h=document.createElement('div');h.className='shead';h.textContent=sec.name;el.appendChild(h);
+ if(sec.sa){const nt=document.createElement('div');nt.className='snote';
+  nt.textContent='These are not scored. After you grade, compare what you wrote to the model answer.';el.appendChild(nt);}
+ sec.items.forEach((item,ii)=>{
+  qnum++;const key=si+'_'+ii;meta.push({key,si,item});
+  const card=document.createElement('div');card.className='q';card.id='q'+key;
+  const n=document.createElement('div');n.className='qn';
+  n.textContent='Question '+qnum;card.appendChild(n);
+  const stem=document.createElement('div');stem.className='stem';stem.textContent=item.s;card.appendChild(stem);
+  if(item.rows){
+   const tb=document.createElement('table');tb.className='data';
+   item.rows.forEach(r=>{const tr=document.createElement('tr');r.forEach(cv=>{const td=document.createElement('td');td.textContent=cv;tr.appendChild(td);});tb.appendChild(tr);});
+   card.appendChild(tb);
+   const q2=document.createElement('div');q2.className='stem';q2.textContent=item.q;card.appendChild(q2);}
+  if(item.t==='mc'){
+   const wrap=document.createElement('div');wrap.className='opts';
+   item.o.forEach((txt,oi)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=txt;
+    b.addEventListener('click',()=>{if(LOCKED)return;answers[key]=oi;
+     wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');refreshChips();});
+    wrap.appendChild(b);});
+   card.appendChild(wrap);
+  }else if(item.t==='sa'){
+   const ta=document.createElement('textarea');ta.id='in'+key;ta.placeholder=item.draw?'Draw it on paper, then list your arrows here.':'Write your answer here.';
+   ta.addEventListener('input',()=>{if(LOCKED)return;answers[key]=ta.value.trim();refreshChips();});
+   card.appendChild(ta);
+  }else{
+   const wrap=document.createElement('div');wrap.className='numwrap';
+   const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.placeholder='answer';inp.id='in'+key;
+   inp.addEventListener('input',()=>{if(LOCKED)return;answers[key]=inp.value.trim();refreshChips();});
+   const u=document.createElement('span');u.className='unit';u.textContent=item.u;
+   wrap.appendChild(inp);wrap.appendChild(u);card.appendChild(wrap);}
+  const rev=document.createElement('div');rev.className='reveal';rev.id='rev'+key;card.appendChild(rev);
+  el.appendChild(card);});
+ quiz.appendChild(el);});
+function answeredCount(si){let n=0;SECTIONS[si].items.forEach((it,ii)=>{const v=answers[si+'_'+ii];if(v!==undefined&&v!=='')n++;});return n;}
+function refreshChips(){SECTIONS.forEach((sec,si)=>{const c=document.getElementById('chip'+si);
+ if(answeredCount(si)===sec.items.length)c.classList.add('done');else c.classList.remove('done');});}
+refreshChips();
+const overlay=document.getElementById('overlay'),modalbox=document.getElementById('modalbox');
+function closeModal(){overlay.classList.remove('on');}
+document.getElementById('gradebtn').addEventListener('click',()=>{
+ if(LOCKED)return;
+ const name=document.getElementById('nameinput').value.trim();
+ if(!name){modalbox.innerHTML='<h2>Name needed</h2><p>Type your name in the box at the bottom before grading.</p><div class="mbtns"><button class="mbtn go" id="mgo">Go back</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;return;}
+ const missing=[];SECTIONS.forEach((sec,si)=>{const n=answeredCount(si);if(n<sec.items.length)missing.push(sec.name+' — '+(sec.items.length-n)+' left');});
+ if(missing.length){modalbox.innerHTML='<h2>Some sections are not finished</h2><p>These still have unanswered questions:</p><ul>'+
+   missing.map(m=>'<li>'+m+'</li>').join('')+'</ul><p>Go back and finish, or grade now. If you grade now, every blank counts as wrong and nothing can be changed afterward.</p>'+
+   '<div class="mbtns"><button class="mbtn go" id="mgo">Go back and finish</button><button class="mbtn any" id="many">Grade anyway</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;
+  document.getElementById('many').onclick=()=>{closeModal();doGrade(name);};return;}
+ doGrade(name);});
+function numOK(raw,target){if(raw===undefined)return false;const cl=String(raw).replace(/[^0-9.\-]/g,'');
+ if(cl==='')return false;const v=parseFloat(cl);if(isNaN(v))return false;
+ const tol=Math.max(Math.abs(target)*0.01,0.02);return Math.abs(v-target)<=tol;}
+function doGrade(name){
+ LOCKED=true;let correct=0;const perSec=SECTIONS.map(()=>({c:0,n:0}));
+ meta.forEach(m=>{const {key,si,item}=m;const card=document.getElementById('q'+key);const rev=document.getElementById('rev'+key);
+  if(item.t==='sa'){
+   document.getElementById('in'+key).disabled=true;card.classList.add('self');
+   const blank=(answers[key]===undefined||answers[key]==='')?'You left this blank. ':'';
+   rev.innerHTML='<span class="verdict">Check your own</span>'+blank+'<b>A full answer says:</b> '+item.m;
+   return;}
+  perSec[si].n++;let ok=false;const given=answers[key];
+  if(item.t==='mc'){ok=(given===item.a);card.querySelectorAll('.opt').forEach((b,i)=>{if(i===item.a)b.classList.add('correct');});}
+  else{ok=numOK(given,item.a);document.getElementById('in'+key).disabled=true;}
+  if(ok){correct++;perSec[si].c++;card.classList.add('ok');}else{card.classList.add('no');}
+  const blank=(given===undefined||given==='')?'You left this blank. ':'';
+  const right=item.t==='mc'?('Correct answer: '+item.o[item.a]+'. '):('Correct answer: '+item.a+' '+item.u+'. ');
+  rev.innerHTML='<span class="verdict">'+(ok?'Correct':'Not correct')+'</span>'+blank+(ok?'':right)+item.e;});
+ const pct=Math.round(correct/AUTO*100),now=new Date();
+ const stamp=now.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' at '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+ const sc=document.getElementById('scorecard');
+ sc.innerHTML='<h2>Score Card</h2><div class="who">'+name.replace(/[&<>]/g,'')+'</div><div class="big">'+correct+' / '+AUTO+'</div><div class="pct">'+pct+'%</div>'+
+  '<div class="selfnote">Plus '+SACOUNT+' short answers for you to check against the model answers.</div>'+
+  '<table><tr><th>Section</th><th class="sc">Score</th></tr>'+
+  SECTIONS.map((s,i)=>'<tr><td>'+s.name+'</td><td class="sc">'+(s.sa?'self-check':(perSec[i].c+' / '+perSec[i].n))+'</td></tr>').join('')+'</table>'+
+  '<div class="stamp">Completed '+stamp+'</div>';
+ sc.classList.add('on');
+ document.getElementById('gradebar').innerHTML='<div style="color:#fff;width:100%;text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;padding:12px">Graded and locked. Scroll down for the explanations.</div>';
+ sc.scrollIntoView({behavior:'smooth',block:'start'});}
+</script></body></html>
