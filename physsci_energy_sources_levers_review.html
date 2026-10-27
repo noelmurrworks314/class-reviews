@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical Science · Energy Sources and Levers</title>
+<style>
+:root{--green:#1e6b46;--green-dk:#164f34;--amber:#d98e2b;--amber-soft:#fbf0dc;
+ --ink:#25302b;--soft:#5b6862;--paper:#f6f4ee;--card:#fff;
+ --good:#2e7d4f;--good-bg:#e4f2e9;--bad:#b3392e;--bad-bg:#f9e6e3;--line:#d8d3c6;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--paper);color:var(--ink);
+ line-height:1.55;padding-bottom:132px;-webkit-text-size-adjust:100%;}
+header{background:var(--green);color:#fff;padding:20px 18px;}
+header h1{font-size:1.3rem;} header p{font-size:.88rem;opacity:.92;margin-top:5px;}
+#chipbar{position:sticky;top:0;z-index:40;background:var(--green-dk);padding:9px 10px;
+ display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.chip{flex:0 0 auto;font-size:.72rem;font-family:system-ui,-apple-system,sans-serif;
+ padding:5px 11px;border-radius:11px;background:rgba(255,255,255,.16);color:#fff;white-space:nowrap;}
+.chip.done{background:var(--amber);color:#2b1d05;font-weight:600;}
+main{max-width:840px;margin:0 auto;padding:16px 14px;}
+section{margin-bottom:26px;}
+.shead{font-size:1.05rem;color:var(--green);border-bottom:2px solid var(--amber);
+ padding-bottom:5px;margin-bottom:13px;font-weight:700;}
+.q{background:var(--card);border:1px solid var(--line);padding:14px 15px;margin-bottom:12px;}
+.qn{font-family:system-ui,-apple-system,sans-serif;font-size:.7rem;color:var(--soft);
+ letter-spacing:.9px;text-transform:uppercase;margin-bottom:6px;}
+.stem{font-size:1rem;margin-bottom:11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{display:block;width:100%;text-align:left;font-family:Georgia,serif;font-size:.96rem;
+ padding:10px 13px;background:#fbfaf6;border:1.5px solid var(--line);border-radius:6px;color:var(--ink);cursor:pointer;}
+.opt.sel{background:var(--amber-soft);border-color:var(--amber);font-weight:600;}
+.numwrap{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.numwrap input{font-family:Georgia,serif;font-size:1.05rem;padding:9px 11px;width:165px;
+ border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;color:var(--ink);}
+.numwrap input:focus{outline:none;border-color:var(--amber);background:#fff;}
+.unit{font-size:.95rem;color:var(--soft);}
+textarea{width:100%;min-height:92px;font-family:Georgia,serif;font-size:.98rem;padding:10px 12px;
+ border:1.5px solid var(--line);border-radius:6px;background:#fbfaf6;color:var(--ink);resize:vertical;line-height:1.5;}
+textarea:focus{outline:none;border-color:var(--amber);background:#fff;}
+.hint{font-size:.85rem;color:var(--soft);font-style:italic;margin-bottom:9px;}
+.tray{display:flex;flex-direction:column;gap:7px;padding:10px;background:#f1eee5;
+ border:1px solid var(--line);border-radius:6px;margin-bottom:12px;min-height:46px;}
+.trayempty{font-size:.86rem;color:var(--soft);font-style:italic;}
+.tile{background:#fff;border:1.5px solid var(--line);border-radius:6px;padding:9px 12px;
+ font-size:.95rem;cursor:pointer;user-select:none;}
+.tile.pick{background:var(--amber-soft);border-color:var(--amber);font-weight:600;}
+.mrow{display:flex;align-items:stretch;gap:10px;margin-bottom:8px;}
+.mleft{flex:0 0 36%;background:#fbfaf6;border:1.5px solid var(--line);border-radius:6px;
+ padding:9px 11px;font-size:.95rem;font-weight:600;display:flex;align-items:center;}
+.mslot{flex:1 1 60%;border:1.5px dashed var(--line);border-radius:6px;background:#f1eee5;
+ min-height:44px;padding:5px;display:flex;align-items:center;cursor:pointer;}
+.mslot.live{border-color:var(--amber);background:var(--amber-soft);}
+.mslot .tile{width:100%;}
+.tile.ok{border-color:var(--good);background:var(--good-bg);}
+.tile.bad{border-color:var(--bad);background:var(--bad-bg);}
+.reveal{display:none;margin-top:11px;padding:11px 13px;border-radius:6px;font-size:.92rem;}
+.reveal .verdict{font-weight:700;display:block;margin-bottom:4px;
+ font-family:system-ui,-apple-system,sans-serif;font-size:.78rem;letter-spacing:.7px;text-transform:uppercase;}
+.q.ok{border-color:var(--good);} .q.ok .reveal{display:block;background:var(--good-bg);color:#1d5334;}
+.q.no{border-color:var(--bad);} .q.no .reveal{display:block;background:var(--bad-bg);color:#7d2820;}
+.q.part{border-color:var(--amber);} .q.part .reveal{display:block;background:var(--amber-soft);color:#6b4a10;}
+.q.self{border-color:var(--green);} .q.self .reveal{display:block;background:#eaf1ec;color:#1f3a2c;}
+.q.ok .opt.correct,.q.no .opt.correct{border-color:var(--good);background:var(--good-bg);}
+.q.no .opt.sel{border-color:var(--bad);background:var(--bad-bg);}
+.revlist{margin:6px 0 0 18px;} .revlist li{margin-bottom:3px;}
+#gradebar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--green);
+ padding:10px 12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:0 -3px 14px rgba(0,0,0,.22);}
+#gradebar input{flex:1 1 150px;min-width:130px;font-family:Georgia,serif;font-size:1rem;padding:10px 12px;border:none;border-radius:6px;}
+#gradebtn{font-family:system-ui,-apple-system,sans-serif;font-weight:700;font-size:.9rem;letter-spacing:1.1px;
+ padding:12px 20px;background:var(--amber);color:#2b1d05;border:none;border-radius:6px;cursor:pointer;}
+#overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(20,28,24,.72);padding:22px 16px;overflow-y:auto;}
+#overlay.on{display:block;}
+.modal{max-width:520px;margin:40px auto;background:var(--card);border-radius:9px;padding:22px 20px;border-top:6px solid var(--amber);}
+.modal h2{font-size:1.15rem;color:var(--green);margin-bottom:11px;}
+.modal p{font-size:.95rem;margin-bottom:11px;} .modal ul{margin:0 0 14px 20px;font-size:.95rem;}
+.mbtns{display:flex;gap:10px;flex-wrap:wrap;}
+.mbtn{font-family:system-ui,-apple-system,sans-serif;font-size:.88rem;font-weight:600;padding:11px 17px;border-radius:6px;border:none;cursor:pointer;}
+.mbtn.go{background:var(--green);color:#fff;} .mbtn.any{background:var(--amber);color:#2b1d05;}
+#scorecard{display:none;background:var(--card);border:2px solid var(--green);border-top:8px solid var(--amber);padding:20px 18px;margin-bottom:24px;}
+#scorecard.on{display:block;}
+#scorecard h2{color:var(--green);font-size:1.25rem;margin-bottom:3px;}
+.who{font-size:1rem;margin-bottom:12px;}
+.big{font-size:2.5rem;color:var(--green);font-weight:700;line-height:1.1;}
+.pct{font-size:1.15rem;color:var(--amber);font-weight:700;margin-bottom:6px;}
+.selfnote{font-size:.9rem;color:var(--soft);margin-bottom:14px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:12px;}
+#scorecard th,#scorecard td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);}
+#scorecard th{font-family:system-ui,-apple-system,sans-serif;font-size:.74rem;letter-spacing:.6px;text-transform:uppercase;color:var(--soft);}
+#scorecard td.sc{text-align:right;}
+.stamp{font-size:.8rem;color:var(--soft);font-style:italic;}
+</style></head><body>
+<header><h1>Energy Sources and Levers</h1><p>Physical Science · answer everything, then press GRADE ME</p></header>
+<div id="chipbar"></div>
+<main><div id="scorecard"></div><div id="quiz"></div></main>
+<div id="gradebar"><input id="nameinput" type="text" placeholder="Type your name" autocomplete="off"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div class="modal" id="modalbox"></div></div>
+<script>
+const SECTIONS=[{"name":"Energy chains and origins","items":[{"t":"match","tiles":[{"text":"chemical → thermal → kinetic → electrical","src":"Coal","e":"Burning coal releases chemical energy as heat, the heat boils water, the steam spins a turbine, the turbine spins a generator."},{"text":"kinetic → kinetic → electrical","src":"Wind","e":"Moving air turns the blades, the blades turn the generator. No heat step anywhere in it."},{"text":"gravitational potential → kinetic → electrical","src":"Hydroelectric","e":"Water held behind a dam has energy because of its height. Falling turns that into motion, and the motion turns the generator."},{"text":"radiant → electrical","src":"Solar panel","e":"The one source on the list with no turbine. Light goes into the panel and current comes out, with no moving part in between."},{"text":"thermal → kinetic → electrical","src":"Geothermal","e":"The heat is already there underground, so there is nothing to burn. Everything after that is the same as any other plant."}],"s":"Match each source to the chain its energy actually follows."},{"t":"mc","s":"Almost every chain on the class table ended with the same two forms of energy. Which two?","o":["chemical → thermal","thermal → radiant","electrical → chemical","kinetic → electrical"],"a":3,"e":"Nearly every power plant is a turbine spinning a generator, so the last two steps are the same no matter what started the chain."},{"t":"mc","s":"Seven of the nine sources trace their energy back to the same original place. Where?","o":["the Sun","the Earth’s core","the Moon","the atmosphere"],"a":0,"e":"Fossil fuels are ancient sunlight stored by plants, wind comes from uneven solar heating, and hydroelectric only works because the Sun lifted that water as vapour in the first place."},{"t":"mc","s":"Which two sources do NOT trace back to that place?","o":["wind and solar","coal and biomass","hydroelectric and wind","nuclear and geothermal"],"a":3,"e":"Everything else on the list leads back to the Sun eventually."},{"t":"mc","s":"Where did the energy in nuclear fuel originally come from?","o":["stars that exploded before the Sun formed","plants that died millions of years ago","heat left over inside the Earth","sunlight absorbed by the ocean"],"a":0,"e":"The heavy elements in the fuel were made in stars and scattered when those stars exploded, long before the solar system existed."},{"t":"mc","s":"Where does geothermal energy originally come from?","o":["sunlight warming the ground","friction from the Earth’s rotation","radioactive decay inside the Earth plus leftover heat from its formation","the Moon’s pull on the crust"],"a":2,"e":"Both of those are still going on underground, which is why the heat does not run out on any timescale that matters to us."},{"t":"mc","s":"Hydroelectric delivers far more of its energy as electricity than coal, gas or nuclear do. What is the difference?","o":["hydroelectric uses newer equipment","water is heavier than air","hydroelectric plants are larger","hydroelectric has no hot step in its chain"],"a":3,"e":"Any chain that passes through heat throws most of its energy away. Falling water turns the turbine directly, so there is nothing to lose it to."},{"t":"sa","s":"A power source you have never heard of is described to you, and its chain includes a heat step. Would you expect it to deliver most of its energy as electricity, or only a small share? Explain how you know without being told anything else about it.","a":"only a small share, because of the heat step","e":"Only a small share. Anything that makes heat first throws most of the energy away as waste heat, and it does not matter what fuel started the chain. This is the central idea of the unit — if a student can place a source they have never seen just from whether its chain has a hot step, they have it."}]},{"name":"Trade-offs between sources","items":[{"t":"mc","s":"Coal plants throw most of their energy away as waste heat, and we build and run them anyway. Which reason best explains why?","o":["they are the only source that works at night","the fuel is cheap, easy to store, and can be burned whenever it is needed","they produce no emissions","they waste less energy than any other source"],"a":1,"e":"Efficiency is only one thing a source is judged on. A plant that wastes most of its energy but runs on demand, on cheap fuel, in any weather, is still doing a job that a more efficient source may not be able to do."},{"t":"sa","s":"Solar panels burn nothing, release nothing while they run, and the sunlight is free. Explain two reasons we have not simply covered the country in them.","a":"any two real limitations","e":"Any two of: they produce nothing at night and little in bad weather, so something else still has to cover the gap; the output cannot be chosen to match when people actually need it; they need an enormous area of land for the power they return; building them takes mining, energy and some toxic materials; and the up-front cost falls on whoever installs them before any of it is paid back."},{"t":"mc","s":"Electricity has to be generated in the same second it is used. What does that mean for a source whose output nobody controls, such as wind?","o":["the wind farm has to be shut down at night","something else on the grid has to make up the difference whenever the wind drops","the extra electricity is held in the power lines until it is needed","wind farms can only be built where the wind never stops"],"a":1,"e":"There is no pause button on a grid. If a source stops producing, something that can be switched on has to cover it that second, which is why a grid is never built out of one source alone."},{"t":"sa","s":"Solar produces the most electricity around midday, but homes use the most in the evening. Explain the problem that creates, and give one difficulty with solving it by storing the energy in batteries.","a":"timing mismatch; batteries are costly and limited","e":"The electricity arrives at a time of day when far less of it is wanted and is gone by the time demand peaks, and it cannot simply be saved up in the wires. Storing it works, but batteries at grid scale cost a great deal, hold only a few hours of supply, wear out and have to be replaced, and building them takes mining and energy of its own."},{"t":"sa","s":"Natural gas burns cleaner than coal and can be switched on quickly. Explain two drawbacks of relying on it.","a":"any two real drawbacks","e":"Any two of: it still releases carbon dioxide when burned; getting it out by hydraulic fracturing can contaminate groundwater; methane that leaks on the way to the plant is a far stronger greenhouse gas than carbon dioxide; and it is a finite fuel bought on a market, so the price can swing sharply."},{"t":"mc","s":"Which three sources are cleaner than coal and can also produce large amounts of power steadily?","o":["solar, wind and biomass","nuclear, hydroelectric and geothermal","wind, solar and tidal","biomass, oil and coal fitted with filters"],"a":1,"e":"All three run around the clock and put out a great deal of power without burning anything. Solar and wind are cleaner than coal too, but neither produces steadily, which is the part of the question they fail."},{"t":"mc","s":"Nuclear releases no carbon dioxide while it runs, yet public opinion is often against it. Which best explains that?","o":["nuclear plants are the most expensive to run day to day","nuclear plants cannot produce enough power to be worth building","a small number of serious accidents, and the unsolved question of where to put the waste for thousands of years","the fuel runs out within a few years"],"a":2,"e":"Chernobyl and Fukushima are what most people picture, and no country has opened a permanent store for the waste that lasts as long as the waste does. How people feel about a source is not the same question as how it performs."},{"t":"mc","s":"Looking back at all nine sources from the class table, what was true of every single one of them?","o":["every one releases carbon dioxide","every one came back with a real limitation","every one costs less to run than coal","every one can be switched on whenever it is needed"],"a":1,"e":"Not one of the nine came back clean. Every source trades something away, and the argument is always about which trade you are willing to make, not about finding one that costs nothing."}]},{"name":"Parts and classes of levers","items":[{"t":"match","tiles":[{"text":"the force you apply","src":"Effort","e":"Where you push or pull on the bar."},{"text":"the fixed point the bar turns around","src":"Fulcrum","e":"The pivot."},{"text":"the force you are working against","src":"Load","e":"Also called the resistance."},{"text":"the distance from the fulcrum to where you push","src":"Effort arm","e":"One of the two distances in the law of the lever."},{"text":"the distance from the fulcrum to the load","src":"Load arm","e":"The other distance in the law of the lever."}],"s":"Match each part of a lever to what it means."},{"t":"mc","s":"A seesaw has the fulcrum between the effort and the load. What class of lever is it?","o":["first class","second class","third class","it is not a lever"],"a":0,"e":"Fulcrum in the middle is first class. A crowbar and a pair of scissors work the same way."},{"t":"mc","s":"In a wheelbarrow, the load sits between the fulcrum and your hands. What class of lever is it?","o":["first class","second class","third class","it is not a lever"],"a":1,"e":"Load in the middle is second class. A bottle opener is the other common one."},{"t":"mc","s":"Your forearm applies its effort between the elbow and your hand. What class of lever is it?","o":["first class","second class","third class","it is not a lever"],"a":2,"e":"Effort in the middle is third class. Tweezers and a fishing rod work the same way."},{"t":"sa","s":"A third class lever actually requires MORE force than the load weighs. Explain why anyone would build one on purpose.","a":"trades force for speed and distance","e":"It trades force for speed and distance. Your bicep attaches close to the elbow, so it pulls hard over a very short distance and your hand moves fast over a long one. That trade is the point, not a flaw."}]},{"name":"The law of the lever","items":[{"t":"fill","s":"Write the law of the lever.","a":"effort × effort arm = load × load arm","e":"A lever balances when those two products are equal."},{"t":"fill","s":"Write the equation for the mechanical advantage of a lever.","a":"MA = effort arm ÷ load arm","e":"How many times the lever multiplies the force you put in."},{"t":"num","s":"A lever has an effort arm of 1.8 m and a load arm of 0.30 m. Find its mechanical advantage.","a":6,"u":"(no unit)","e":"MA = 1.8 ÷ 0.30 = 6. No unit — metres divided by metres cancel."},{"t":"num","s":"Using that same lever, find the effort needed to lift a 420 N load.","a":70,"u":"N","e":"420 ÷ 6 = 70 N. Check it with the law of the lever: 70 × 1.8 = 126 and 420 × 0.30 = 126."},{"t":"num","s":"A 240 N load sits 0.50 m from the fulcrum. You push down 1.5 m from the fulcrum. Find the effort needed to balance it.","a":80,"u":"N","e":"effort × 1.5 = 240 × 0.50, so effort × 1.5 = 120 and effort = 80 N."},{"t":"num","s":"A lever has a load arm of 0.35 m and a mechanical advantage of 6. Find its effort arm.","a":2.1,"u":"m","e":"effort arm = MA × load arm = 6 × 0.35 = 2.1 m."},{"t":"num","s":"A lever has a mechanical advantage of 5. The load rises 0.14 m. How far does your end of the lever move?","a":0.7,"u":"m","e":"0.14 × 5 = 0.70 m. Distance is divided by exactly what force is multiplied by, so a lever that gives five times the force costs you five times the distance."},{"t":"mc","s":"A lever has a mechanical advantage less than 1. What does that tell you?","o":["the lever is broken","it changes only the direction of the force","it is more than 100% efficient","it needs more force than the load, but moves it faster and further"],"a":3,"e":"That is a third class lever. It is built to trade force for speed, and your own forearm is the example you have on you."}]},{"name":"What a lever charges you","items":[{"t":"mc","s":"What does a machine actually do?","o":["it changes a force, but never creates energy","it creates energy","it reduces the work you have to do","it makes work disappear into heat"],"a":0,"e":"Less force over a longer distance, or more force over a shorter one. Never more total work out than you put in."},{"t":"num","s":"You push down on a lever with 24 N and your end travels 1.5 m. Find the work you put in.","a":36,"u":"J","e":"W = F × d = (24 N)(1.5 m) = 36 J."},{"t":"num","s":"That same lever raises its load 0.30 m. Assuming a perfect lever, find the weight of the load.","a":120,"u":"N","e":"Work out has to equal work in, so (load)(0.30 m) = 36 J and the load is 120 N. The lever multiplied your force by five and divided your distance by five."},{"t":"num","s":"A real lever is given 50 J of work and delivers 44 J. Find its efficiency.","a":88,"u":"%","e":"Efficiency = work out ÷ work in × 100 = 44 ÷ 50 × 100 = 88%."},{"t":"mc","s":"Where did the missing work in the question above go?","o":["it was destroyed","it became thermal energy from friction at the fulcrum","it was stored in the lever","it turned into extra force"],"a":1,"e":"Energy is never destroyed. Friction at the pivot moved it into the particles of the lever and the pivot as thermal energy."},{"t":"sa","s":"Explain why you cannot connect two levers together and get out more energy than you put in.","a":"no machine creates energy","e":"Neither lever ever increased the energy. Each one only changed the shape of the work, trading force against distance, and each one loses a little to friction on the way. Two of them in a row still cannot hand back more than went in."}]}];
+const AUTO=35, SELFN=8;
+const SELFT={sa:1,fill:1};
+let LOCKED=false;const answers={},meta=[];let qnum=0,picked=null,pickedFrom=null;
+const quiz=document.getElementById('quiz'),chipbar=document.getElementById('chipbar');
+const countOf=it=>it.t==='match'?it.tiles.length:1;
+
+function clearPick(){
+ if(picked)picked.classList.remove('pick');
+ document.querySelectorAll('.mslot').forEach(s=>s.classList.remove('live'));
+ picked=null;pickedFrom=null;}
+
+function mkTile(text,id,key,ti){
+ const t=document.createElement('div');t.className='tile';t.textContent=text;t.id=id;
+ t.dataset.key=key;t.dataset.ti=ti;
+ t.addEventListener('click',e=>{
+  e.stopPropagation();
+  if(LOCKED)return;
+  const slot=t.parentElement.classList.contains('mslot')?t.parentElement:null;
+  if(slot){ // tap a placed tile to send it back
+   document.getElementById('tray'+key).appendChild(t);
+   delete answers[key][ti];
+   clearPick();refreshTray(key);refreshChips();return;}
+  if(picked===t){clearPick();return;}
+  clearPick();
+  picked=t;pickedFrom=key;t.classList.add('pick');
+  document.querySelectorAll('#q'+key+' .mslot').forEach(s=>s.classList.add('live'));
+ });
+ return t;}
+
+function refreshTray(key,el){
+ const tray=el||document.getElementById('tray'+key);
+ if(!tray)return;
+ const empty=tray.querySelector('.trayempty');
+ const has=tray.querySelectorAll('.tile').length>0;
+ if(empty)empty.style.display=has?'none':'block';}
+
+SECTIONS.forEach((sec,si)=>{
+ const chip=document.createElement('div');chip.className='chip';chip.id='chip'+si;chip.textContent=sec.name;chipbar.appendChild(chip);
+ const el=document.createElement('section');
+ const h=document.createElement('div');h.className='shead';h.textContent=sec.name;el.appendChild(h);
+
+ sec.items.forEach((item,ii)=>{
+  const key=si+'_'+ii;meta.push({key,si,ii,item});
+  const card=document.createElement('div');card.className='q';card.id='q'+key;
+  const n=document.createElement('div');n.className='qn';
+  const c=countOf(item);
+  n.textContent=c===1?('Question '+(++qnum)):('Questions '+(qnum+1)+'\u2013'+(qnum+=c));
+  card.appendChild(n);
+  const stem=document.createElement('div');stem.className='stem';stem.textContent=item.s;card.appendChild(stem);
+
+  if(item.t==='match'){
+   answers[key]={};
+   const hint=document.createElement('div');hint.className='hint';
+   hint.textContent='Tap an answer, then tap the box you want it in. Tap a placed answer to send it back.';
+   card.appendChild(hint);
+   const tray=document.createElement('div');tray.className='tray';tray.id='tray'+key;
+   const em=document.createElement('div');em.className='trayempty';em.textContent='All placed.';tray.appendChild(em);
+   const order=item.tiles.map((_,i)=>i);
+   for(let i=order.length-1;i>0;i--){const j=(i*5+2)%(i+1);[order[i],order[j]]=[order[j],order[i]];}
+   order.forEach(ti=>tray.appendChild(mkTile(item.tiles[ti].text,'tile'+key+'_'+ti,key,ti)));
+   card.appendChild(tray);
+   item.tiles.forEach((p,pi)=>{
+    const row=document.createElement('div');row.className='mrow';
+    const lft=document.createElement('div');lft.className='mleft';lft.textContent=p.src;row.appendChild(lft);
+    const slot=document.createElement('div');slot.className='mslot';slot.id='slot'+key+'_'+pi;
+    slot.addEventListener('click',()=>{
+     if(LOCKED||!picked||pickedFrom!==key)return;
+     const prev=slot.querySelector('.tile');
+     if(prev){document.getElementById('tray'+key).appendChild(prev);delete answers[key][prev.dataset.ti];}
+     slot.appendChild(picked);answers[key][picked.dataset.ti]=pi;
+     clearPick();refreshTray(key);refreshChips();});
+    row.appendChild(slot);card.appendChild(row);});
+   refreshTray(key,tray);
+  }else if(item.t==='mc'){
+   const wrap=document.createElement('div');wrap.className='opts';
+   item.o.forEach((txt,oi)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=txt;
+    b.addEventListener('click',()=>{if(LOCKED)return;answers[key]=oi;
+     wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');refreshChips();});
+    wrap.appendChild(b);});
+   card.appendChild(wrap);
+  }else if(SELFT[item.t]){
+   const ta=document.createElement('textarea');ta.id='in'+key;
+   ta.placeholder=item.t==='fill'?'Write the equation.':'Write your answer here.';
+   ta.addEventListener('input',()=>{if(LOCKED)return;answers[key]=ta.value.trim();refreshChips();});
+   card.appendChild(ta);
+  }else{
+   const wrap=document.createElement('div');wrap.className='numwrap';
+   const inp=document.createElement('input');inp.type='text';inp.inputMode='decimal';inp.placeholder='answer';inp.id='in'+key;
+   inp.addEventListener('input',()=>{if(LOCKED)return;answers[key]=inp.value.trim();refreshChips();});
+   const u=document.createElement('span');u.className='unit';u.textContent=item.u;
+   wrap.appendChild(inp);wrap.appendChild(u);card.appendChild(wrap);}
+
+  const rev=document.createElement('div');rev.className='reveal';rev.id='rev'+key;card.appendChild(rev);
+  el.appendChild(card);});
+ quiz.appendChild(el);});
+
+document.body.addEventListener('click',()=>{if(!LOCKED)clearPick();});
+
+function placed(item,a){
+ if(item.t==='match')return Object.keys(a||{}).length;
+ return (a!==undefined&&a!=='')?1:0;}
+function answeredCount(si){let n=0;SECTIONS[si].items.forEach((it,ii)=>{n+=placed(it,answers[si+'_'+ii]);});return n;}
+function sectionTotal(si){let n=0;SECTIONS[si].items.forEach(it=>{n+=countOf(it);});return n;}
+function refreshChips(){SECTIONS.forEach((sec,si)=>{const c=document.getElementById('chip'+si);
+ if(answeredCount(si)===sectionTotal(si))c.classList.add('done');else c.classList.remove('done');});}
+refreshChips();
+
+const overlay=document.getElementById('overlay'),modalbox=document.getElementById('modalbox');
+function closeModal(){overlay.classList.remove('on');}
+document.getElementById('gradebtn').addEventListener('click',e=>{
+ e.stopPropagation();
+ if(LOCKED)return;
+ const name=document.getElementById('nameinput').value.trim();
+ if(!name){modalbox.innerHTML='<h2>Name needed</h2><p>Type your name in the box at the bottom before grading.</p><div class="mbtns"><button class="mbtn go" id="mgo">Go back</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;return;}
+ const missing=[];SECTIONS.forEach((sec,si)=>{const n=answeredCount(si),t=sectionTotal(si);
+  if(n<t)missing.push(sec.name+' \u2014 '+(t-n)+' left');});
+ if(missing.length){modalbox.innerHTML='<h2>Some sections are not finished</h2><p>These still have items left:</p><ul>'+
+   missing.map(m=>'<li>'+m+'</li>').join('')+'</ul><p>Go back and finish, or grade now. If you grade now, anything left blank counts as wrong and nothing can be changed afterward.</p>'+
+   '<div class="mbtns"><button class="mbtn go" id="mgo">Go back and finish</button><button class="mbtn any" id="many">Grade anyway</button></div>';
+  overlay.classList.add('on');document.getElementById('mgo').onclick=closeModal;
+  document.getElementById('many').onclick=()=>{closeModal();doGrade(name);};return;}
+ doGrade(name);});
+
+function numOK(raw,target){if(raw===undefined)return false;const cl=String(raw).replace(/[^0-9.\-]/g,'');
+ if(cl==='')return false;const v=parseFloat(cl);if(isNaN(v))return false;
+ const tol=Math.max(Math.abs(target)*0.01,0.02);return Math.abs(v-target)<=tol;}
+
+function doGrade(name){
+ LOCKED=true;clearPick();
+ let correct=0;const perSec=SECTIONS.map(()=>({c:0,n:0}));
+ meta.forEach(m=>{const {key,si,item}=m;const card=document.getElementById('q'+key);const rev=document.getElementById('rev'+key);
+
+  if(SELFT[item.t]){
+   const ta=document.getElementById('in'+key);if(ta)ta.disabled=true;
+   card.classList.add('self');
+   const blank=(answers[key]===undefined||answers[key]==='')?'You left this blank. ':'';
+   rev.innerHTML='<span class="verdict">Check your own</span>'+blank+'<b>'+item.a+'</b> \u2014 '+item.e;
+   return;}
+
+  const c=countOf(item);perSec[si].n+=c;
+
+  if(item.t==='match'){
+   let got=0;const lines=[];
+   item.tiles.forEach((tk,ti)=>{const el=document.getElementById('tile'+key+'_'+ti);
+    const at=(answers[key]||{})[ti];const ok=(at===ti);
+    if(el)el.classList.add(ok?'ok':'bad');
+    if(ok)got++;else lines.push('<li><b>'+tk.src+'</b> \u2014 '+tk.text+'. '+tk.e+'</li>');});
+   correct+=got;perSec[si].c+=got;
+   card.classList.add(got===c?'ok':got===0?'no':'part');
+   rev.innerHTML='<span class="verdict">'+got+' of '+c+' correct</span>'+
+    (lines.length?'<ul class="revlist">'+lines.join('')+'</ul>':'Every one matched correctly.');
+   return;}
+
+  let ok=false;const given=answers[key];
+  if(item.t==='mc'){ok=(given===item.a);card.querySelectorAll('.opt').forEach((b,i)=>{if(i===item.a)b.classList.add('correct');});}
+  else{ok=numOK(given,item.a);const inp=document.getElementById('in'+key);if(inp)inp.disabled=true;}
+  if(ok){correct++;perSec[si].c++;card.classList.add('ok');}else{card.classList.add('no');}
+  const blank=(given===undefined||given==='')?'You left this blank. ':'';
+  const right=item.t==='mc'?('Correct answer: '+item.o[item.a]+'. '):('Correct answer: '+item.a+' '+item.u+'. ');
+  rev.innerHTML='<span class="verdict">'+(ok?'Correct':'Not correct')+'</span>'+blank+(ok?'':right)+item.e;});
+
+ const pct=Math.round(correct/AUTO*100),now=new Date();
+ const stamp=now.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' at '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+ const sc=document.getElementById('scorecard');
+ sc.innerHTML='<h2>Score Card</h2><div class="who">'+name.replace(/[&<>]/g,'')+'</div><div class="big">'+correct+' / '+AUTO+'</div><div class="pct">'+pct+'%</div>'+
+  '<div class="selfnote">Plus '+SELFN+' written answers for you to check against the model answers below.</div>'+
+  '<table><tr><th>Section</th><th class="sc">Score</th></tr>'+
+  SECTIONS.map((s,i)=>'<tr><td>'+s.name+'</td><td class="sc">'+(perSec[i].n?(perSec[i].c+' / '+perSec[i].n):'self-check')+'</td></tr>').join('')+'</table>'+
+  '<div class="stamp">Completed '+stamp+'</div>';
+ sc.classList.add('on');
+ document.getElementById('gradebar').innerHTML='<div style="color:#fff;width:100%;text-align:center;font-family:system-ui,sans-serif;font-size:.82rem;padding:12px">Graded and locked. Scroll down for the explanations.</div>';
+ sc.scrollIntoView({behavior:'smooth',block:'start'});}
+</script></body></html>
