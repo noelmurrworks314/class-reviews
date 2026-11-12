@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Physics · Momentum Basics Practice</title>
+<style>
+:root{--ink:#17241c;--soft:#5c6d63;--line:#d8e1db;--bg:#f4f6f4;--card:#fff;
+--brand:#1e5f7a;--brandd:#17485c;--amber:#d98e2b;--ok:#1e7a4d;--no:#b3261e;--okbg:#e8f4ed;--nobg:#fdeceb;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:104px;}
+header{background:var(--brand);color:#fff;padding:20px 18px 18px;}
+header h1{margin:0;font-size:1.35rem;}
+header p{margin:5px 0 0;opacity:.9;font-size:.92rem;}
+nav{position:sticky;top:0;z-index:30;background:var(--brandd);display:flex;gap:7px;overflow-x:auto;padding:9px 12px;}
+nav button{flex:0 0 auto;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;padding:6px 13px;font-size:.8rem;cursor:pointer;white-space:nowrap;}
+nav button.done{background:var(--amber);color:#17241c;font-weight:600;}
+nav button .chip{margin-left:6px;opacity:.75;}
+main{max-width:860px;margin:0 auto;padding:16px 14px 0;}
+.sec h2{font-size:1.02rem;margin:22px 0 10px;color:var(--brandd);border-bottom:2px solid var(--line);padding-bottom:7px;}
+.sec h2 .rng{float:right;color:var(--soft);font-weight:400;font-size:.85rem;}
+.secnote{margin:-2px 0 11px;font-size:.88rem;color:var(--brandd);background:#e8f1f5;border-left:3px solid var(--brand);padding:7px 11px;border-radius:0 7px 7px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-bottom:11px;}
+.qn{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+.stem{margin:0 0 11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opts.tf{flex-direction:row;}
+.opts.tf .opt{flex:1 1 0;}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer;}
+.opt:hover{border-color:var(--brand);}
+.opt .ol{flex:0 0 22px;height:22px;border-radius:50%;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--soft);}
+.opt.sel{border-color:var(--brand);background:#eaf2f6;}
+.opt.sel .ol{background:var(--brand);color:#fff;}
+.opt.ok{border-color:var(--ok);background:var(--okbg);}
+.opt.no{border-color:var(--no);background:var(--nobg);}
+.numwrap{display:flex;align-items:center;gap:9px;}
+.numwrap input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;width:180px;}
+.numwrap input:focus{outline:2px solid var(--brand);outline-offset:1px;}
+.unit{color:var(--soft);font-size:.92rem;}
+.tray{display:flex;flex-wrap:wrap;gap:7px;min-height:46px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-bottom:11px;}
+.trayempty{color:var(--soft);font-size:.85rem;padding:4px 6px;}
+.tile{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font:inherit;font-size:.88rem;color:inherit;cursor:pointer;text-align:left;}
+.tile.pick{border-color:var(--amber);background:#fdf3e3;box-shadow:0 0 0 2px #f2dcb6;}
+.tile.ok{border-color:var(--ok);background:var(--okbg);}
+.tile.bad{border-color:var(--no);background:var(--nobg);}
+.srow{display:grid;grid-template-columns:34px minmax(120px,.8fr) minmax(170px,2fr);gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);}
+.srow:first-child{border-top:0;}
+.snum{color:var(--soft);font-size:.85rem;}
+.ssrc{font-weight:600;font-size:.95rem;}
+.mslot{min-height:42px;border:1px dashed var(--line);border-radius:9px;background:var(--bg);display:flex;align-items:center;padding:4px;}
+.mslot.live{border-color:var(--amber);background:#fdf8ef;}
+.srow .reveal{grid-column:1/-1;}
+.reveal{display:none;font-size:.88rem;margin-top:8px;padding:9px 11px;border-radius:8px;line-height:1.45;}
+.reveal.on{display:block;}
+.reveal.good{background:var(--okbg);border-left:3px solid var(--ok);}
+.reveal.bad{background:var(--nobg);border-left:3px solid var(--no);}
+.card.ok{border-color:#b6ddc8;}.card.no{border-color:#f0c4c0;}.card.part{border-color:#f0d8ae;}
+#gradebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--brandd);padding:12px 14px;display:flex;gap:10px;align-items:center;}
+#gradebar input{flex:1 1 auto;font:inherit;padding:11px 13px;border:0;border-radius:9px;min-width:0;}
+#gradebtn{flex:0 0 auto;background:var(--amber);color:#2a1c06;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;}
+#gradebar.locked{justify-content:center;color:#fff;font-weight:600;}
+#scorecard{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:4px 0 20px;}
+#scorecard.on{display:block;}
+#scorecard .big{font-size:2.3rem;font-weight:700;color:var(--brandd);line-height:1.1;}
+#scorecard .pct{color:var(--soft);margin-bottom:12px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.92rem;}
+#scorecard td,#scorecard th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);}
+#scorecard td:last-child,#scorecard th:last-child{text-align:right;}
+#overlay{display:none;position:fixed;inset:0;background:rgba(14,26,20,.55);z-index:60;align-items:center;justify-content:center;padding:20px;}
+#overlay.on{display:flex;}
+#modalbox{background:#fff;border-radius:13px;padding:20px;max-width:420px;width:100%;}
+#modalbox h2{margin:0 0 8px;font-size:1.05rem;}
+#modalbox p{margin:0 0 15px;color:var(--soft);font-size:.93rem;}
+#modalbox .row{display:flex;gap:9px;justify-content:flex-end;}
+#modalbox button{font:inherit;border:0;border-radius:9px;padding:10px 16px;cursor:pointer;}
+#mgo{background:var(--bg);color:var(--ink);}
+#many{background:var(--amber);color:#2a1c06;font-weight:700;}
+@media (max-width:560px){.srow{grid-template-columns:28px 1fr;}.srow .mslot{grid-column:1/-1;}}
+</style></head>
+<body>
+<header><h1>Momentum Basics — Practice</h1><p>Physics · Chapter 5.1 and 5.2.2 · answer everything, then press GRADE ME</p></header>
+<nav id="nav"></nav>
+<main><div id="scorecard"></div>
+<section class="sec" id="sec0"><h2>Part A — Vocabulary <span class="rng">1–6</span></h2><div class="card" id="q0_0">
+  <div class="qn">Questions 1–6</div>
+  <p class="stem">Match each term to its definition.</p>
+  <div class="tray" id="tray0_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_0_4" data-k="0_0" data-i="4">a quantity with a size but no direction</button><button type="button" class="tile" id="tile0_0_3" data-k="0_0" data-i="3">a collision in which some kinetic energy becomes heat, sound or permanent deformation</button><button type="button" class="tile" id="tile0_0_5" data-k="0_0" data-i="5">a quantity that needs both a size and a direction to be fully described</button><button type="button" class="tile" id="tile0_0_0" data-k="0_0" data-i="0">mass in motion — an object’s mass times its velocity, carrying a direction with it</button><button type="button" class="tile" id="tile0_0_1" data-k="0_0" data-i="1">what happens when two objects affect each other, whether or not they ever touch</button><button type="button" class="tile" id="tile0_0_2" data-k="0_0" data-i="2">a collision in which the total kinetic energy afterwards equals the total kinetic energy before</button></div>
+  <div class="slots"><div class="srow"><div class="snum">1.</div><div class="ssrc">Momentum</div><div class="mslot" id="slot0_0_0" data-k="0_0" data-i="0"></div><div class="reveal" id="rv0_0_0"></div></div><div class="srow"><div class="snum">2.</div><div class="ssrc">Interaction</div><div class="mslot" id="slot0_0_1" data-k="0_0" data-i="1"></div><div class="reveal" id="rv0_0_1"></div></div><div class="srow"><div class="snum">3.</div><div class="ssrc">Elastic collision</div><div class="mslot" id="slot0_0_2" data-k="0_0" data-i="2"></div><div class="reveal" id="rv0_0_2"></div></div><div class="srow"><div class="snum">4.</div><div class="ssrc">Inelastic collision</div><div class="mslot" id="slot0_0_3" data-k="0_0" data-i="3"></div><div class="reveal" id="rv0_0_3"></div></div><div class="srow"><div class="snum">5.</div><div class="ssrc">Scalar quantity</div><div class="mslot" id="slot0_0_4" data-k="0_0" data-i="4"></div><div class="reveal" id="rv0_0_4"></div></div><div class="srow"><div class="snum">6.</div><div class="ssrc">Vector quantity</div><div class="mslot" id="slot0_0_5" data-k="0_0" data-i="5"></div><div class="reveal" id="rv0_0_5"></div></div></div>
+</div></section>
+<section class="sec" id="sec1"><h2>Part B — True or False <span class="rng">7–14</span></h2><div class="card tfcard" id="q1_0">
+  <div class="qn">Question 7</div>
+  <p class="stem">The units of momentum are kg·m/s.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_0_1" data-k="1_0" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_0_0" data-k="1_0" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_0"></div>
+</div><div class="card tfcard" id="q1_1">
+  <div class="qn">Question 8</div>
+  <p class="stem">Momentum has the same units as force.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_1_1" data-k="1_1" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_1_0" data-k="1_1" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_1"></div>
+</div><div class="card tfcard" id="q1_2">
+  <div class="qn">Question 9</div>
+  <p class="stem">Two objects must physically touch before we can call it an interaction.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_2_1" data-k="1_2" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_2_0" data-k="1_2" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_2"></div>
+</div><div class="card tfcard" id="q1_3">
+  <div class="qn">Question 10</div>
+  <p class="stem">In an elastic collision the total kinetic energy after equals the total kinetic energy before.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_3_1" data-k="1_3" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_3_0" data-k="1_3" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_3"></div>
+</div><div class="card tfcard" id="q1_4">
+  <div class="qn">Question 11</div>
+  <p class="stem">Two railway cars that couple together on impact have had an elastic collision.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_4_1" data-k="1_4" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_4_0" data-k="1_4" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_4"></div>
+</div><div class="card tfcard" id="q1_5">
+  <div class="qn">Question 12</div>
+  <p class="stem">Temperature is a scalar quantity.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_5_1" data-k="1_5" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_5_0" data-k="1_5" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_5"></div>
+</div><div class="card tfcard" id="q1_6">
+  <div class="qn">Question 13</div>
+  <p class="stem">An object sitting at rest has zero momentum, no matter how large its mass.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_6_1" data-k="1_6" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_6_0" data-k="1_6" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_6"></div>
+</div><div class="card tfcard" id="q1_7">
+  <div class="qn">Question 14</div>
+  <p class="stem">Momentum is a scalar quantity, because it has no special unit of its own.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_7_1" data-k="1_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_7_0" data-k="1_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_7"></div>
+</div></section>
+<section class="sec" id="sec2"><h2>Part C — Multiple Choice <span class="rng">15–22</span></h2><div class="card" id="q2_0">
+  <div class="qn">Question 15</div>
+  <p class="stem">The equation for momentum is</p>
+  <div class="opts"><button type="button" class="opt" id="o2_0_0" data-k="2_0" data-i="0"><span class="ol">a</span><span>p = m + v</span></button><button type="button" class="opt" id="o2_0_1" data-k="2_0" data-i="1"><span class="ol">b</span><span>p = mv</span></button><button type="button" class="opt" id="o2_0_2" data-k="2_0" data-i="2"><span class="ol">c</span><span>p = m/v</span></button><button type="button" class="opt" id="o2_0_3" data-k="2_0" data-i="3"><span class="ol">d</span><span>p = v/m</span></button></div>
+  <div class="reveal" id="rv2_0"></div>
+</div><div class="card" id="q2_1">
+  <div class="qn">Question 16</div>
+  <p class="stem">An object’s velocity is doubled while its mass stays the same. Its momentum is</p>
+  <div class="opts"><button type="button" class="opt" id="o2_1_0" data-k="2_1" data-i="0"><span class="ol">a</span><span>doubled</span></button><button type="button" class="opt" id="o2_1_1" data-k="2_1" data-i="1"><span class="ol">b</span><span>unchanged</span></button><button type="button" class="opt" id="o2_1_2" data-k="2_1" data-i="2"><span class="ol">c</span><span>cut in half</span></button><button type="button" class="opt" id="o2_1_3" data-k="2_1" data-i="3"><span class="ol">d</span><span>quadrupled</span></button></div>
+  <div class="reveal" id="rv2_1"></div>
+</div><div class="card" id="q2_2">
+  <div class="qn">Question 17</div>
+  <p class="stem">Which of these is closest to an elastic collision?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_2_0" data-k="2_2" data-i="0"><span class="ol">a</span><span>two cars crashing and crumpling together</span></button><button type="button" class="opt" id="o2_2_1" data-k="2_2" data-i="1"><span class="ol">b</span><span>a lump of clay thrown at a wall and sticking to it</span></button><button type="button" class="opt" id="o2_2_2" data-k="2_2" data-i="2"><span class="ol">c</span><span>two steel ball bearings striking and bouncing apart</span></button><button type="button" class="opt" id="o2_2_3" data-k="2_2" data-i="3"><span class="ol">d</span><span>two railway cars coupling on impact</span></button></div>
+  <div class="reveal" id="rv2_2"></div>
+</div><div class="card" id="q2_3">
+  <div class="qn">Question 18</div>
+  <p class="stem">Which quantity below is a vector?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_3_0" data-k="2_3" data-i="0"><span class="ol">a</span><span>temperature</span></button><button type="button" class="opt" id="o2_3_1" data-k="2_3" data-i="1"><span class="ol">b</span><span>mass</span></button><button type="button" class="opt" id="o2_3_2" data-k="2_3" data-i="2"><span class="ol">c</span><span>time</span></button><button type="button" class="opt" id="o2_3_3" data-k="2_3" data-i="3"><span class="ol">d</span><span>velocity</span></button></div>
+  <div class="reveal" id="rv2_3"></div>
+</div><div class="card" id="q2_4">
+  <div class="qn">Question 19</div>
+  <p class="stem">A bowling ball and a tennis ball roll at the same velocity. Compared with the tennis ball, the bowling ball has</p>
+  <div class="opts"><button type="button" class="opt" id="o2_4_0" data-k="2_4" data-i="0"><span class="ol">a</span><span>more momentum</span></button><button type="button" class="opt" id="o2_4_1" data-k="2_4" data-i="1"><span class="ol">b</span><span>the same momentum</span></button><button type="button" class="opt" id="o2_4_2" data-k="2_4" data-i="2"><span class="ol">c</span><span>less momentum</span></button><button type="button" class="opt" id="o2_4_3" data-k="2_4" data-i="3"><span class="ol">d</span><span>no momentum</span></button></div>
+  <div class="reveal" id="rv2_4"></div>
+</div><div class="card" id="q2_5">
+  <div class="qn">Question 20</div>
+  <p class="stem">Which is an example of an inelastic collision?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_5_0" data-k="2_5" data-i="0"><span class="ol">a</span><span>two magnets repelling without touching</span></button><button type="button" class="opt" id="o2_5_1" data-k="2_5" data-i="1"><span class="ol">b</span><span>a lump of putty landing on a sled and riding along with it</span></button><button type="button" class="opt" id="o2_5_2" data-k="2_5" data-i="2"><span class="ol">c</span><span>two billiard balls clicking apart</span></button><button type="button" class="opt" id="o2_5_3" data-k="2_5" data-i="3"><span class="ol">d</span><span>a ball bouncing back to the same height it was dropped from</span></button></div>
+  <div class="reveal" id="rv2_5"></div>
+</div><div class="card" id="q2_6">
+  <div class="qn">Question 21</div>
+  <p class="stem">A 1200 kg truck is parked and not moving. Its momentum is</p>
+  <div class="opts"><button type="button" class="opt" id="o2_6_0" data-k="2_6" data-i="0"><span class="ol">a</span><span>very large, because its mass is large</span></button><button type="button" class="opt" id="o2_6_1" data-k="2_6" data-i="1"><span class="ol">b</span><span>1200 kg·m/s</span></button><button type="button" class="opt" id="o2_6_2" data-k="2_6" data-i="2"><span class="ol">c</span><span>impossible to determine without its velocity</span></button><button type="button" class="opt" id="o2_6_3" data-k="2_6" data-i="3"><span class="ol">d</span><span>zero</span></button></div>
+  <div class="reveal" id="rv2_6"></div>
+</div><div class="card" id="q2_7">
+  <div class="qn">Question 22</div>
+  <p class="stem">Momentum is conserved in a collision. Kinetic energy is conserved only in an elastic one. What does that tell you?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_7_0" data-k="2_7" data-i="0"><span class="ol">a</span><span>the two are the same quantity measured differently</span></button><button type="button" class="opt" id="o2_7_1" data-k="2_7" data-i="1"><span class="ol">b</span><span>kinetic energy is conserved in every collision too</span></button><button type="button" class="opt" id="o2_7_2" data-k="2_7" data-i="2"><span class="ol">c</span><span>they are different quantities and obey different rules</span></button><button type="button" class="opt" id="o2_7_3" data-k="2_7" data-i="3"><span class="ol">d</span><span>momentum is only conserved in elastic collisions</span></button></div>
+  <div class="reveal" id="rv2_7"></div>
+</div></section>
+<section class="sec" id="sec3"><h2>Part D — Calculations <span class="rng">23–29</span></h2><p class="secnote">Convert to MKS units first. Give every answer to three significant figures with correct units. 1 mi = 1609 m.</p><div class="card" id="q3_0">
+  <div class="qn">Question 23</div>
+  <p class="stem">A basketball has a mass of 0.620 kg and travels at 9.40 m/s. Determine its momentum.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_0" data-k="3_0" placeholder="answer"><span class="unit">kg·m/s</span></div>
+  <div class="reveal" id="rv3_0"></div>
+</div><div class="card" id="q3_1">
+  <div class="qn">Question 24</div>
+  <p class="stem">A softball has a mass of 275 g and is thrown at 24.0 m/s. Determine its momentum.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_1" data-k="3_1" placeholder="answer"><span class="unit">kg·m/s</span></div>
+  <div class="reveal" id="rv3_1"></div>
+</div><div class="card" id="q3_2">
+  <div class="qn">Question 25</div>
+  <p class="stem">A golf ball has a mass of 45.0 g and leaves the tee at 72.0 m/s. Determine its momentum.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_2" data-k="3_2" placeholder="answer"><span class="unit">kg·m/s</span></div>
+  <div class="reveal" id="rv3_2"></div>
+</div><div class="card" id="q3_3">
+  <div class="qn">Question 26</div>
+  <p class="stem">A car and its driver have a combined mass of 1,250 kg and travel at 18.0 m/s. A city bus has a mass of 7,500 kg. At what velocity would the bus have to travel to carry the same momentum as the car?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_3" data-k="3_3" placeholder="answer"><span class="unit">m/s</span></div>
+  <div class="reveal" id="rv3_3"></div>
+</div><div class="card" id="q3_4">
+  <div class="qn">Question 27</div>
+  <p class="stem">A tennis ball has a mass of 57.0 g and a momentum of 3.42 kg·m/s. Determine its velocity in m/s.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_4" data-k="3_4" placeholder="answer"><span class="unit">m/s</span></div>
+  <div class="reveal" id="rv3_4"></div>
+</div><div class="card" id="q3_5">
+  <div class="qn">Question 28</div>
+  <p class="stem">State that tennis ball’s velocity in miles per hour.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_5" data-k="3_5" placeholder="answer"><span class="unit">mph</span></div>
+  <div class="reveal" id="rv3_5"></div>
+</div><div class="card" id="q3_6">
+  <div class="qn">Question 29</div>
+  <p class="stem">A sprinter with a mass of 85.0 kg has a momentum of 850 kg·m/s. Determine the sprinter’s velocity.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in3_6" data-k="3_6" placeholder="answer"><span class="unit">m/s</span></div>
+  <div class="reveal" id="rv3_6"></div>
+</div></section>
+</main>
+<div id="gradebar"><input id="nameinput" placeholder="Type your name" autocomplete="name"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div id="modalbox"><h2 id="mtitle"></h2><p id="mtext"></p><div class="row"><button id="mgo">Go back</button><button id="many">Grade anyway</button></div></div></div>
+
+<script>
+const SECTIONS=[{"name":"Part A — Vocabulary","items":[{"t":"match","tiles":[{"text":"mass in motion — an object’s mass times its velocity, carrying a direction with it","e":"Units of kg·m/s, which has no special name of its own."},{"text":"what happens when two objects affect each other, whether or not they ever touch","e":"The word is deliberately broader than “collision.” Two magnets repelling, or two protons, interact without contact."},{"text":"a collision in which the total kinetic energy afterwards equals the total kinetic energy before","e":"Nothing is lost to heat, sound or deformation. Steel ball bearings come close; nothing is perfect."},{"text":"a collision in which some kinetic energy becomes heat, sound or permanent deformation","e":"Momentum is still conserved. Kinetic energy is not. Those are different questions."},{"text":"a quantity with a size but no direction","e":"Mass, temperature, time, energy. Numbers with units and nothing else."},{"text":"a quantity that needs both a size and a direction to be fully described","e":"Velocity, force, momentum. In one dimension the direction is carried by the sign."}]}]},{"name":"Part B — True or False","items":[{"t":"tf","a":1,"e":"True. Mass in kilograms times velocity in metres per second. It has no special name, unlike the newton or the joule."},{"t":"tf","a":0,"e":"False. Force is measured in newtons. Momentum is kg·m/s."},{"t":"tf","a":0,"e":"False. That is exactly why the book uses the word interaction rather than collision. Magnets and charged particles interact without touching."},{"t":"tf","a":1,"e":"True. That is the definition of elastic."},{"t":"tf","a":0,"e":"False. They stick together and a great deal of energy goes into noise and deformation. That is inelastic."},{"t":"tf","a":1,"e":"True. It has a size but no direction. Nobody asks which way 20°C points."},{"t":"tf","a":1,"e":"True. p = mv, and if v is zero then p is zero however big m gets."},{"t":"tf","a":0,"e":"False. Having no special unit has nothing to do with it. Momentum is a vector because it has a direction."}]},{"name":"Part C — Multiple Choice","items":[{"t":"mc","a":1,"o":["p = m + v","p = mv","p = m/v","p = v/m"],"e":"Mass times velocity. Not a sum, not a ratio."},{"t":"mc","a":0,"o":["doubled","unchanged","cut in half","quadrupled"],"e":"Velocity is not squared in p = mv, so doubling it doubles the momentum. Quadrupling is what happens to kinetic energy."},{"t":"mc","a":2,"o":["two cars crashing and crumpling together","a lump of clay thrown at a wall and sticking to it","two steel ball bearings striking and bouncing apart","two railway cars coupling on impact"],"e":"Hard steel deforms very little, so almost all of the kinetic energy survives. The other three all lose it to deformation."},{"t":"mc","a":3,"o":["temperature","mass","time","velocity"],"e":"Velocity carries a direction. The other three are scalars."},{"t":"mc","a":0,"o":["more momentum","the same momentum","less momentum","no momentum"],"e":"Same velocity, far more mass, so far more momentum."},{"t":"mc","a":1,"o":["two magnets repelling without touching","a lump of putty landing on a sled and riding along with it","two billiard balls clicking apart","a ball bouncing back to the same height it was dropped from"],"e":"The putty sticks, so the objects end up moving together and kinetic energy is lost. Sticking together is always inelastic."},{"t":"mc","a":3,"o":["very large, because its mass is large","1200 kg·m/s","impossible to determine without its velocity","zero"],"e":"p = mv and v = 0, so p = 0. Mass alone gives an object no momentum."},{"t":"mc","a":2,"o":["the two are the same quantity measured differently","kinetic energy is conserved in every collision too","they are different quantities and obey different rules","momentum is only conserved in elastic collisions"],"e":"This is the whole distinction. Momentum survives every collision; kinetic energy survives only the elastic ones."}]},{"name":"Part D — Calculations","items":[{"t":"num","a":5.83,"disp":"5.83","u":"kg·m/s","e":"p = mv = (0.620 kg)(9.40 m/s) = 5.83 kg·m/s"},{"t":"num","a":6.6,"disp":"6.60","u":"kg·m/s","e":"Convert first: 275 g = 0.275 kg.  p = mv = (0.275 kg)(24.0 m/s) = 6.60 kg·m/s"},{"t":"num","a":3.24,"disp":"3.24","u":"kg·m/s","e":"Convert first: 45.0 g = 0.0450 kg.  p = mv = (0.0450 kg)(72.0 m/s) = 3.24 kg·m/s"},{"t":"num","a":3,"disp":"3.00","u":"m/s","e":"Car: p = mv = (1,250 kg)(18.0 m/s) = 22,500 kg·m/s.  Bus: v = p ÷ m = 22,500 ÷ 7,500 = 3.00 m/s"},{"t":"num","a":60,"disp":"60.0","u":"m/s","e":"Convert first: 57.0 g = 0.0570 kg.  v = p ÷ m = 3.42 ÷ 0.0570 = 60.0 m/s"},{"t":"num","a":134,"disp":"134","u":"mph","e":"60.0 m/s × (3600 s / 1 hr) = 216,000 m/hr.  216,000 ÷ 1609 = 134 mph"},{"t":"num","a":10,"disp":"10.0","u":"m/s","e":"v = p ÷ m = 850 kg·m/s ÷ 85.0 kg = 10.0 m/s"}]}];
+const META=[{"name":"Part A — Vocabulary","first":1,"last":6},{"name":"Part B — True or False","first":7,"last":14},{"name":"Part C — Multiple Choice","first":15,"last":22},{"name":"Part D — Calculations","first":23,"last":29}];
+const TOTAL=29;
+let graded=false;
+const pick={}, placed={}, typed={};
+
+function normNum(s){
+  if(s===null||s===undefined)return null;
+  const t=String(s).replace(/[, ]/g,'').replace(/[^0-9eE.+-]/g,'');
+  if(t==='')return null;
+  const v=parseFloat(t);
+  return isFinite(v)?v:null;
+}
+/* a 1% band, so 3.00 and 2.99 and 3 all count */
+function numOk(got,want){
+  if(got===null)return false;
+  return Math.abs(got-want)<=Math.max(0.01,Math.abs(want)*0.01);
+}
+
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+  if(graded)return;
+  const k=b.dataset.k;
+  document.querySelectorAll('#q'+k+' .opt').forEach(o=>o.classList.remove('sel'));
+  b.classList.add('sel'); pick[k]=+b.dataset.i; chips();
+}));
+
+let held=null;
+function clearLive(){document.querySelectorAll('.mslot.live').forEach(s=>s.classList.remove('live'));}
+function refreshTray(k){
+  const tray=document.getElementById('tray'+k); if(!tray)return;
+  const e=tray.querySelector('.trayempty');
+  if(e)e.style.display=tray.querySelectorAll('.tile').length?'none':'block';
+}
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{
+  if(graded)return;
+  const k=t.dataset.k;
+  if(t.parentElement.classList.contains('mslot')){
+    delete placed[k+'|'+t.parentElement.dataset.i];
+    document.getElementById('tray'+k).appendChild(t); refreshTray(k); chips(); return;
+  }
+  if(held===t){held.classList.remove('pick');held=null;clearLive();return;}
+  if(held)held.classList.remove('pick');
+  held=t; t.classList.add('pick'); clearLive();
+  document.querySelectorAll('#q'+k+' .mslot').forEach(s=>s.classList.add('live'));
+}));
+document.querySelectorAll('.mslot').forEach(slot=>slot.addEventListener('click',()=>{
+  if(graded||!held)return;
+  const k=slot.dataset.k;
+  if(held.dataset.k!==k)return;
+  const sitting=slot.querySelector('.tile');
+  if(sitting){document.getElementById('tray'+k).appendChild(sitting);delete placed[k+'|'+slot.dataset.i];}
+  slot.appendChild(held); placed[k+'|'+slot.dataset.i]=+held.dataset.i;
+  held.classList.remove('pick'); held=null; clearLive(); refreshTray(k); chips();
+}));
+document.querySelectorAll('input[data-k]').forEach(inp=>inp.addEventListener('input',()=>{
+  if(graded)return; typed[inp.dataset.k]=inp.value; chips();
+}));
+
+function answeredIn(si){
+  let done=0,tot=0;
+  SECTIONS[si].items.forEach((it,ii)=>{
+    const k=si+'_'+ii;
+    if(it.t==='match'){it.tiles.forEach((_,ti)=>{tot++;if(placed[k+'|'+ti]!==undefined)done++;});}
+    else if(it.t==='num'){tot++;if((typed[k]||'').trim()!=='')done++;}
+    else{tot++;if(pick[k]!==undefined)done++;}
+  });
+  return [done,tot];
+}
+const nav=document.getElementById('nav');
+META.forEach((m,si)=>{
+  const b=document.createElement('button');
+  b.innerHTML=m.name.replace(/^Part [A-D] \u2014 /,'')+' <span class="chip" id="chip'+si+'"></span>';
+  b.onclick=()=>document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});
+  nav.appendChild(b);
+});
+function chips(){
+  META.forEach((m,si)=>{
+    const [d,t]=answeredIn(si);
+    const el=document.getElementById('chip'+si); if(el)el.textContent=d+'/'+t;
+    nav.children[si].classList.toggle('done',d===t);
+  });
+}
+chips();
+
+function showModal(title,text,showAny){
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mtext').textContent=text;
+  document.getElementById('many').style.display=showAny?'':'none';
+  document.getElementById('overlay').classList.add('on');
+}
+document.getElementById('mgo').onclick=()=>document.getElementById('overlay').classList.remove('on');
+document.getElementById('many').onclick=()=>{document.getElementById('overlay').classList.remove('on');doGrade();};
+document.getElementById('gradebtn').onclick=()=>{
+  if(graded)return;
+  if(!document.getElementById('nameinput').value.trim()){
+    showModal('Name needed','Type your name in the box before grading, so you can show this to Mr. Murray.',false);return;}
+  let miss=0; META.forEach((m,si)=>{const[d,t]=answeredIn(si);miss+=t-d;});
+  if(miss>0){showModal('Still blank','You have '+miss+' unanswered '+(miss===1?'question':'questions')+'. Go back, or grade it as it stands.',true);return;}
+  doGrade();
+};
+function say(id,good,html){
+  const el=document.getElementById(id); if(!el)return;
+  el.className='reveal on '+(good?'good':'bad'); el.innerHTML=html;
+}
+function doGrade(){
+  graded=true;
+  let score=0; const rows=[];
+  SECTIONS.forEach((sec,si)=>{
+    let sgot=0,stot=0;
+    sec.items.forEach((it,ii)=>{
+      const k=si+'_'+ii, card=document.getElementById('q'+k);
+      if(it.t==='match'){
+        let right=0;
+        it.tiles.forEach((tk,ti)=>{
+          stot++;
+          const ok=placed[k+'|'+ti]===ti;
+          if(ok){right++;score++;sgot++;}
+          const slot=document.getElementById('slot'+k+'_'+ti);
+          const tile=slot?slot.querySelector('.tile'):null;
+          if(tile)tile.classList.add(ok?'ok':'bad');
+          say('rv'+k+'_'+ti,ok,'<b>'+tk.text+'</b> \u2014 '+tk.e);
+        });
+        card.classList.add(right===it.tiles.length?'ok':(right===0?'no':'part'));
+        return;
+      }
+      stot++;
+      if(it.t==='num'){
+        const ok=numOk(normNum(typed[k]),it.a);
+        if(ok){score++;sgot++;}
+        const inp=document.getElementById('in'+k); if(inp)inp.disabled=true;
+        card.classList.add(ok?'ok':'no');
+        say('rv'+k,ok,'<b>'+it.disp+' '+it.u+'</b> \u2014 '+it.e);
+      }else{
+        const got=pick[k], ok=got===it.a;
+        if(ok){score++;sgot++;}
+        const chosen=document.getElementById('o'+k+'_'+got); if(chosen)chosen.classList.add(ok?'ok':'no');
+        const right=document.getElementById('o'+k+'_'+it.a); if(right)right.classList.add('ok');
+        card.classList.add(ok?'ok':'no');
+        const label=it.t==='tf'?(it.a?'True':'False'):(String.fromCharCode(97+it.a)+') '+it.o[it.a]);
+        say('rv'+k,ok,'<b>'+label+'</b> \u2014 '+it.e);
+      }
+    });
+    rows.push([sec.name,sgot,stot]);
+  });
+  const sc=document.getElementById('scorecard');
+  sc.innerHTML='<div class="big">'+score+' / '+TOTAL+'</div>'
+    +'<div class="pct">'+Math.round(score/TOTAL*100)+'% \u00b7 '+document.getElementById('nameinput').value.trim()+'</div>'
+    +'<table><tr><th>Part</th><th>Score</th></tr>'
+    +rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+' / '+r[2]+'</td></tr>').join('')+'</table>';
+  sc.classList.add('on');
+  document.querySelectorAll('.opt,.tile').forEach(o=>o.disabled=true);
+  const bar=document.getElementById('gradebar');
+  bar.classList.add('locked'); bar.innerHTML='Graded and locked \u2014 scroll up for your score';
+  sc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script></body></html>
