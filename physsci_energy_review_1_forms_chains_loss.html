@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Energy Review 1</title>
+<style>
+:root{--ink:#17241c;--soft:#5c6d63;--line:#d8e1db;--bg:#f4f6f4;--card:#fff;
+--brand:#1e5f7a;--brandd:#17485c;--amber:#d98e2b;--ok:#1e7a4d;--no:#b3261e;--okbg:#e8f4ed;--nobg:#fdeceb;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:104px;}
+header{background:var(--brand);color:#fff;padding:20px 18px 18px;}
+header h1{margin:0;font-size:1.35rem;}
+header p{margin:5px 0 0;opacity:.9;font-size:.92rem;}
+nav{position:sticky;top:0;z-index:30;background:var(--brandd);display:flex;gap:7px;overflow-x:auto;padding:9px 12px;}
+nav button{flex:0 0 auto;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;padding:6px 13px;font-size:.8rem;cursor:pointer;white-space:nowrap;}
+nav button.done{background:var(--amber);color:#17241c;font-weight:600;}
+nav button .chip{margin-left:6px;opacity:.75;}
+main{max-width:860px;margin:0 auto;padding:16px 14px 0;}
+.sec h2{font-size:1.02rem;margin:22px 0 10px;color:var(--brandd);border-bottom:2px solid var(--line);padding-bottom:7px;}
+.sec h2 .rng{float:right;color:var(--soft);font-weight:400;font-size:.85rem;}
+.secnote{margin:-2px 0 11px;font-size:.88rem;color:var(--brandd);background:#e8f1f5;border-left:3px solid var(--brand);padding:7px 11px;border-radius:0 7px 7px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-bottom:11px;}
+.qn{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+.stem{margin:0 0 11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opts.tf{flex-direction:row;}
+.opts.tf .opt{flex:1 1 0;}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer;}
+.opt:hover{border-color:var(--brand);}
+.opt .ol{flex:0 0 22px;height:22px;border-radius:50%;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--soft);}
+.opt.sel{border-color:var(--brand);background:#eaf2f6;}
+.opt.sel .ol{background:var(--brand);color:#fff;}
+.opt.ok{border-color:var(--ok);background:var(--okbg);}
+.opt.no{border-color:var(--no);background:var(--nobg);}
+.numwrap{display:flex;align-items:center;gap:9px;}
+.numwrap input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;width:180px;}
+.numwrap input:focus{outline:2px solid var(--brand);outline-offset:1px;}
+.unit{color:var(--soft);font-size:.92rem;}
+.tray{display:flex;flex-wrap:wrap;gap:7px;min-height:46px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-bottom:11px;}
+.trayempty{color:var(--soft);font-size:.85rem;padding:4px 6px;}
+.tile{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font:inherit;font-size:.88rem;color:inherit;cursor:pointer;text-align:left;}
+.tile.pick{border-color:var(--amber);background:#fdf3e3;box-shadow:0 0 0 2px #f2dcb6;}
+.tile.ok{border-color:var(--ok);background:var(--okbg);}
+.tile.bad{border-color:var(--no);background:var(--nobg);}
+.srow{display:grid;grid-template-columns:34px minmax(120px,.8fr) minmax(170px,2fr);gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);}
+.srow:first-child{border-top:0;}
+.snum{color:var(--soft);font-size:.85rem;}
+.ssrc{font-weight:600;font-size:.95rem;}
+.mslot{min-height:42px;border:1px dashed var(--line);border-radius:9px;background:var(--bg);display:flex;align-items:center;padding:4px;}
+.mslot.live{border-color:var(--amber);background:#fdf8ef;}
+.srow .reveal{grid-column:1/-1;}
+.reveal{display:none;font-size:.88rem;margin-top:8px;padding:9px 11px;border-radius:8px;line-height:1.45;}
+.reveal.on{display:block;}
+.reveal.good{background:var(--okbg);border-left:3px solid var(--ok);}
+.reveal.bad{background:var(--nobg);border-left:3px solid var(--no);}
+.card.ok{border-color:#b6ddc8;}.card.no{border-color:#f0c4c0;}.card.part{border-color:#f0d8ae;}
+#gradebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--brandd);padding:12px 14px;display:flex;gap:10px;align-items:center;}
+#gradebar input{flex:1 1 auto;font:inherit;padding:11px 13px;border:0;border-radius:9px;min-width:0;}
+#gradebtn{flex:0 0 auto;background:var(--amber);color:#2a1c06;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;}
+#gradebar.locked{justify-content:center;color:#fff;font-weight:600;}
+#scorecard{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:4px 0 20px;}
+#scorecard.on{display:block;}
+#scorecard .big{font-size:2.3rem;font-weight:700;color:var(--brandd);line-height:1.1;}
+#scorecard .pct{color:var(--soft);margin-bottom:12px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.92rem;}
+#scorecard td,#scorecard th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);}
+#scorecard td:last-child,#scorecard th:last-child{text-align:right;}
+#overlay{display:none;position:fixed;inset:0;background:rgba(14,26,20,.55);z-index:60;align-items:center;justify-content:center;padding:20px;}
+#overlay.on{display:flex;}
+#modalbox{background:#fff;border-radius:13px;padding:20px;max-width:420px;width:100%;}
+#modalbox h2{margin:0 0 8px;font-size:1.05rem;}
+#modalbox p{margin:0 0 15px;color:var(--soft);font-size:.93rem;}
+#modalbox .row{display:flex;gap:9px;justify-content:flex-end;}
+#modalbox button{font:inherit;border:0;border-radius:9px;padding:10px 16px;cursor:pointer;}
+#mgo{background:var(--bg);color:var(--ink);}
+#many{background:var(--amber);color:#2a1c06;font-weight:700;}
+@media (max-width:560px){.srow{grid-template-columns:28px 1fr;}.srow .mslot{grid-column:1/-1;}}
+</style></head>
+<body>
+<header><h1>Energy Review 1 — Forms, Chains and Energy Loss</h1><p>Physical Science · Energy unit test review · answer everything, then press GRADE ME</p></header>
+<nav id="nav"></nav>
+<main><div id="scorecard"></div>
+<section class="sec" id="sec0"><h2>Forms of energy <span class="rng">1–18</span></h2><div class="card" id="q0_0">
+  <div class="qn">Questions 1–8</div>
+  <p class="stem">Match each example to the form of energy it shows.</p>
+  <div class="tray" id="tray0_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_0_7" data-k="0_0" data-i="7">nuclear energy</button><button type="button" class="tile" id="tile0_0_6" data-k="0_0" data-i="6">electrical energy</button><button type="button" class="tile" id="tile0_0_5" data-k="0_0" data-i="5">radiant energy</button><button type="button" class="tile" id="tile0_0_0" data-k="0_0" data-i="0">chemical potential energy</button><button type="button" class="tile" id="tile0_0_1" data-k="0_0" data-i="1">elastic potential energy</button><button type="button" class="tile" id="tile0_0_2" data-k="0_0" data-i="2">kinetic energy</button><button type="button" class="tile" id="tile0_0_3" data-k="0_0" data-i="3">gravitational potential energy</button><button type="button" class="tile" id="tile0_0_4" data-k="0_0" data-i="4">thermal energy</button></div>
+  <div class="slots"><div class="srow"><div class="snum">1.</div><div class="ssrc">A granola bar</div><div class="mslot" id="slot0_0_0" data-k="0_0" data-i="0"></div><div class="reveal" id="rv0_0_0"></div></div><div class="srow"><div class="snum">2.</div><div class="ssrc">A slingshot pulled all the way back</div><div class="mslot" id="slot0_0_1" data-k="0_0" data-i="1"></div><div class="reveal" id="rv0_0_1"></div></div><div class="srow"><div class="snum">3.</div><div class="ssrc">A bowling ball rolling down the lane</div><div class="mslot" id="slot0_0_2" data-k="0_0" data-i="2"></div><div class="reveal" id="rv0_0_2"></div></div><div class="srow"><div class="snum">4.</div><div class="ssrc">Water held behind a dam</div><div class="mslot" id="slot0_0_3" data-k="0_0" data-i="3"></div><div class="reveal" id="rv0_0_3"></div></div><div class="srow"><div class="snum">5.</div><div class="ssrc">The particles in a mug of hot cocoa</div><div class="mslot" id="slot0_0_4" data-k="0_0" data-i="4"></div><div class="reveal" id="rv0_0_4"></div></div><div class="srow"><div class="snum">6.</div><div class="ssrc">Light from a desk lamp</div><div class="mslot" id="slot0_0_5" data-k="0_0" data-i="5"></div><div class="reveal" id="rv0_0_5"></div></div><div class="srow"><div class="snum">7.</div><div class="ssrc">Current flowing through a phone charger</div><div class="mslot" id="slot0_0_6" data-k="0_0" data-i="6"></div><div class="reveal" id="rv0_0_6"></div></div><div class="srow"><div class="snum">8.</div><div class="ssrc">The fuel rods in a reactor</div><div class="mslot" id="slot0_0_7" data-k="0_0" data-i="7"></div><div class="reveal" id="rv0_0_7"></div></div></div>
+</div><div class="card" id="q0_1">
+  <div class="qn">Question 9</div>
+  <p class="stem">What kind of energy is stored in the food you eat?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_1_0" data-k="0_1" data-i="0"><span class="ol">a</span><span>kinetic energy</span></button><button type="button" class="opt" id="o0_1_1" data-k="0_1" data-i="1"><span class="ol">b</span><span>chemical potential energy</span></button><button type="button" class="opt" id="o0_1_2" data-k="0_1" data-i="2"><span class="ol">c</span><span>thermal energy</span></button><button type="button" class="opt" id="o0_1_3" data-k="0_1" data-i="3"><span class="ol">d</span><span>elastic potential energy</span></button></div>
+  <div class="reveal" id="rv0_1"></div>
+</div><div class="card" id="q0_2">
+  <div class="qn">Question 10</div>
+  <p class="stem">According to our text, thermal energy is</p>
+  <div class="opts"><button type="button" class="opt" id="o0_2_0" data-k="0_2" data-i="0"><span class="ol">a</span><span>the kinetic and potential energy of an object’s particles, added together</span></button><button type="button" class="opt" id="o0_2_1" data-k="0_2" data-i="1"><span class="ol">b</span><span>the energy an object has because of its height</span></button><button type="button" class="opt" id="o0_2_2" data-k="0_2" data-i="2"><span class="ol">c</span><span>energy that travels as light</span></button><button type="button" class="opt" id="o0_2_3" data-k="0_2" data-i="3"><span class="ol">d</span><span>the energy of a large moving object</span></button></div>
+  <div class="reveal" id="rv0_2"></div>
+</div><div class="card" id="q0_3">
+  <div class="qn">Question 11</div>
+  <p class="stem">We use the term mechanical energy for larger objects, like a ball. What does it include?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_3_0" data-k="0_3" data-i="0"><span class="ol">a</span><span>only the ball’s kinetic energy</span></button><button type="button" class="opt" id="o0_3_1" data-k="0_3" data-i="1"><span class="ol">b</span><span>only the ball’s potential energy</span></button><button type="button" class="opt" id="o0_3_2" data-k="0_3" data-i="2"><span class="ol">c</span><span>the energy of the particles inside the ball</span></button><button type="button" class="opt" id="o0_3_3" data-k="0_3" data-i="3"><span class="ol">d</span><span>the ball’s kinetic energy plus its potential energy</span></button></div>
+  <div class="reveal" id="rv0_3"></div>
+</div><div class="card" id="q0_4">
+  <div class="qn">Question 12</div>
+  <p class="stem">A diver stands still at the top of the high board. What kind of energy does she have the most of?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_4_0" data-k="0_4" data-i="0"><span class="ol">a</span><span>kinetic</span></button><button type="button" class="opt" id="o0_4_1" data-k="0_4" data-i="1"><span class="ol">b</span><span>elastic potential</span></button><button type="button" class="opt" id="o0_4_2" data-k="0_4" data-i="2"><span class="ol">c</span><span>gravitational potential</span></button><button type="button" class="opt" id="o0_4_3" data-k="0_4" data-i="3"><span class="ol">d</span><span>radiant</span></button></div>
+  <div class="reveal" id="rv0_4"></div>
+</div><div class="card" id="q0_5">
+  <div class="qn">Question 13</div>
+  <p class="stem">Which of these is a form of potential (stored) energy?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_5_0" data-k="0_5" data-i="0"><span class="ol">a</span><span>a rolling skateboard</span></button><button type="button" class="opt" id="o0_5_1" data-k="0_5" data-i="1"><span class="ol">b</span><span>a flying arrow</span></button><button type="button" class="opt" id="o0_5_2" data-k="0_5" data-i="2"><span class="ol">c</span><span>a falling raindrop</span></button><button type="button" class="opt" id="o0_5_3" data-k="0_5" data-i="3"><span class="ol">d</span><span>a compressed spring</span></button></div>
+  <div class="reveal" id="rv0_5"></div>
+</div><div class="card" id="q0_6">
+  <div class="qn">Question 14</div>
+  <p class="stem">A new battery sitting in a drawer has</p>
+  <div class="opts"><button type="button" class="opt" id="o0_6_0" data-k="0_6" data-i="0"><span class="ol">a</span><span>chemical potential energy</span></button><button type="button" class="opt" id="o0_6_1" data-k="0_6" data-i="1"><span class="ol">b</span><span>kinetic energy</span></button><button type="button" class="opt" id="o0_6_2" data-k="0_6" data-i="2"><span class="ol">c</span><span>no energy until it is used</span></button><button type="button" class="opt" id="o0_6_3" data-k="0_6" data-i="3"><span class="ol">d</span><span>radiant energy</span></button></div>
+  <div class="reveal" id="rv0_6"></div>
+</div><div class="card tfcard" id="q0_7">
+  <div class="qn">Question 15</div>
+  <p class="stem">A parked car at the top of a hill has gravitational potential energy.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_7_1" data-k="0_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_7_0" data-k="0_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_7"></div>
+</div><div class="card tfcard" id="q0_8">
+  <div class="qn">Question 16</div>
+  <p class="stem">An object must be moving to have any energy at all.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_8_1" data-k="0_8" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_8_0" data-k="0_8" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_8"></div>
+</div><div class="card tfcard" id="q0_9">
+  <div class="qn">Question 17</div>
+  <p class="stem">When a cup of water is heated, its particles move faster.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_9_1" data-k="0_9" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_9_0" data-k="0_9" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_9"></div>
+</div><div class="card tfcard" id="q0_10">
+  <div class="qn">Question 18</div>
+  <p class="stem">Kinetic energy is stored energy.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_10_1" data-k="0_10" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_10_0" data-k="0_10" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_10"></div>
+</div></section>
+<section class="sec" id="sec1"><h2>Energy transformation chains <span class="rng">19–31</span></h2><div class="card" id="q1_0">
+  <div class="qn">Questions 19–24</div>
+  <p class="stem">Match each device to its energy chain.</p>
+  <div class="tray" id="tray1_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile1_0_4" data-k="1_0" data-i="4">radiant → electrical</button><button type="button" class="tile" id="tile1_0_3" data-k="1_0" data-i="3">chemical → thermal → kinetic</button><button type="button" class="tile" id="tile1_0_5" data-k="1_0" data-i="5">gravitational potential → kinetic</button><button type="button" class="tile" id="tile1_0_0" data-k="1_0" data-i="0">chemical → electrical → radiant</button><button type="button" class="tile" id="tile1_0_1" data-k="1_0" data-i="1">electrical → thermal</button><button type="button" class="tile" id="tile1_0_2" data-k="1_0" data-i="2">elastic potential → kinetic</button></div>
+  <div class="slots"><div class="srow"><div class="snum">19.</div><div class="ssrc">A flashlight</div><div class="mslot" id="slot1_0_0" data-k="1_0" data-i="0"></div><div class="reveal" id="rv1_0_0"></div></div><div class="srow"><div class="snum">20.</div><div class="ssrc">A toaster</div><div class="mslot" id="slot1_0_1" data-k="1_0" data-i="1"></div><div class="reveal" id="rv1_0_1"></div></div><div class="srow"><div class="snum">21.</div><div class="ssrc">A wind-up toy</div><div class="mslot" id="slot1_0_2" data-k="1_0" data-i="2"></div><div class="reveal" id="rv1_0_2"></div></div><div class="srow"><div class="snum">22.</div><div class="ssrc">A car engine</div><div class="mslot" id="slot1_0_3" data-k="1_0" data-i="3"></div><div class="reveal" id="rv1_0_3"></div></div><div class="srow"><div class="snum">23.</div><div class="ssrc">A solar calculator</div><div class="mslot" id="slot1_0_4" data-k="1_0" data-i="4"></div><div class="reveal" id="rv1_0_4"></div></div><div class="srow"><div class="snum">24.</div><div class="ssrc">A roller coaster car dropping down the first hill</div><div class="mslot" id="slot1_0_5" data-k="1_0" data-i="5"></div><div class="reveal" id="rv1_0_5"></div></div></div>
+</div><div class="card" id="q1_1">
+  <div class="qn">Question 25</div>
+  <p class="stem">A plant growing in sunlight makes its own food. Which transformation is that?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_1_0" data-k="1_1" data-i="0"><span class="ol">a</span><span>chemical → radiant</span></button><button type="button" class="opt" id="o1_1_1" data-k="1_1" data-i="1"><span class="ol">b</span><span>radiant → chemical</span></button><button type="button" class="opt" id="o1_1_2" data-k="1_1" data-i="2"><span class="ol">c</span><span>thermal → kinetic</span></button><button type="button" class="opt" id="o1_1_3" data-k="1_1" data-i="3"><span class="ol">d</span><span>kinetic → chemical</span></button></div>
+  <div class="reveal" id="rv1_1"></div>
+</div><div class="card" id="q1_2">
+  <div class="qn">Question 26</div>
+  <p class="stem">You eat breakfast and then run a race. Which chain describes it best?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_2_0" data-k="1_2" data-i="0"><span class="ol">a</span><span>kinetic → chemical → thermal</span></button><button type="button" class="opt" id="o1_2_1" data-k="1_2" data-i="1"><span class="ol">b</span><span>radiant → kinetic</span></button><button type="button" class="opt" id="o1_2_2" data-k="1_2" data-i="2"><span class="ol">c</span><span>chemical → kinetic and thermal</span></button><button type="button" class="opt" id="o1_2_3" data-k="1_2" data-i="3"><span class="ol">d</span><span>elastic → chemical</span></button></div>
+  <div class="reveal" id="rv1_2"></div>
+</div><div class="card" id="q1_3">
+  <div class="qn">Question 27</div>
+  <p class="stem">An archer pulls back a bow and lets the arrow fly. Which chain is correct?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_3_0" data-k="1_3" data-i="0"><span class="ol">a</span><span>elastic potential → kinetic</span></button><button type="button" class="opt" id="o1_3_1" data-k="1_3" data-i="1"><span class="ol">b</span><span>kinetic → elastic potential</span></button><button type="button" class="opt" id="o1_3_2" data-k="1_3" data-i="2"><span class="ol">c</span><span>chemical → radiant</span></button><button type="button" class="opt" id="o1_3_3" data-k="1_3" data-i="3"><span class="ol">d</span><span>gravitational potential → elastic potential</span></button></div>
+  <div class="reveal" id="rv1_3"></div>
+</div><div class="card" id="q1_4">
+  <div class="qn">Question 28</div>
+  <p class="stem">A ball is thrown straight up. On the way UP, which transformation is happening?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_4_0" data-k="1_4" data-i="0"><span class="ol">a</span><span>gravitational potential → kinetic</span></button><button type="button" class="opt" id="o1_4_1" data-k="1_4" data-i="1"><span class="ol">b</span><span>chemical → thermal</span></button><button type="button" class="opt" id="o1_4_2" data-k="1_4" data-i="2"><span class="ol">c</span><span>elastic → kinetic</span></button><button type="button" class="opt" id="o1_4_3" data-k="1_4" data-i="3"><span class="ol">d</span><span>kinetic → gravitational potential</span></button></div>
+  <div class="reveal" id="rv1_4"></div>
+</div><div class="card" id="q1_5">
+  <div class="qn">Question 29</div>
+  <p class="stem">A campfire warms your hands and lights up the campsite. What is the chain?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_5_0" data-k="1_5" data-i="0"><span class="ol">a</span><span>thermal → chemical</span></button><button type="button" class="opt" id="o1_5_1" data-k="1_5" data-i="1"><span class="ol">b</span><span>chemical → thermal and radiant</span></button><button type="button" class="opt" id="o1_5_2" data-k="1_5" data-i="2"><span class="ol">c</span><span>radiant → chemical</span></button><button type="button" class="opt" id="o1_5_3" data-k="1_5" data-i="3"><span class="ol">d</span><span>kinetic → thermal</span></button></div>
+  <div class="reveal" id="rv1_5"></div>
+</div><div class="card tfcard" id="q1_6">
+  <div class="qn">Question 30</div>
+  <p class="stem">In an energy transformation, energy changes form but the total amount stays the same.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_6_1" data-k="1_6" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_6_0" data-k="1_6" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_6"></div>
+</div><div class="card tfcard" id="q1_7">
+  <div class="qn">Question 31</div>
+  <p class="stem">A battery creates energy when it is switched on.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_7_1" data-k="1_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_7_0" data-k="1_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_7"></div>
+</div></section>
+<section class="sec" id="sec2"><h2>Where energy goes: energy loss <span class="rng">32–41</span></h2><div class="card" id="q2_0">
+  <div class="qn">Question 32</div>
+  <p class="stem">A machine never passes on all the energy it is given. Where does the “lost” energy almost always go?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_0_0" data-k="2_0" data-i="0"><span class="ol">a</span><span>it is destroyed</span></button><button type="button" class="opt" id="o2_0_1" data-k="2_0" data-i="1"><span class="ol">b</span><span>it turns back into fuel</span></button><button type="button" class="opt" id="o2_0_2" data-k="2_0" data-i="2"><span class="ol">c</span><span>it becomes thermal energy, usually from friction</span></button><button type="button" class="opt" id="o2_0_3" data-k="2_0" data-i="3"><span class="ol">d</span><span>it stays inside the machine forever</span></button></div>
+  <div class="reveal" id="rv2_0"></div>
+</div><div class="card" id="q2_1">
+  <div class="qn">Question 33</div>
+  <p class="stem">A bouncing ball bounces a little lower each time. What happened to the missing energy?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_1_0" data-k="2_1" data-i="0"><span class="ol">a</span><span>it became thermal energy and sound on each bounce</span></button><button type="button" class="opt" id="o2_1_1" data-k="2_1" data-i="1"><span class="ol">b</span><span>it was destroyed by the floor</span></button><button type="button" class="opt" id="o2_1_2" data-k="2_1" data-i="2"><span class="ol">c</span><span>it became gravitational potential energy</span></button><button type="button" class="opt" id="o2_1_3" data-k="2_1" data-i="3"><span class="ol">d</span><span>it leaked out as radiant energy</span></button></div>
+  <div class="reveal" id="rv2_1"></div>
+</div><div class="card" id="q2_2">
+  <div class="qn">Question 34</div>
+  <p class="stem">After a long downhill ride, a bike’s brakes are hot. Which energy loss is that?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_2_0" data-k="2_2" data-i="0"><span class="ol">a</span><span>sound</span></button><button type="button" class="opt" id="o2_2_1" data-k="2_2" data-i="1"><span class="ol">b</span><span>radiant</span></button><button type="button" class="opt" id="o2_2_2" data-k="2_2" data-i="2"><span class="ol">c</span><span>elastic</span></button><button type="button" class="opt" id="o2_2_3" data-k="2_2" data-i="3"><span class="ol">d</span><span>thermal, from friction</span></button></div>
+  <div class="reveal" id="rv2_2"></div>
+</div><div class="card" id="q2_3">
+  <div class="qn">Question 35</div>
+  <p class="stem">An old-style light bulb gets too hot to touch. The heat is</p>
+  <div class="opts"><button type="button" class="opt" id="o2_3_0" data-k="2_3" data-i="0"><span class="ol">a</span><span>the useful output of the bulb</span></button><button type="button" class="opt" id="o2_3_1" data-k="2_3" data-i="1"><span class="ol">b</span><span>wasted energy, because the bulb’s job is to make light</span></button><button type="button" class="opt" id="o2_3_2" data-k="2_3" data-i="2"><span class="ol">c</span><span>energy the bulb created</span></button><button type="button" class="opt" id="o2_3_3" data-k="2_3" data-i="3"><span class="ol">d</span><span>energy returning to the power plant</span></button></div>
+  <div class="reveal" id="rv2_3"></div>
+</div><div class="card" id="q2_4">
+  <div class="qn">Question 36</div>
+  <p class="stem">A blender is very loud when it runs. The sound is</p>
+  <div class="opts"><button type="button" class="opt" id="o2_4_0" data-k="2_4" data-i="0"><span class="ol">a</span><span>proof the blender is creating energy</span></button><button type="button" class="opt" id="o2_4_1" data-k="2_4" data-i="1"><span class="ol">b</span><span>useful output</span></button><button type="button" class="opt" id="o2_4_2" data-k="2_4" data-i="2"><span class="ol">c</span><span>energy leaving the blender as waste</span></button><button type="button" class="opt" id="o2_4_3" data-k="2_4" data-i="3"><span class="ol">d</span><span>stored for later use</span></button></div>
+  <div class="reveal" id="rv2_4"></div>
+</div><div class="card" id="q2_5">
+  <div class="qn">Question 37</div>
+  <p class="stem">A swinging pendulum slowly comes to a stop. Why?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_5_0" data-k="2_5" data-i="0"><span class="ol">a</span><span>air resistance and friction turn its energy into thermal energy</span></button><button type="button" class="opt" id="o2_5_1" data-k="2_5" data-i="1"><span class="ol">b</span><span>gravity uses the energy up</span></button><button type="button" class="opt" id="o2_5_2" data-k="2_5" data-i="2"><span class="ol">c</span><span>its energy is destroyed a little on each swing</span></button><button type="button" class="opt" id="o2_5_3" data-k="2_5" data-i="3"><span class="ol">d</span><span>pendulums always stop after one minute</span></button></div>
+  <div class="reveal" id="rv2_5"></div>
+</div><div class="card" id="q2_6">
+  <div class="qn">Question 38</div>
+  <p class="stem">Which statement about “lost” energy is correct?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_6_0" data-k="2_6" data-i="0"><span class="ol">a</span><span>it no longer exists</span></button><button type="button" class="opt" id="o2_6_1" data-k="2_6" data-i="1"><span class="ol">b</span><span>it can be collected and reused easily</span></button><button type="button" class="opt" id="o2_6_2" data-k="2_6" data-i="2"><span class="ol">c</span><span>it only happens in old machines</span></button><button type="button" class="opt" id="o2_6_3" data-k="2_6" data-i="3"><span class="ol">d</span><span>it still exists, but in a form that is not useful</span></button></div>
+  <div class="reveal" id="rv2_6"></div>
+</div><div class="card tfcard" id="q2_7">
+  <div class="qn">Question 39</div>
+  <p class="stem">A machine can be built that loses no energy at all.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_7_1" data-k="2_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_7_0" data-k="2_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_7"></div>
+</div><div class="card tfcard" id="q2_8">
+  <div class="qn">Question 40</div>
+  <p class="stem">Oiling a squeaky hinge reduces the energy lost to friction.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_8_1" data-k="2_8" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_8_0" data-k="2_8" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_8"></div>
+</div><div class="card tfcard" id="q2_9">
+  <div class="qn">Question 41</div>
+  <p class="stem">When a car brakes to a stop, its kinetic energy is destroyed.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_9_1" data-k="2_9" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_9_0" data-k="2_9" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_9"></div>
+</div></section>
+</main>
+<div id="gradebar"><input id="nameinput" placeholder="Type your name" autocomplete="name"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div id="modalbox"><h2 id="mtitle"></h2><p id="mtext"></p><div class="row"><button id="mgo">Go back</button><button id="many">Grade anyway</button></div></div></div>
+
+<script>
+const SECTIONS=[{"name":"Forms of energy","items":[{"t":"match","tiles":[{"text":"chemical potential energy","e":"Stored in the bonds between atoms. Food, fuel and batteries all store energy this way."},{"text":"elastic potential energy","e":"Stored by stretching or squashing something that springs back."},{"text":"kinetic energy","e":"The energy of motion. Anything moving has it."},{"text":"gravitational potential energy","e":"Stored because of height. The higher the water, the more is stored."},{"text":"thermal energy","e":"The kinetic and potential energy of the particles, added together."},{"text":"radiant energy","e":"Energy carried by light and other electromagnetic waves."},{"text":"electrical energy","e":"Energy carried by moving electric charge."},{"text":"nuclear energy","e":"Stored in the nucleus of the atom, and released when nuclei split."}]},{"t":"mc","a":1,"o":["kinetic energy","chemical potential energy","thermal energy","elastic potential energy"],"e":"Food is fuel. The energy sits in chemical bonds until your body breaks them."},{"t":"mc","a":0,"o":["the kinetic and potential energy of an object’s particles, added together","the energy an object has because of its height","energy that travels as light","the energy of a large moving object"],"e":"It is about the particles, not the object as a whole. More particle motion means more thermal energy."},{"t":"mc","a":3,"o":["only the ball’s kinetic energy","only the ball’s potential energy","the energy of the particles inside the ball","the ball’s kinetic energy plus its potential energy"],"e":"Mechanical energy is the motion and position of the object itself. The particles inside are the thermal energy story."},{"t":"mc","a":2,"o":["kinetic","elastic potential","gravitational potential","radiant"],"e":"She is not moving, so no kinetic energy. She is high up, so the energy is stored as height."},{"t":"mc","a":3,"o":["a rolling skateboard","a flying arrow","a falling raindrop","a compressed spring"],"e":"The other three are moving, which is kinetic. The spring is storing energy by being squashed."},{"t":"mc","a":0,"o":["chemical potential energy","kinetic energy","no energy until it is used","radiant energy"],"e":"The energy is stored chemically and waits there until a circuit lets it out."},{"t":"tf","a":1,"e":"True. It is not moving, but its height stores energy. Release the brake and you will see it."},{"t":"tf","a":0,"e":"False. Stored energy is still energy. A stretched rubber band or a battery has plenty without moving."},{"t":"tf","a":1,"e":"True. Heating raises the thermal energy, and faster particles are what that means."},{"t":"tf","a":0,"e":"False. Kinetic energy is the energy of motion. Stored energy is potential."}]},{"name":"Energy transformation chains","items":[{"t":"match","tiles":[{"text":"chemical → electrical → radiant","e":"The battery stores chemical energy, which becomes electrical current, which becomes light."},{"text":"electrical → thermal","e":"Current through the wires heats them. That is the whole machine."},{"text":"elastic potential → kinetic","e":"Winding stores energy in the spring. Letting go turns it into motion."},{"text":"chemical → thermal → kinetic","e":"Burning the fuel releases heat, and the hot gas pushes the pistons."},{"text":"radiant → electrical","e":"Light falls on the panel and comes out as current."},{"text":"gravitational potential → kinetic","e":"Height becomes speed."}]},{"t":"mc","a":1,"o":["chemical → radiant","radiant → chemical","thermal → kinetic","kinetic → chemical"],"e":"Light goes in and is stored in the plant as chemical energy. Every food chain starts here."},{"t":"mc","a":2,"o":["kinetic → chemical → thermal","radiant → kinetic","chemical → kinetic and thermal","elastic → chemical"],"e":"The food’s chemical energy becomes your motion, and a good share becomes thermal energy, which is why you get hot."},{"t":"mc","a":0,"o":["elastic potential → kinetic","kinetic → elastic potential","chemical → radiant","gravitational potential → elastic potential"],"e":"The bent bow stores elastic energy. Releasing it hands that energy to the arrow as motion."},{"t":"mc","a":3,"o":["gravitational potential → kinetic","chemical → thermal","elastic → kinetic","kinetic → gravitational potential"],"e":"It slows down as it rises: motion is being stored as height. On the way down the chain runs backwards."},{"t":"mc","a":1,"o":["thermal → chemical","chemical → thermal and radiant","radiant → chemical","kinetic → thermal"],"e":"The wood’s chemical energy is released as heat and light."},{"t":"tf","a":1,"e":"True. That is the law of conservation of energy."},{"t":"tf","a":0,"e":"False. Nothing creates energy. The battery releases chemical energy that was already stored in it."}]},{"name":"Where energy goes: energy loss","items":[{"t":"mc","a":2,"o":["it is destroyed","it turns back into fuel","it becomes thermal energy, usually from friction","it stays inside the machine forever"],"e":"Friction warms the moving parts. The energy still exists, it is just no longer useful."},{"t":"mc","a":0,"o":["it became thermal energy and sound on each bounce","it was destroyed by the floor","it became gravitational potential energy","it leaked out as radiant energy"],"e":"Each impact warms the ball and floor slightly and makes a sound. Both carry energy away."},{"t":"mc","a":3,"o":["sound","radiant","elastic","thermal, from friction"],"e":"The brake pads rub the wheel and turn the bike’s motion into heat."},{"t":"mc","a":1,"o":["the useful output of the bulb","wasted energy, because the bulb’s job is to make light","energy the bulb created","energy returning to the power plant"],"e":"Useful means what the device is for. A bulb is for light, so the heat is waste."},{"t":"mc","a":2,"o":["proof the blender is creating energy","useful output","energy leaving the blender as waste","stored for later use"],"e":"Sound carries energy away. Nobody buys a blender for the noise, so it counts as loss."},{"t":"mc","a":0,"o":["air resistance and friction turn its energy into thermal energy","gravity uses the energy up","its energy is destroyed a little on each swing","pendulums always stop after one minute"],"e":"Each swing pushes air aside and rubs at the pivot. Both warm things slightly until the motion is gone."},{"t":"mc","a":3,"o":["it no longer exists","it can be collected and reused easily","it only happens in old machines","it still exists, but in a form that is not useful"],"e":"Conservation of energy never fails. Lost means spread out as heat and sound, not gone."},{"t":"tf","a":0,"e":"False. Every real machine has friction somewhere, so some energy always ends up as heat."},{"t":"tf","a":1,"e":"True. Less rubbing means less energy turned into heat and sound."},{"t":"tf","a":0,"e":"False. It becomes thermal energy in the brakes. Touch them (carefully) and you can feel it."}]}];
+const META=[{"name":"Forms of energy","first":1,"last":18},{"name":"Energy transformation chains","first":19,"last":31},{"name":"Where energy goes: energy loss","first":32,"last":41}];
+const TOTAL=41;
+let graded=false;
+const pick={}, placed={}, typed={};
+
+function normNum(s){
+  if(s===null||s===undefined)return null;
+  const t=String(s).replace(/[, ]/g,'').replace(/[^0-9eE.+-]/g,'');
+  if(t==='')return null;
+  const v=parseFloat(t);
+  return isFinite(v)?v:null;
+}
+/* a 1% band, so 3.00 and 2.99 and 3 all count */
+function numOk(got,want){
+  if(got===null)return false;
+  return Math.abs(got-want)<=Math.max(0.01,Math.abs(want)*0.01);
+}
+
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+  if(graded)return;
+  const k=b.dataset.k;
+  document.querySelectorAll('#q'+k+' .opt').forEach(o=>o.classList.remove('sel'));
+  b.classList.add('sel'); pick[k]=+b.dataset.i; chips();
+}));
+
+let held=null;
+function clearLive(){document.querySelectorAll('.mslot.live').forEach(s=>s.classList.remove('live'));}
+function refreshTray(k){
+  const tray=document.getElementById('tray'+k); if(!tray)return;
+  const e=tray.querySelector('.trayempty');
+  if(e)e.style.display=tray.querySelectorAll('.tile').length?'none':'block';
+}
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{
+  if(graded)return;
+  const k=t.dataset.k;
+  if(t.parentElement.classList.contains('mslot')){
+    delete placed[k+'|'+t.parentElement.dataset.i];
+    document.getElementById('tray'+k).appendChild(t); refreshTray(k); chips(); return;
+  }
+  if(held===t){held.classList.remove('pick');held=null;clearLive();return;}
+  if(held)held.classList.remove('pick');
+  held=t; t.classList.add('pick'); clearLive();
+  document.querySelectorAll('#q'+k+' .mslot').forEach(s=>s.classList.add('live'));
+}));
+document.querySelectorAll('.mslot').forEach(slot=>slot.addEventListener('click',()=>{
+  if(graded||!held)return;
+  const k=slot.dataset.k;
+  if(held.dataset.k!==k)return;
+  const sitting=slot.querySelector('.tile');
+  if(sitting){document.getElementById('tray'+k).appendChild(sitting);delete placed[k+'|'+slot.dataset.i];}
+  slot.appendChild(held); placed[k+'|'+slot.dataset.i]=+held.dataset.i;
+  held.classList.remove('pick'); held=null; clearLive(); refreshTray(k); chips();
+}));
+document.querySelectorAll('input[data-k]').forEach(inp=>inp.addEventListener('input',()=>{
+  if(graded)return; typed[inp.dataset.k]=inp.value; chips();
+}));
+
+function answeredIn(si){
+  let done=0,tot=0;
+  SECTIONS[si].items.forEach((it,ii)=>{
+    const k=si+'_'+ii;
+    if(it.t==='match'){it.tiles.forEach((_,ti)=>{tot++;if(placed[k+'|'+ti]!==undefined)done++;});}
+    else if(it.t==='num'){tot++;if((typed[k]||'').trim()!=='')done++;}
+    else{tot++;if(pick[k]!==undefined)done++;}
+  });
+  return [done,tot];
+}
+const nav=document.getElementById('nav');
+META.forEach((m,si)=>{
+  const b=document.createElement('button');
+  b.innerHTML=m.name.replace(/^Part [A-D] \u2014 /,'')+' <span class="chip" id="chip'+si+'"></span>';
+  b.onclick=()=>document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});
+  nav.appendChild(b);
+});
+function chips(){
+  META.forEach((m,si)=>{
+    const [d,t]=answeredIn(si);
+    const el=document.getElementById('chip'+si); if(el)el.textContent=d+'/'+t;
+    nav.children[si].classList.toggle('done',d===t);
+  });
+}
+chips();
+
+function showModal(title,text,showAny){
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mtext').textContent=text;
+  document.getElementById('many').style.display=showAny?'':'none';
+  document.getElementById('overlay').classList.add('on');
+}
+document.getElementById('mgo').onclick=()=>document.getElementById('overlay').classList.remove('on');
+document.getElementById('many').onclick=()=>{document.getElementById('overlay').classList.remove('on');doGrade();};
+document.getElementById('gradebtn').onclick=()=>{
+  if(graded)return;
+  if(!document.getElementById('nameinput').value.trim()){
+    showModal('Name needed','Type your name in the box before grading, so you can show this to Mr. Murray.',false);return;}
+  let miss=0; META.forEach((m,si)=>{const[d,t]=answeredIn(si);miss+=t-d;});
+  if(miss>0){showModal('Still blank','You have '+miss+' unanswered '+(miss===1?'question':'questions')+'. Go back, or grade it as it stands.',true);return;}
+  doGrade();
+};
+function say(id,good,html){
+  const el=document.getElementById(id); if(!el)return;
+  el.className='reveal on '+(good?'good':'bad'); el.innerHTML=html;
+}
+function doGrade(){
+  graded=true;
+  let score=0; const rows=[];
+  SECTIONS.forEach((sec,si)=>{
+    let sgot=0,stot=0;
+    sec.items.forEach((it,ii)=>{
+      const k=si+'_'+ii, card=document.getElementById('q'+k);
+      if(it.t==='match'){
+        let right=0;
+        it.tiles.forEach((tk,ti)=>{
+          stot++;
+          const ok=placed[k+'|'+ti]===ti;
+          if(ok){right++;score++;sgot++;}
+          const slot=document.getElementById('slot'+k+'_'+ti);
+          const tile=slot?slot.querySelector('.tile'):null;
+          if(tile)tile.classList.add(ok?'ok':'bad');
+          say('rv'+k+'_'+ti,ok,'<b>'+tk.text+'</b> \u2014 '+tk.e);
+        });
+        card.classList.add(right===it.tiles.length?'ok':(right===0?'no':'part'));
+        return;
+      }
+      stot++;
+      if(it.t==='num'){
+        const ok=numOk(normNum(typed[k]),it.a);
+        if(ok){score++;sgot++;}
+        const inp=document.getElementById('in'+k); if(inp)inp.disabled=true;
+        card.classList.add(ok?'ok':'no');
+        say('rv'+k,ok,'<b>'+it.disp+' '+it.u+'</b> \u2014 '+it.e);
+      }else{
+        const got=pick[k], ok=got===it.a;
+        if(ok){score++;sgot++;}
+        const chosen=document.getElementById('o'+k+'_'+got); if(chosen)chosen.classList.add(ok?'ok':'no');
+        const right=document.getElementById('o'+k+'_'+it.a); if(right)right.classList.add('ok');
+        card.classList.add(ok?'ok':'no');
+        const label=it.t==='tf'?(it.a?'True':'False'):(String.fromCharCode(97+it.a)+') '+it.o[it.a]);
+        say('rv'+k,ok,'<b>'+label+'</b> \u2014 '+it.e);
+      }
+    });
+    rows.push([sec.name,sgot,stot]);
+  });
+  const sc=document.getElementById('scorecard');
+  sc.innerHTML='<div class="big">'+score+' / '+TOTAL+'</div>'
+    +'<div class="pct">'+Math.round(score/TOTAL*100)+'% \u00b7 '+document.getElementById('nameinput').value.trim()+'</div>'
+    +'<table><tr><th>Part</th><th>Score</th></tr>'
+    +rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+' / '+r[2]+'</td></tr>').join('')+'</table>';
+  sc.classList.add('on');
+  document.querySelectorAll('.opt,.tile').forEach(o=>o.disabled=true);
+  const bar=document.getElementById('gradebar');
+  bar.classList.add('locked'); bar.innerHTML='Graded and locked \u2014 scroll up for your score';
+  sc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script></body></html>

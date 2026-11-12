@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Energy Review 3</title>
+<style>
+:root{--ink:#17241c;--soft:#5c6d63;--line:#d8e1db;--bg:#f4f6f4;--card:#fff;
+--brand:#1e5f7a;--brandd:#17485c;--amber:#d98e2b;--ok:#1e7a4d;--no:#b3261e;--okbg:#e8f4ed;--nobg:#fdeceb;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:104px;}
+header{background:var(--brand);color:#fff;padding:20px 18px 18px;}
+header h1{margin:0;font-size:1.35rem;}
+header p{margin:5px 0 0;opacity:.9;font-size:.92rem;}
+nav{position:sticky;top:0;z-index:30;background:var(--brandd);display:flex;gap:7px;overflow-x:auto;padding:9px 12px;}
+nav button{flex:0 0 auto;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;padding:6px 13px;font-size:.8rem;cursor:pointer;white-space:nowrap;}
+nav button.done{background:var(--amber);color:#17241c;font-weight:600;}
+nav button .chip{margin-left:6px;opacity:.75;}
+main{max-width:860px;margin:0 auto;padding:16px 14px 0;}
+.sec h2{font-size:1.02rem;margin:22px 0 10px;color:var(--brandd);border-bottom:2px solid var(--line);padding-bottom:7px;}
+.sec h2 .rng{float:right;color:var(--soft);font-weight:400;font-size:.85rem;}
+.secnote{margin:-2px 0 11px;font-size:.88rem;color:var(--brandd);background:#e8f1f5;border-left:3px solid var(--brand);padding:7px 11px;border-radius:0 7px 7px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-bottom:11px;}
+.qn{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+.stem{margin:0 0 11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opts.tf{flex-direction:row;}
+.opts.tf .opt{flex:1 1 0;}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer;}
+.opt:hover{border-color:var(--brand);}
+.opt .ol{flex:0 0 22px;height:22px;border-radius:50%;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--soft);}
+.opt.sel{border-color:var(--brand);background:#eaf2f6;}
+.opt.sel .ol{background:var(--brand);color:#fff;}
+.opt.ok{border-color:var(--ok);background:var(--okbg);}
+.opt.no{border-color:var(--no);background:var(--nobg);}
+.numwrap{display:flex;align-items:center;gap:9px;}
+.numwrap input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;width:180px;}
+.numwrap input:focus{outline:2px solid var(--brand);outline-offset:1px;}
+.unit{color:var(--soft);font-size:.92rem;}
+.tray{display:flex;flex-wrap:wrap;gap:7px;min-height:46px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-bottom:11px;}
+.trayempty{color:var(--soft);font-size:.85rem;padding:4px 6px;}
+.tile{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font:inherit;font-size:.88rem;color:inherit;cursor:pointer;text-align:left;}
+.tile.pick{border-color:var(--amber);background:#fdf3e3;box-shadow:0 0 0 2px #f2dcb6;}
+.tile.ok{border-color:var(--ok);background:var(--okbg);}
+.tile.bad{border-color:var(--no);background:var(--nobg);}
+.srow{display:grid;grid-template-columns:34px minmax(120px,.8fr) minmax(170px,2fr);gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);}
+.srow:first-child{border-top:0;}
+.snum{color:var(--soft);font-size:.85rem;}
+.ssrc{font-weight:600;font-size:.95rem;}
+.mslot{min-height:42px;border:1px dashed var(--line);border-radius:9px;background:var(--bg);display:flex;align-items:center;padding:4px;}
+.mslot.live{border-color:var(--amber);background:#fdf8ef;}
+.srow .reveal{grid-column:1/-1;}
+.reveal{display:none;font-size:.88rem;margin-top:8px;padding:9px 11px;border-radius:8px;line-height:1.45;}
+.reveal.on{display:block;}
+.reveal.good{background:var(--okbg);border-left:3px solid var(--ok);}
+.reveal.bad{background:var(--nobg);border-left:3px solid var(--no);}
+.card.ok{border-color:#b6ddc8;}.card.no{border-color:#f0c4c0;}.card.part{border-color:#f0d8ae;}
+#gradebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--brandd);padding:12px 14px;display:flex;gap:10px;align-items:center;}
+#gradebar input{flex:1 1 auto;font:inherit;padding:11px 13px;border:0;border-radius:9px;min-width:0;}
+#gradebtn{flex:0 0 auto;background:var(--amber);color:#2a1c06;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;}
+#gradebar.locked{justify-content:center;color:#fff;font-weight:600;}
+#scorecard{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:4px 0 20px;}
+#scorecard.on{display:block;}
+#scorecard .big{font-size:2.3rem;font-weight:700;color:var(--brandd);line-height:1.1;}
+#scorecard .pct{color:var(--soft);margin-bottom:12px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.92rem;}
+#scorecard td,#scorecard th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);}
+#scorecard td:last-child,#scorecard th:last-child{text-align:right;}
+#overlay{display:none;position:fixed;inset:0;background:rgba(14,26,20,.55);z-index:60;align-items:center;justify-content:center;padding:20px;}
+#overlay.on{display:flex;}
+#modalbox{background:#fff;border-radius:13px;padding:20px;max-width:420px;width:100%;}
+#modalbox h2{margin:0 0 8px;font-size:1.05rem;}
+#modalbox p{margin:0 0 15px;color:var(--soft);font-size:.93rem;}
+#modalbox .row{display:flex;gap:9px;justify-content:flex-end;}
+#modalbox button{font:inherit;border:0;border-radius:9px;padding:10px 16px;cursor:pointer;}
+#mgo{background:var(--bg);color:var(--ink);}
+#many{background:var(--amber);color:#2a1c06;font-weight:700;}
+@media (max-width:560px){.srow{grid-template-columns:28px 1fr;}.srow .mslot{grid-column:1/-1;}}
+</style></head>
+<body>
+<header><h1>Energy Review 3 — Sources of Electricity</h1><p>Physical Science · Energy unit test review · answer everything, then press GRADE ME</p></header>
+<nav id="nav"></nav>
+<main><div id="scorecard"></div>
+<section class="sec" id="sec0"><h2>How electricity is made <span class="rng">1–16</span></h2><div class="card" id="q0_0">
+  <div class="qn">Questions 1–6</div>
+  <p class="stem">Match each power source to its energy chain.</p>
+  <div class="tray" id="tray0_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_0_4" data-k="0_0" data-i="4">radiant → electrical</button><button type="button" class="tile" id="tile0_0_3" data-k="0_0" data-i="3">kinetic → electrical</button><button type="button" class="tile" id="tile0_0_5" data-k="0_0" data-i="5">thermal → kinetic → electrical</button><button type="button" class="tile" id="tile0_0_0" data-k="0_0" data-i="0">chemical → thermal → kinetic → electrical</button><button type="button" class="tile" id="tile0_0_1" data-k="0_0" data-i="1">nuclear → thermal → kinetic → electrical</button><button type="button" class="tile" id="tile0_0_2" data-k="0_0" data-i="2">gravitational potential → kinetic → electrical</button></div>
+  <div class="slots"><div class="srow"><div class="snum">1.</div><div class="ssrc">Coal power plant</div><div class="mslot" id="slot0_0_0" data-k="0_0" data-i="0"></div><div class="reveal" id="rv0_0_0"></div></div><div class="srow"><div class="snum">2.</div><div class="ssrc">Nuclear power plant</div><div class="mslot" id="slot0_0_1" data-k="0_0" data-i="1"></div><div class="reveal" id="rv0_0_1"></div></div><div class="srow"><div class="snum">3.</div><div class="ssrc">Hydroelectric dam</div><div class="mslot" id="slot0_0_2" data-k="0_0" data-i="2"></div><div class="reveal" id="rv0_0_2"></div></div><div class="srow"><div class="snum">4.</div><div class="ssrc">Wind turbine</div><div class="mslot" id="slot0_0_3" data-k="0_0" data-i="3"></div><div class="reveal" id="rv0_0_3"></div></div><div class="srow"><div class="snum">5.</div><div class="ssrc">Solar panel</div><div class="mslot" id="slot0_0_4" data-k="0_0" data-i="4"></div><div class="reveal" id="rv0_0_4"></div></div><div class="srow"><div class="snum">6.</div><div class="ssrc">Geothermal plant</div><div class="mslot" id="slot0_0_5" data-k="0_0" data-i="5"></div><div class="reveal" id="rv0_0_5"></div></div></div>
+</div><div class="card" id="q0_1">
+  <div class="qn">Question 7</div>
+  <p class="stem">What does a generator do?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_1_0" data-k="0_1" data-i="0"><span class="ol">a</span><span>turns kinetic energy into electrical energy</span></button><button type="button" class="opt" id="o0_1_1" data-k="0_1" data-i="1"><span class="ol">b</span><span>burns fuel to make heat</span></button><button type="button" class="opt" id="o0_1_2" data-k="0_1" data-i="2"><span class="ol">c</span><span>stores electricity for later</span></button><button type="button" class="opt" id="o0_1_3" data-k="0_1" data-i="3"><span class="ol">d</span><span>turns electrical energy into light</span></button></div>
+  <div class="reveal" id="rv0_1"></div>
+</div><div class="card" id="q0_2">
+  <div class="qn">Question 8</div>
+  <p class="stem">What is a turbine?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_2_0" data-k="0_2" data-i="0"><span class="ol">a</span><span>a tank that stores steam</span></button><button type="button" class="opt" id="o0_2_1" data-k="0_2" data-i="1"><span class="ol">b</span><span>a wire that carries current</span></button><button type="button" class="opt" id="o0_2_2" data-k="0_2" data-i="2"><span class="ol">c</span><span>a set of blades that spins when steam, water or wind pushes on it</span></button><button type="button" class="opt" id="o0_2_3" data-k="0_2" data-i="3"><span class="ol">d</span><span>a kind of battery</span></button></div>
+  <div class="reveal" id="rv0_2"></div>
+</div><div class="card" id="q0_3">
+  <div class="qn">Question 9</div>
+  <p class="stem">In coal, natural gas and nuclear plants, what actually pushes the turbine?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_3_0" data-k="0_3" data-i="0"><span class="ol">a</span><span>smoke</span></button><button type="button" class="opt" id="o0_3_1" data-k="0_3" data-i="1"><span class="ol">b</span><span>steam</span></button><button type="button" class="opt" id="o0_3_2" data-k="0_3" data-i="2"><span class="ol">c</span><span>electricity</span></button><button type="button" class="opt" id="o0_3_3" data-k="0_3" data-i="3"><span class="ol">d</span><span>wind</span></button></div>
+  <div class="reveal" id="rv0_3"></div>
+</div><div class="card" id="q0_4">
+  <div class="qn">Question 10</div>
+  <p class="stem">Which source makes electricity without spinning a turbine or generator?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_4_0" data-k="0_4" data-i="0"><span class="ol">a</span><span>wind</span></button><button type="button" class="opt" id="o0_4_1" data-k="0_4" data-i="1"><span class="ol">b</span><span>hydroelectric</span></button><button type="button" class="opt" id="o0_4_2" data-k="0_4" data-i="2"><span class="ol">c</span><span>nuclear</span></button><button type="button" class="opt" id="o0_4_3" data-k="0_4" data-i="3"><span class="ol">d</span><span>solar panels</span></button></div>
+  <div class="reveal" id="rv0_4"></div>
+</div><div class="card" id="q0_5">
+  <div class="qn">Question 11</div>
+  <p class="stem">The energy in coal, oil and natural gas originally came from</p>
+  <div class="opts"><button type="button" class="opt" id="o0_5_0" data-k="0_5" data-i="0"><span class="ol">a</span><span>heat deep inside the Earth</span></button><button type="button" class="opt" id="o0_5_1" data-k="0_5" data-i="1"><span class="ol">b</span><span>the splitting of atoms</span></button><button type="button" class="opt" id="o0_5_2" data-k="0_5" data-i="2"><span class="ol">c</span><span>the Moon’s gravity</span></button><button type="button" class="opt" id="o0_5_3" data-k="0_5" data-i="3"><span class="ol">d</span><span>sunlight captured by plants and other living things long ago</span></button></div>
+  <div class="reveal" id="rv0_5"></div>
+</div><div class="card" id="q0_6">
+  <div class="qn">Question 12</div>
+  <p class="stem">Which two sources do NOT trace their energy back to the Sun?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_6_0" data-k="0_6" data-i="0"><span class="ol">a</span><span>wind and solar</span></button><button type="button" class="opt" id="o0_6_1" data-k="0_6" data-i="1"><span class="ol">b</span><span>nuclear and geothermal</span></button><button type="button" class="opt" id="o0_6_2" data-k="0_6" data-i="2"><span class="ol">c</span><span>coal and natural gas</span></button><button type="button" class="opt" id="o0_6_3" data-k="0_6" data-i="3"><span class="ol">d</span><span>hydroelectric and wind</span></button></div>
+  <div class="reveal" id="rv0_6"></div>
+</div><div class="card" id="q0_7">
+  <div class="qn">Question 13</div>
+  <p class="stem">Why does hydroelectric power trace back to the Sun?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_7_0" data-k="0_7" data-i="0"><span class="ol">a</span><span>the Sun lights the dam</span></button><button type="button" class="opt" id="o0_7_1" data-k="0_7" data-i="1"><span class="ol">b</span><span>the Sun pulls the water downhill</span></button><button type="button" class="opt" id="o0_7_2" data-k="0_7" data-i="2"><span class="ol">c</span><span>the Sun evaporates water, which falls as rain and fills the rivers</span></button><button type="button" class="opt" id="o0_7_3" data-k="0_7" data-i="3"><span class="ol">d</span><span>it does not</span></button></div>
+  <div class="reveal" id="rv0_7"></div>
+</div><div class="card tfcard" id="q0_8">
+  <div class="qn">Question 14</div>
+  <p class="stem">A nuclear power plant burns uranium to make heat.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_8_1" data-k="0_8" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_8_0" data-k="0_8" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_8"></div>
+</div><div class="card tfcard" id="q0_9">
+  <div class="qn">Question 15</div>
+  <p class="stem">Coal, natural gas and nuclear plants all boil water to make steam.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_9_1" data-k="0_9" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_9_0" data-k="0_9" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_9"></div>
+</div><div class="card tfcard" id="q0_10">
+  <div class="qn">Question 16</div>
+  <p class="stem">Wind energy traces back to the Sun, because the Sun heats the air unevenly and makes it move.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_10_1" data-k="0_10" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_10_0" data-k="0_10" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_10"></div>
+</div></section>
+<section class="sec" id="sec1"><h2>Renewable and nonrenewable <span class="rng">17–24</span></h2><div class="card" id="q1_0">
+  <div class="qn">Question 17</div>
+  <p class="stem">A nonrenewable energy source is one that</p>
+  <div class="opts"><button type="button" class="opt" id="o1_0_0" data-k="1_0" data-i="0"><span class="ol">a</span><span>is used up much faster than nature can replace it</span></button><button type="button" class="opt" id="o1_0_1" data-k="1_0" data-i="1"><span class="ol">b</span><span>can never be used more than once a day</span></button><button type="button" class="opt" id="o1_0_2" data-k="1_0" data-i="2"><span class="ol">c</span><span>does not make any pollution</span></button><button type="button" class="opt" id="o1_0_3" data-k="1_0" data-i="3"><span class="ol">d</span><span>only works in some places</span></button></div>
+  <div class="reveal" id="rv1_0"></div>
+</div><div class="card" id="q1_1">
+  <div class="qn">Question 18</div>
+  <p class="stem">Which of these is a nonrenewable source?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_1_0" data-k="1_1" data-i="0"><span class="ol">a</span><span>wind</span></button><button type="button" class="opt" id="o1_1_1" data-k="1_1" data-i="1"><span class="ol">b</span><span>hydroelectric</span></button><button type="button" class="opt" id="o1_1_2" data-k="1_1" data-i="2"><span class="ol">c</span><span>natural gas</span></button><button type="button" class="opt" id="o1_1_3" data-k="1_1" data-i="3"><span class="ol">d</span><span>solar</span></button></div>
+  <div class="reveal" id="rv1_1"></div>
+</div><div class="card" id="q1_2">
+  <div class="qn">Question 19</div>
+  <p class="stem">In which list are all three sources renewable?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_2_0" data-k="1_2" data-i="0"><span class="ol">a</span><span>coal, wind, solar</span></button><button type="button" class="opt" id="o1_2_1" data-k="1_2" data-i="1"><span class="ol">b</span><span>solar, wind, hydroelectric</span></button><button type="button" class="opt" id="o1_2_2" data-k="1_2" data-i="2"><span class="ol">c</span><span>nuclear, coal, natural gas</span></button><button type="button" class="opt" id="o1_2_3" data-k="1_2" data-i="3"><span class="ol">d</span><span>natural gas, solar, wind</span></button></div>
+  <div class="reveal" id="rv1_2"></div>
+</div><div class="card" id="q1_3">
+  <div class="qn">Question 20</div>
+  <p class="stem">Uranium, the fuel for nuclear plants, is</p>
+  <div class="opts"><button type="button" class="opt" id="o1_3_0" data-k="1_3" data-i="0"><span class="ol">a</span><span>a renewable fossil fuel</span></button><button type="button" class="opt" id="o1_3_1" data-k="1_3" data-i="1"><span class="ol">b</span><span>a renewable source that is not a fossil fuel</span></button><button type="button" class="opt" id="o1_3_2" data-k="1_3" data-i="2"><span class="ol">c</span><span>a nonrenewable fossil fuel</span></button><button type="button" class="opt" id="o1_3_3" data-k="1_3" data-i="3"><span class="ol">d</span><span>nonrenewable, but not a fossil fuel</span></button></div>
+  <div class="reveal" id="rv1_3"></div>
+</div><div class="card" id="q1_4">
+  <div class="qn">Question 21</div>
+  <p class="stem">Which three are the fossil fuels?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_4_0" data-k="1_4" data-i="0"><span class="ol">a</span><span>coal, oil and natural gas</span></button><button type="button" class="opt" id="o1_4_1" data-k="1_4" data-i="1"><span class="ol">b</span><span>coal, uranium and wood</span></button><button type="button" class="opt" id="o1_4_2" data-k="1_4" data-i="2"><span class="ol">c</span><span>oil, wind and natural gas</span></button><button type="button" class="opt" id="o1_4_3" data-k="1_4" data-i="3"><span class="ol">d</span><span>uranium, oil and steam</span></button></div>
+  <div class="reveal" id="rv1_4"></div>
+</div><div class="card tfcard" id="q1_5">
+  <div class="qn">Question 22</div>
+  <p class="stem">If an energy source is renewable, it has no drawbacks.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_5_1" data-k="1_5" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_5_0" data-k="1_5" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_5"></div>
+</div><div class="card tfcard" id="q1_6">
+  <div class="qn">Question 23</div>
+  <p class="stem">Fossil fuels took millions of years to form.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_6_1" data-k="1_6" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_6_0" data-k="1_6" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_6"></div>
+</div><div class="card tfcard" id="q1_7">
+  <div class="qn">Question 24</div>
+  <p class="stem">Nuclear energy is a fossil fuel.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_7_1" data-k="1_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_7_0" data-k="1_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_7"></div>
+</div></section>
+<section class="sec" id="sec2"><h2>Pros and cons <span class="rng">25–45</span></h2><div class="card" id="q2_0">
+  <div class="qn">Questions 25–31</div>
+  <p class="stem">Every source has a downside. Match each source to its main drawback.</p>
+  <div class="tray" id="tray2_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile2_0_4" data-k="2_0" data-i="4">makes electricity only when the air is moving, and the turbines can kill birds and bats</button><button type="button" class="tile" id="tile2_0_6" data-k="2_0" data-i="6">works well only in the few places where hot rock is close to the surface</button><button type="button" class="tile" id="tile2_0_5" data-k="2_0" data-i="5">makes nothing at night and less on cloudy days</button><button type="button" class="tile" id="tile2_0_0" data-k="2_0" data-i="0">releases the most carbon dioxide and air pollution of any source</button><button type="button" class="tile" id="tile2_0_1" data-k="2_0" data-i="1">much cleaner than coal, but it is often reached by fracking and still releases carbon dioxide</button><button type="button" class="tile" id="tile2_0_2" data-k="2_0" data-i="2">leaves radioactive waste that has to be stored safely for thousands of years</button><button type="button" class="tile" id="tile2_0_3" data-k="2_0" data-i="3">floods the land behind the dam and blocks fish from moving along the river</button></div>
+  <div class="slots"><div class="srow"><div class="snum">25.</div><div class="ssrc">Coal</div><div class="mslot" id="slot2_0_0" data-k="2_0" data-i="0"></div><div class="reveal" id="rv2_0_0"></div></div><div class="srow"><div class="snum">26.</div><div class="ssrc">Natural gas</div><div class="mslot" id="slot2_0_1" data-k="2_0" data-i="1"></div><div class="reveal" id="rv2_0_1"></div></div><div class="srow"><div class="snum">27.</div><div class="ssrc">Nuclear</div><div class="mslot" id="slot2_0_2" data-k="2_0" data-i="2"></div><div class="reveal" id="rv2_0_2"></div></div><div class="srow"><div class="snum">28.</div><div class="ssrc">Hydroelectric</div><div class="mslot" id="slot2_0_3" data-k="2_0" data-i="3"></div><div class="reveal" id="rv2_0_3"></div></div><div class="srow"><div class="snum">29.</div><div class="ssrc">Wind</div><div class="mslot" id="slot2_0_4" data-k="2_0" data-i="4"></div><div class="reveal" id="rv2_0_4"></div></div><div class="srow"><div class="snum">30.</div><div class="ssrc">Solar</div><div class="mslot" id="slot2_0_5" data-k="2_0" data-i="5"></div><div class="reveal" id="rv2_0_5"></div></div><div class="srow"><div class="snum">31.</div><div class="ssrc">Geothermal</div><div class="mslot" id="slot2_0_6" data-k="2_0" data-i="6"></div><div class="reveal" id="rv2_0_6"></div></div></div>
+</div><div class="card" id="q2_1">
+  <div class="qn">Question 32</div>
+  <p class="stem">Which is a real advantage of nuclear power?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_1_0" data-k="2_1" data-i="0"><span class="ol">a</span><span>it produces no waste of any kind</span></button><button type="button" class="opt" id="o2_1_1" data-k="2_1" data-i="1"><span class="ol">b</span><span>it is the cheapest kind of plant to build</span></button><button type="button" class="opt" id="o2_1_2" data-k="2_1" data-i="2"><span class="ol">c</span><span>it makes a large amount of electricity day and night with no carbon dioxide while running</span></button><button type="button" class="opt" id="o2_1_3" data-k="2_1" data-i="3"><span class="ol">d</span><span>its fuel is renewable</span></button></div>
+  <div class="reveal" id="rv2_1"></div>
+</div><div class="card" id="q2_2">
+  <div class="qn">Question 33</div>
+  <p class="stem">Coal and natural gas pollute. Why are they still used so much?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_2_0" data-k="2_2" data-i="0"><span class="ol">a</span><span>they are renewable</span></button><button type="button" class="opt" id="o2_2_1" data-k="2_2" data-i="1"><span class="ol">b</span><span>they are dependable, can run at any hour, and have usually been cheap</span></button><button type="button" class="opt" id="o2_2_2" data-k="2_2" data-i="2"><span class="ol">c</span><span>they make no carbon dioxide</span></button><button type="button" class="opt" id="o2_2_3" data-k="2_2" data-i="3"><span class="ol">d</span><span>no other sources exist</span></button></div>
+  <div class="reveal" id="rv2_2"></div>
+</div><div class="card" id="q2_3">
+  <div class="qn">Question 34</div>
+  <p class="stem">What is the main advantage of natural gas over coal?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_3_0" data-k="2_3" data-i="0"><span class="ol">a</span><span>it is renewable</span></button><button type="button" class="opt" id="o2_3_1" data-k="2_3" data-i="1"><span class="ol">b</span><span>it needs no drilling</span></button><button type="button" class="opt" id="o2_3_2" data-k="2_3" data-i="2"><span class="ol">c</span><span>it makes no carbon dioxide at all</span></button><button type="button" class="opt" id="o2_3_3" data-k="2_3" data-i="3"><span class="ol">d</span><span>it releases about half as much carbon dioxide for the same electricity</span></button></div>
+  <div class="reveal" id="rv2_3"></div>
+</div><div class="card" id="q2_4">
+  <div class="qn">Question 35</div>
+  <p class="stem">Which is an advantage of hydroelectric power?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_4_0" data-k="2_4" data-i="0"><span class="ol">a</span><span>it uses no fuel, makes no air pollution, and can be turned up or down quickly</span></button><button type="button" class="opt" id="o2_4_1" data-k="2_4" data-i="1"><span class="ol">b</span><span>it can be built anywhere</span></button><button type="button" class="opt" id="o2_4_2" data-k="2_4" data-i="2"><span class="ol">c</span><span>it has no effect on rivers</span></button><button type="button" class="opt" id="o2_4_3" data-k="2_4" data-i="3"><span class="ol">d</span><span>it only works in sunny weather</span></button></div>
+  <div class="reveal" id="rv2_4"></div>
+</div><div class="card" id="q2_5">
+  <div class="qn">Question 36</div>
+  <p class="stem">What advantage do solar and wind share?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_5_0" data-k="2_5" data-i="0"><span class="ol">a</span><span>they work at every hour of the day</span></button><button type="button" class="opt" id="o2_5_1" data-k="2_5" data-i="1"><span class="ol">b</span><span>they take up very little land</span></button><button type="button" class="opt" id="o2_5_2" data-k="2_5" data-i="2"><span class="ol">c</span><span>their “fuel” is free and they release no pollution while running</span></button><button type="button" class="opt" id="o2_5_3" data-k="2_5" data-i="3"><span class="ol">d</span><span>they need no equipment</span></button></div>
+  <div class="reveal" id="rv2_5"></div>
+</div><div class="card" id="q2_6">
+  <div class="qn">Question 37</div>
+  <p class="stem">What problem do solar and wind share?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_6_0" data-k="2_6" data-i="0"><span class="ol">a</span><span>they release carbon dioxide</span></button><button type="button" class="opt" id="o2_6_1" data-k="2_6" data-i="1"><span class="ol">b</span><span>they are not always available, so they need storage or a backup source</span></button><button type="button" class="opt" id="o2_6_2" data-k="2_6" data-i="2"><span class="ol">c</span><span>they use up their fuel</span></button><button type="button" class="opt" id="o2_6_3" data-k="2_6" data-i="3"><span class="ol">d</span><span>they make radioactive waste</span></button></div>
+  <div class="reveal" id="rv2_6"></div>
+</div><div class="card" id="q2_7">
+  <div class="qn">Question 38</div>
+  <p class="stem">A town wants electricity that is cheap, always available, AND clean. Why is that a hard choice?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_7_0" data-k="2_7" data-i="0"><span class="ol">a</span><span>there is no such thing as clean electricity</span></button><button type="button" class="opt" id="o2_7_1" data-k="2_7" data-i="1"><span class="ol">b</span><span>clean sources cannot make enough electricity for a town</span></button><button type="button" class="opt" id="o2_7_2" data-k="2_7" data-i="2"><span class="ol">c</span><span>cheap sources are illegal</span></button><button type="button" class="opt" id="o2_7_3" data-k="2_7" data-i="3"><span class="ol">d</span><span>sources that are cheap and always available often pollute more, while cleaner ones can cost more to build or do not run all the time</span></button></div>
+  <div class="reveal" id="rv2_7"></div>
+</div><div class="card" id="q2_8">
+  <div class="qn">Question 39</div>
+  <p class="stem">A desert town has sunshine almost every day, very little wind, and no river. Which source fits it best?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_8_0" data-k="2_8" data-i="0"><span class="ol">a</span><span>solar</span></button><button type="button" class="opt" id="o2_8_1" data-k="2_8" data-i="1"><span class="ol">b</span><span>hydroelectric</span></button><button type="button" class="opt" id="o2_8_2" data-k="2_8" data-i="2"><span class="ol">c</span><span>wind</span></button><button type="button" class="opt" id="o2_8_3" data-k="2_8" data-i="3"><span class="ol">d</span><span>geothermal, in every case</span></button></div>
+  <div class="reveal" id="rv2_8"></div>
+</div><div class="card" id="q2_9">
+  <div class="qn">Question 40</div>
+  <p class="stem">Which statement about energy sources is the most accurate?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_9_0" data-k="2_9" data-i="0"><span class="ol">a</span><span>renewable sources have no drawbacks</span></button><button type="button" class="opt" id="o2_9_1" data-k="2_9" data-i="1"><span class="ol">b</span><span>fossil fuels have no advantages</span></button><button type="button" class="opt" id="o2_9_2" data-k="2_9" data-i="2"><span class="ol">c</span><span>every source has both advantages and drawbacks</span></button><button type="button" class="opt" id="o2_9_3" data-k="2_9" data-i="3"><span class="ol">d</span><span>nuclear is the only source with a drawback</span></button></div>
+  <div class="reveal" id="rv2_9"></div>
+</div><div class="card tfcard" id="q2_10">
+  <div class="qn">Question 41</div>
+  <p class="stem">A nuclear plant releases large amounts of carbon dioxide while it is running.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_10_1" data-k="2_10" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_10_0" data-k="2_10" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_10"></div>
+</div><div class="card tfcard" id="q2_11">
+  <div class="qn">Question 42</div>
+  <p class="stem">A hydroelectric dam can be built almost anywhere.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_11_1" data-k="2_11" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_11_0" data-k="2_11" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_11"></div>
+</div><div class="card tfcard" id="q2_12">
+  <div class="qn">Question 43</div>
+  <p class="stem">A wind turbine needs no fuel.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_12_1" data-k="2_12" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_12_0" data-k="2_12" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_12"></div>
+</div><div class="card tfcard" id="q2_13">
+  <div class="qn">Question 44</div>
+  <p class="stem">Solar panels give off air pollution while they make electricity.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_13_1" data-k="2_13" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_13_0" data-k="2_13" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_13"></div>
+</div><div class="card tfcard" id="q2_14">
+  <div class="qn">Question 45</div>
+  <p class="stem">To make the same amount of electricity, burning coal releases more carbon dioxide than burning natural gas.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_14_1" data-k="2_14" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_14_0" data-k="2_14" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_14"></div>
+</div></section>
+</main>
+<div id="gradebar"><input id="nameinput" placeholder="Type your name" autocomplete="name"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div id="modalbox"><h2 id="mtitle"></h2><p id="mtext"></p><div class="row"><button id="mgo">Go back</button><button id="many">Grade anyway</button></div></div></div>
+
+<script>
+const SECTIONS=[{"name":"How electricity is made","items":[{"t":"match","tiles":[{"text":"chemical → thermal → kinetic → electrical","e":"Burning the coal releases heat, the heat makes steam, the steam spins a turbine, and the generator makes electricity."},{"text":"nuclear → thermal → kinetic → electrical","e":"Same as a coal plant after the first step. The heat comes from splitting atoms instead of burning."},{"text":"gravitational potential → kinetic → electrical","e":"Water held up high falls through the dam and spins the turbine."},{"text":"kinetic → electrical","e":"The moving air turns the blades directly. Nothing is burned or boiled."},{"text":"radiant → electrical","e":"Light goes straight to electricity, with no moving parts at all."},{"text":"thermal → kinetic → electrical","e":"Heat from inside the Earth makes the steam, so no fuel is needed."}]},{"t":"mc","a":0,"o":["turns kinetic energy into electrical energy","burns fuel to make heat","stores electricity for later","turns electrical energy into light"],"e":"Spin a generator and electricity comes out. Almost every power plant is a way of spinning one."},{"t":"mc","a":2,"o":["a tank that stores steam","a wire that carries current","a set of blades that spins when steam, water or wind pushes on it","a kind of battery"],"e":"The turbine is connected to the generator. Whatever pushes the blades ends up making the electricity."},{"t":"mc","a":1,"o":["smoke","steam","electricity","wind"],"e":"All three are different ways of boiling water. The steam does the pushing."},{"t":"mc","a":3,"o":["wind","hydroelectric","nuclear","solar panels"],"e":"A solar panel turns light directly into electricity."},{"t":"mc","a":3,"o":["heat deep inside the Earth","the splitting of atoms","the Moon’s gravity","sunlight captured by plants and other living things long ago"],"e":"Fossil fuels are the remains of ancient living things, and their energy was sunlight first."},{"t":"mc","a":1,"o":["wind and solar","nuclear and geothermal","coal and natural gas","hydroelectric and wind"],"e":"Nuclear energy comes from inside atoms, and geothermal energy comes from inside the Earth."},{"t":"mc","a":2,"o":["the Sun lights the dam","the Sun pulls the water downhill","the Sun evaporates water, which falls as rain and fills the rivers","it does not"],"e":"The water cycle lifts the water uphill for free. The Sun powers the water cycle."},{"t":"tf","a":0,"e":"False. Nothing is burned. The heat comes from splitting uranium atoms."},{"t":"tf","a":1,"e":"True. They differ only in where the heat comes from."},{"t":"tf","a":1,"e":"True. Warm air rises, cooler air rushes in, and that moving air is wind."}]},{"name":"Renewable and nonrenewable","items":[{"t":"mc","a":0,"o":["is used up much faster than nature can replace it","can never be used more than once a day","does not make any pollution","only works in some places"],"e":"It is about supply. Once it is used, it is gone for millions of years."},{"t":"mc","a":2,"o":["wind","hydroelectric","natural gas","solar"],"e":"Natural gas is a fossil fuel. The other three are refilled by the Sun every day."},{"t":"mc","a":1,"o":["coal, wind, solar","solar, wind, hydroelectric","nuclear, coal, natural gas","natural gas, solar, wind"],"e":"Sunlight, wind and flowing water do not run out when we use them."},{"t":"mc","a":3,"o":["a renewable fossil fuel","a renewable source that is not a fossil fuel","a nonrenewable fossil fuel","nonrenewable, but not a fossil fuel"],"e":"It is mined and there is a limited amount, but it never came from living things."},{"t":"mc","a":0,"o":["coal, oil and natural gas","coal, uranium and wood","oil, wind and natural gas","uranium, oil and steam"],"e":"All three formed from buried living things over millions of years."},{"t":"tf","a":0,"e":"False. Renewable only means it will not run out. Every source has drawbacks."},{"t":"tf","a":1,"e":"True. That is why we cannot replace them as fast as we burn them."},{"t":"tf","a":0,"e":"False. Fossil fuels come from ancient living things. Uranium is a metal mined from rock."}]},{"name":"Pros and cons","items":[{"t":"match","tiles":[{"text":"releases the most carbon dioxide and air pollution of any source","e":"It is cheap and dependable, which is why it was used for so long, but it is the dirtiest."},{"text":"much cleaner than coal, but it is often reached by fracking and still releases carbon dioxide","e":"A big improvement in emissions over coal, but it is still a fossil fuel."},{"text":"leaves radioactive waste that has to be stored safely for thousands of years","e":"It makes no air pollution while running. The waste and the cost of building plants are the problems."},{"text":"floods the land behind the dam and blocks fish from moving along the river","e":"Clean and dependable once built, but it changes the whole river."},{"text":"makes electricity only when the air is moving, and the turbines can kill birds and bats","e":"No fuel and no emissions, but you cannot order the wind to blow."},{"text":"makes nothing at night and less on cloudy days","e":"No fuel and no emissions, but it needs storage or a backup for the dark hours."},{"text":"works well only in the few places where hot rock is close to the surface","e":"Clean and runs day and night, but most places do not have the right ground."}]},{"t":"mc","a":2,"o":["it produces no waste of any kind","it is the cheapest kind of plant to build","it makes a large amount of electricity day and night with no carbon dioxide while running","its fuel is renewable"],"e":"One plant powers a whole city around the clock without burning anything. The waste is the trade-off."},{"t":"mc","a":1,"o":["they are renewable","they are dependable, can run at any hour, and have usually been cheap","they make no carbon dioxide","no other sources exist"],"e":"They work whenever they are needed, and the plants are already built. Those are real advantages."},{"t":"mc","a":3,"o":["it is renewable","it needs no drilling","it makes no carbon dioxide at all","it releases about half as much carbon dioxide for the same electricity"],"e":"It also burns with far less soot and smog. It is cleaner, not clean."},{"t":"mc","a":0,"o":["it uses no fuel, makes no air pollution, and can be turned up or down quickly","it can be built anywhere","it has no effect on rivers","it only works in sunny weather"],"e":"Open the gates and you have more power in minutes. The cost is to the river and the land."},{"t":"mc","a":2,"o":["they work at every hour of the day","they take up very little land","their “fuel” is free and they release no pollution while running","they need no equipment"],"e":"Sunlight and wind cost nothing and burn nothing."},{"t":"mc","a":1,"o":["they release carbon dioxide","they are not always available, so they need storage or a backup source","they use up their fuel","they make radioactive waste"],"e":"The Sun sets and the wind drops. Something else has to cover those hours."},{"t":"mc","a":3,"o":["there is no such thing as clean electricity","clean sources cannot make enough electricity for a town","cheap sources are illegal","sources that are cheap and always available often pollute more, while cleaner ones can cost more to build or do not run all the time"],"e":"This is the real argument about energy. Communities have to decide what they are willing to trade."},{"t":"mc","a":0,"o":["solar","hydroelectric","wind","geothermal, in every case"],"e":"The best source depends on the place. This place has sunlight and not much else."},{"t":"mc","a":2,"o":["renewable sources have no drawbacks","fossil fuels have no advantages","every source has both advantages and drawbacks","nuclear is the only source with a drawback"],"e":"There is no perfect source. Choosing one means choosing which drawbacks you can live with."},{"t":"tf","a":0,"e":"False. Nothing is burned, so no carbon dioxide comes out. Its drawback is the radioactive waste."},{"t":"tf","a":0,"e":"False. It needs a large river and a valley that can be flooded."},{"t":"tf","a":1,"e":"True. The moving air does the work for free."},{"t":"tf","a":0,"e":"False. They release nothing while running."},{"t":"tf","a":1,"e":"True. Roughly twice as much, which is the main reason many plants have switched."}]}];
+const META=[{"name":"How electricity is made","first":1,"last":16},{"name":"Renewable and nonrenewable","first":17,"last":24},{"name":"Pros and cons","first":25,"last":45}];
+const TOTAL=45;
+let graded=false;
+const pick={}, placed={}, typed={};
+
+function normNum(s){
+  if(s===null||s===undefined)return null;
+  const t=String(s).replace(/[, ]/g,'').replace(/[^0-9eE.+-]/g,'');
+  if(t==='')return null;
+  const v=parseFloat(t);
+  return isFinite(v)?v:null;
+}
+/* a 1% band, so 3.00 and 2.99 and 3 all count */
+function numOk(got,want){
+  if(got===null)return false;
+  return Math.abs(got-want)<=Math.max(0.01,Math.abs(want)*0.01);
+}
+
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+  if(graded)return;
+  const k=b.dataset.k;
+  document.querySelectorAll('#q'+k+' .opt').forEach(o=>o.classList.remove('sel'));
+  b.classList.add('sel'); pick[k]=+b.dataset.i; chips();
+}));
+
+let held=null;
+function clearLive(){document.querySelectorAll('.mslot.live').forEach(s=>s.classList.remove('live'));}
+function refreshTray(k){
+  const tray=document.getElementById('tray'+k); if(!tray)return;
+  const e=tray.querySelector('.trayempty');
+  if(e)e.style.display=tray.querySelectorAll('.tile').length?'none':'block';
+}
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{
+  if(graded)return;
+  const k=t.dataset.k;
+  if(t.parentElement.classList.contains('mslot')){
+    delete placed[k+'|'+t.parentElement.dataset.i];
+    document.getElementById('tray'+k).appendChild(t); refreshTray(k); chips(); return;
+  }
+  if(held===t){held.classList.remove('pick');held=null;clearLive();return;}
+  if(held)held.classList.remove('pick');
+  held=t; t.classList.add('pick'); clearLive();
+  document.querySelectorAll('#q'+k+' .mslot').forEach(s=>s.classList.add('live'));
+}));
+document.querySelectorAll('.mslot').forEach(slot=>slot.addEventListener('click',()=>{
+  if(graded||!held)return;
+  const k=slot.dataset.k;
+  if(held.dataset.k!==k)return;
+  const sitting=slot.querySelector('.tile');
+  if(sitting){document.getElementById('tray'+k).appendChild(sitting);delete placed[k+'|'+slot.dataset.i];}
+  slot.appendChild(held); placed[k+'|'+slot.dataset.i]=+held.dataset.i;
+  held.classList.remove('pick'); held=null; clearLive(); refreshTray(k); chips();
+}));
+document.querySelectorAll('input[data-k]').forEach(inp=>inp.addEventListener('input',()=>{
+  if(graded)return; typed[inp.dataset.k]=inp.value; chips();
+}));
+
+function answeredIn(si){
+  let done=0,tot=0;
+  SECTIONS[si].items.forEach((it,ii)=>{
+    const k=si+'_'+ii;
+    if(it.t==='match'){it.tiles.forEach((_,ti)=>{tot++;if(placed[k+'|'+ti]!==undefined)done++;});}
+    else if(it.t==='num'){tot++;if((typed[k]||'').trim()!=='')done++;}
+    else{tot++;if(pick[k]!==undefined)done++;}
+  });
+  return [done,tot];
+}
+const nav=document.getElementById('nav');
+META.forEach((m,si)=>{
+  const b=document.createElement('button');
+  b.innerHTML=m.name.replace(/^Part [A-D] \u2014 /,'')+' <span class="chip" id="chip'+si+'"></span>';
+  b.onclick=()=>document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});
+  nav.appendChild(b);
+});
+function chips(){
+  META.forEach((m,si)=>{
+    const [d,t]=answeredIn(si);
+    const el=document.getElementById('chip'+si); if(el)el.textContent=d+'/'+t;
+    nav.children[si].classList.toggle('done',d===t);
+  });
+}
+chips();
+
+function showModal(title,text,showAny){
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mtext').textContent=text;
+  document.getElementById('many').style.display=showAny?'':'none';
+  document.getElementById('overlay').classList.add('on');
+}
+document.getElementById('mgo').onclick=()=>document.getElementById('overlay').classList.remove('on');
+document.getElementById('many').onclick=()=>{document.getElementById('overlay').classList.remove('on');doGrade();};
+document.getElementById('gradebtn').onclick=()=>{
+  if(graded)return;
+  if(!document.getElementById('nameinput').value.trim()){
+    showModal('Name needed','Type your name in the box before grading, so you can show this to Mr. Murray.',false);return;}
+  let miss=0; META.forEach((m,si)=>{const[d,t]=answeredIn(si);miss+=t-d;});
+  if(miss>0){showModal('Still blank','You have '+miss+' unanswered '+(miss===1?'question':'questions')+'. Go back, or grade it as it stands.',true);return;}
+  doGrade();
+};
+function say(id,good,html){
+  const el=document.getElementById(id); if(!el)return;
+  el.className='reveal on '+(good?'good':'bad'); el.innerHTML=html;
+}
+function doGrade(){
+  graded=true;
+  let score=0; const rows=[];
+  SECTIONS.forEach((sec,si)=>{
+    let sgot=0,stot=0;
+    sec.items.forEach((it,ii)=>{
+      const k=si+'_'+ii, card=document.getElementById('q'+k);
+      if(it.t==='match'){
+        let right=0;
+        it.tiles.forEach((tk,ti)=>{
+          stot++;
+          const ok=placed[k+'|'+ti]===ti;
+          if(ok){right++;score++;sgot++;}
+          const slot=document.getElementById('slot'+k+'_'+ti);
+          const tile=slot?slot.querySelector('.tile'):null;
+          if(tile)tile.classList.add(ok?'ok':'bad');
+          say('rv'+k+'_'+ti,ok,'<b>'+tk.text+'</b> \u2014 '+tk.e);
+        });
+        card.classList.add(right===it.tiles.length?'ok':(right===0?'no':'part'));
+        return;
+      }
+      stot++;
+      if(it.t==='num'){
+        const ok=numOk(normNum(typed[k]),it.a);
+        if(ok){score++;sgot++;}
+        const inp=document.getElementById('in'+k); if(inp)inp.disabled=true;
+        card.classList.add(ok?'ok':'no');
+        say('rv'+k,ok,'<b>'+it.disp+' '+it.u+'</b> \u2014 '+it.e);
+      }else{
+        const got=pick[k], ok=got===it.a;
+        if(ok){score++;sgot++;}
+        const chosen=document.getElementById('o'+k+'_'+got); if(chosen)chosen.classList.add(ok?'ok':'no');
+        const right=document.getElementById('o'+k+'_'+it.a); if(right)right.classList.add('ok');
+        card.classList.add(ok?'ok':'no');
+        const label=it.t==='tf'?(it.a?'True':'False'):(String.fromCharCode(97+it.a)+') '+it.o[it.a]);
+        say('rv'+k,ok,'<b>'+label+'</b> \u2014 '+it.e);
+      }
+    });
+    rows.push([sec.name,sgot,stot]);
+  });
+  const sc=document.getElementById('scorecard');
+  sc.innerHTML='<div class="big">'+score+' / '+TOTAL+'</div>'
+    +'<div class="pct">'+Math.round(score/TOTAL*100)+'% \u00b7 '+document.getElementById('nameinput').value.trim()+'</div>'
+    +'<table><tr><th>Part</th><th>Score</th></tr>'
+    +rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+' / '+r[2]+'</td></tr>').join('')+'</table>';
+  sc.classList.add('on');
+  document.querySelectorAll('.opt,.tile').forEach(o=>o.disabled=true);
+  const bar=document.getElementById('gradebar');
+  bar.classList.add('locked'); bar.innerHTML='Graded and locked \u2014 scroll up for your score';
+  sc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script></body></html>

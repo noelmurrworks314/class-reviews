@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Energy Review 2</title>
+<style>
+:root{--ink:#17241c;--soft:#5c6d63;--line:#d8e1db;--bg:#f4f6f4;--card:#fff;
+--brand:#1e5f7a;--brandd:#17485c;--amber:#d98e2b;--ok:#1e7a4d;--no:#b3261e;--okbg:#e8f4ed;--nobg:#fdeceb;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:104px;}
+header{background:var(--brand);color:#fff;padding:20px 18px 18px;}
+header h1{margin:0;font-size:1.35rem;}
+header p{margin:5px 0 0;opacity:.9;font-size:.92rem;}
+nav{position:sticky;top:0;z-index:30;background:var(--brandd);display:flex;gap:7px;overflow-x:auto;padding:9px 12px;}
+nav button{flex:0 0 auto;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;padding:6px 13px;font-size:.8rem;cursor:pointer;white-space:nowrap;}
+nav button.done{background:var(--amber);color:#17241c;font-weight:600;}
+nav button .chip{margin-left:6px;opacity:.75;}
+main{max-width:860px;margin:0 auto;padding:16px 14px 0;}
+.sec h2{font-size:1.02rem;margin:22px 0 10px;color:var(--brandd);border-bottom:2px solid var(--line);padding-bottom:7px;}
+.sec h2 .rng{float:right;color:var(--soft);font-weight:400;font-size:.85rem;}
+.secnote{margin:-2px 0 11px;font-size:.88rem;color:var(--brandd);background:#e8f1f5;border-left:3px solid var(--brand);padding:7px 11px;border-radius:0 7px 7px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-bottom:11px;}
+.qn{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+.stem{margin:0 0 11px;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opts.tf{flex-direction:row;}
+.opts.tf .opt{flex:1 1 0;}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer;}
+.opt:hover{border-color:var(--brand);}
+.opt .ol{flex:0 0 22px;height:22px;border-radius:50%;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--soft);}
+.opt.sel{border-color:var(--brand);background:#eaf2f6;}
+.opt.sel .ol{background:var(--brand);color:#fff;}
+.opt.ok{border-color:var(--ok);background:var(--okbg);}
+.opt.no{border-color:var(--no);background:var(--nobg);}
+.numwrap{display:flex;align-items:center;gap:9px;}
+.numwrap input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;width:180px;}
+.numwrap input:focus{outline:2px solid var(--brand);outline-offset:1px;}
+.unit{color:var(--soft);font-size:.92rem;}
+.tray{display:flex;flex-wrap:wrap;gap:7px;min-height:46px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-bottom:11px;}
+.trayempty{color:var(--soft);font-size:.85rem;padding:4px 6px;}
+.tile{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font:inherit;font-size:.88rem;color:inherit;cursor:pointer;text-align:left;}
+.tile.pick{border-color:var(--amber);background:#fdf3e3;box-shadow:0 0 0 2px #f2dcb6;}
+.tile.ok{border-color:var(--ok);background:var(--okbg);}
+.tile.bad{border-color:var(--no);background:var(--nobg);}
+.srow{display:grid;grid-template-columns:34px minmax(120px,.8fr) minmax(170px,2fr);gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);}
+.srow:first-child{border-top:0;}
+.snum{color:var(--soft);font-size:.85rem;}
+.ssrc{font-weight:600;font-size:.95rem;}
+.mslot{min-height:42px;border:1px dashed var(--line);border-radius:9px;background:var(--bg);display:flex;align-items:center;padding:4px;}
+.mslot.live{border-color:var(--amber);background:#fdf8ef;}
+.srow .reveal{grid-column:1/-1;}
+.reveal{display:none;font-size:.88rem;margin-top:8px;padding:9px 11px;border-radius:8px;line-height:1.45;}
+.reveal.on{display:block;}
+.reveal.good{background:var(--okbg);border-left:3px solid var(--ok);}
+.reveal.bad{background:var(--nobg);border-left:3px solid var(--no);}
+.card.ok{border-color:#b6ddc8;}.card.no{border-color:#f0c4c0;}.card.part{border-color:#f0d8ae;}
+#gradebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--brandd);padding:12px 14px;display:flex;gap:10px;align-items:center;}
+#gradebar input{flex:1 1 auto;font:inherit;padding:11px 13px;border:0;border-radius:9px;min-width:0;}
+#gradebtn{flex:0 0 auto;background:var(--amber);color:#2a1c06;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;}
+#gradebar.locked{justify-content:center;color:#fff;font-weight:600;}
+#scorecard{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:4px 0 20px;}
+#scorecard.on{display:block;}
+#scorecard .big{font-size:2.3rem;font-weight:700;color:var(--brandd);line-height:1.1;}
+#scorecard .pct{color:var(--soft);margin-bottom:12px;}
+#scorecard table{width:100%;border-collapse:collapse;font-size:.92rem;}
+#scorecard td,#scorecard th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);}
+#scorecard td:last-child,#scorecard th:last-child{text-align:right;}
+#overlay{display:none;position:fixed;inset:0;background:rgba(14,26,20,.55);z-index:60;align-items:center;justify-content:center;padding:20px;}
+#overlay.on{display:flex;}
+#modalbox{background:#fff;border-radius:13px;padding:20px;max-width:420px;width:100%;}
+#modalbox h2{margin:0 0 8px;font-size:1.05rem;}
+#modalbox p{margin:0 0 15px;color:var(--soft);font-size:.93rem;}
+#modalbox .row{display:flex;gap:9px;justify-content:flex-end;}
+#modalbox button{font:inherit;border:0;border-radius:9px;padding:10px 16px;cursor:pointer;}
+#mgo{background:var(--bg);color:var(--ink);}
+#many{background:var(--amber);color:#2a1c06;font-weight:700;}
+@media (max-width:560px){.srow{grid-template-columns:28px 1fr;}.srow .mslot{grid-column:1/-1;}}
+.figbox{background:#fff;border:1px solid #cfd6dc;border-radius:10px;padding:8px;margin:8px 0 12px;text-align:center;}
+</style></head>
+<body>
+<header><h1>Energy Review 2 — Simple Machines and Efficiency</h1><p>Physical Science · Energy unit test review · answer everything, then press GRADE ME</p></header>
+<nav id="nav"></nav>
+<main><div id="scorecard"></div>
+<section class="sec" id="sec0"><h2>The six simple machines <span class="rng">1–29</span></h2><div class="card" id="q0_0">
+  <div class="qn">Questions 1–6</div>
+  <p class="stem">Match each example to the simple machine it is.</p>
+  <div class="tray" id="tray0_0"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_0_4" data-k="0_0" data-i="4">pulley</button><button type="button" class="tile" id="tile0_0_3" data-k="0_0" data-i="3">screw</button><button type="button" class="tile" id="tile0_0_5" data-k="0_0" data-i="5">wheel and axle</button><button type="button" class="tile" id="tile0_0_0" data-k="0_0" data-i="0">lever</button><button type="button" class="tile" id="tile0_0_1" data-k="0_0" data-i="1">inclined plane</button><button type="button" class="tile" id="tile0_0_2" data-k="0_0" data-i="2">wedge</button></div>
+  <div class="slots"><div class="srow"><div class="snum">1.</div><div class="ssrc">A seesaw</div><div class="mslot" id="slot0_0_0" data-k="0_0" data-i="0"></div><div class="reveal" id="rv0_0_0"></div></div><div class="srow"><div class="snum">2.</div><div class="ssrc">A ramp up to the back of a moving truck</div><div class="mslot" id="slot0_0_1" data-k="0_0" data-i="1"></div><div class="reveal" id="rv0_0_1"></div></div><div class="srow"><div class="snum">3.</div><div class="ssrc">The blade of an axe</div><div class="mslot" id="slot0_0_2" data-k="0_0" data-i="2"></div><div class="reveal" id="rv0_0_2"></div></div><div class="srow"><div class="snum">4.</div><div class="ssrc">The lid of a jar</div><div class="mslot" id="slot0_0_3" data-k="0_0" data-i="3"></div><div class="reveal" id="rv0_0_3"></div></div><div class="srow"><div class="snum">5.</div><div class="ssrc">The wheel at the top of a flagpole that the rope runs over</div><div class="mslot" id="slot0_0_4" data-k="0_0" data-i="4"></div><div class="reveal" id="rv0_0_4"></div></div><div class="srow"><div class="snum">6.</div><div class="ssrc">A doorknob</div><div class="mslot" id="slot0_0_5" data-k="0_0" data-i="5"></div><div class="reveal" id="rv0_0_5"></div></div></div>
+</div><div class="card" id="q0_1">
+  <div class="qn">Questions 7–11</div>
+  <p class="stem">This lever is being used to pry up a rock. Match each lettered part of the diagram to its name.</p><div class="figbox"><svg class="fig" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 225" width="520" height="225" style="max-width:100%;height:auto;background:#fff"><line x1="20" y1="170" x2="500" y2="170" stroke="#000" stroke-width="1"/><polygon points="360,126 328,170 392,170" fill="#ddd" stroke="#000" stroke-width="1.5"/><rect x="40" y="116" width="440" height="10" fill="#bbb" stroke="#000" stroke-width="1.5"/><ellipse cx="440" cy="94" rx="30" ry="22" fill="#999" stroke="#000" stroke-width="1.5"/><line x1="70" y1="52" x2="70" y2="102" stroke="#000" stroke-width="3"/><polygon points="70,113 75,102 65,102" fill="#000"/><line x1="440" y1="28" x2="440" y2="59" stroke="#000" stroke-width="3"/><polygon points="440,70 445,59 435,59" fill="#000"/><line x1="70" y1="198" x2="360" y2="198" stroke="#000" stroke-width="1.2"/><line x1="70" y1="191" x2="70" y2="205" stroke="#000" stroke-width="1.2"/><line x1="360" y1="191" x2="360" y2="205" stroke="#000" stroke-width="1.2"/><line x1="360" y1="198" x2="440" y2="198" stroke="#000" stroke-width="1.2"/><line x1="360" y1="191" x2="360" y2="205" stroke="#000" stroke-width="1.2"/><line x1="440" y1="191" x2="440" y2="205" stroke="#000" stroke-width="1.2"/><circle cx="70" cy="36" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="70" y="41" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">P</text><circle cx="440" cy="14" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="440" y="19" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">T</text><circle cx="360" cy="155" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="360" y="160" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">S</text><circle cx="215" cy="198" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="215" y="203" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">R</text><circle cx="400" cy="198" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="400" y="203" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">Q</text></svg></div>
+  <div class="tray" id="tray0_1"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_1_4" data-k="0_1" data-i="4">load (output force)</button><button type="button" class="tile" id="tile0_1_3" data-k="0_1" data-i="3">fulcrum</button><button type="button" class="tile" id="tile0_1_2" data-k="0_1" data-i="2">effort arm</button><button type="button" class="tile" id="tile0_1_0" data-k="0_1" data-i="0">effort (input force)</button><button type="button" class="tile" id="tile0_1_1" data-k="0_1" data-i="1">load arm</button></div>
+  <div class="slots"><div class="srow"><div class="snum">7.</div><div class="ssrc">Part P</div><div class="mslot" id="slot0_1_0" data-k="0_1" data-i="0"></div><div class="reveal" id="rv0_1_0"></div></div><div class="srow"><div class="snum">8.</div><div class="ssrc">Part Q</div><div class="mslot" id="slot0_1_1" data-k="0_1" data-i="1"></div><div class="reveal" id="rv0_1_1"></div></div><div class="srow"><div class="snum">9.</div><div class="ssrc">Part R</div><div class="mslot" id="slot0_1_2" data-k="0_1" data-i="2"></div><div class="reveal" id="rv0_1_2"></div></div><div class="srow"><div class="snum">10.</div><div class="ssrc">Part S</div><div class="mslot" id="slot0_1_3" data-k="0_1" data-i="3"></div><div class="reveal" id="rv0_1_3"></div></div><div class="srow"><div class="snum">11.</div><div class="ssrc">Part T</div><div class="mslot" id="slot0_1_4" data-k="0_1" data-i="4"></div><div class="reveal" id="rv0_1_4"></div></div></div>
+</div><div class="card" id="q0_2">
+  <div class="qn">Questions 12–17</div>
+  <p class="stem">In this wheel and axle, you pull down on a rope wrapped around the wheel to raise a weight hanging from the axle. Match each lettered part to its name.</p><div class="figbox"><svg class="fig" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 285" width="520" height="285" style="max-width:100%;height:auto;background:#fff"><circle cx="200" cy="125" r="95" fill="#eee" stroke="#000" stroke-width="2"/><circle cx="200" cy="125" r="28" fill="#aaa" stroke="#000" stroke-width="2"/><circle cx="200" cy="125" r="2.5" fill="#000"/><line x1="105" y1="125" x2="200" y2="125" stroke="#000" stroke-width="1.2" stroke-dasharray="5 3"/><line x1="200" y1="125" x2="228" y2="125" stroke="#000" stroke-width="2.4"/><line x1="105" y1="125" x2="105" y2="221" stroke="#000" stroke-width="3"/><polygon points="105,232 110,221 100,221" fill="#000"/><line x1="228" y1="125" x2="228" y2="240" stroke="#000" stroke-width="2"/><rect x="208" y="240" width="40" height="30" fill="#999" stroke="#000" stroke-width="1.5"/><line x1="216" y1="121" x2="322" y2="84" stroke="#000" stroke-width="1"/><line x1="270" y1="61" x2="338" y2="32" stroke="#000" stroke-width="1"/><line x1="200" y1="97" x2="200" y2="70" stroke="#000" stroke-width="1"/><circle cx="350" cy="27" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="350" y="32" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">U</text><circle cx="200" cy="58" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="200" y="63" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">P</text><circle cx="80" cy="190" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="80" y="195" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">R</text><circle cx="275" cy="255" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="275" y="260" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">T</text><circle cx="152" cy="125" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="152" y="130" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">Q</text><circle cx="334" cy="80" r="12" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="334" y="85" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="bold" fill="#000">S</text></svg></div>
+  <div class="tray" id="tray0_2"><span class="trayempty">all placed</span><button type="button" class="tile" id="tile0_2_4" data-k="0_2" data-i="4">load (output force)</button><button type="button" class="tile" id="tile0_2_3" data-k="0_2" data-i="3">load arm (radius of the axle)</button><button type="button" class="tile" id="tile0_2_5" data-k="0_2" data-i="5">wheel</button><button type="button" class="tile" id="tile0_2_0" data-k="0_2" data-i="0">axle</button><button type="button" class="tile" id="tile0_2_1" data-k="0_2" data-i="1">effort arm (radius of the wheel)</button><button type="button" class="tile" id="tile0_2_2" data-k="0_2" data-i="2">effort (input force)</button></div>
+  <div class="slots"><div class="srow"><div class="snum">12.</div><div class="ssrc">Part P</div><div class="mslot" id="slot0_2_0" data-k="0_2" data-i="0"></div><div class="reveal" id="rv0_2_0"></div></div><div class="srow"><div class="snum">13.</div><div class="ssrc">Part Q</div><div class="mslot" id="slot0_2_1" data-k="0_2" data-i="1"></div><div class="reveal" id="rv0_2_1"></div></div><div class="srow"><div class="snum">14.</div><div class="ssrc">Part R</div><div class="mslot" id="slot0_2_2" data-k="0_2" data-i="2"></div><div class="reveal" id="rv0_2_2"></div></div><div class="srow"><div class="snum">15.</div><div class="ssrc">Part S</div><div class="mslot" id="slot0_2_3" data-k="0_2" data-i="3"></div><div class="reveal" id="rv0_2_3"></div></div><div class="srow"><div class="snum">16.</div><div class="ssrc">Part T</div><div class="mslot" id="slot0_2_4" data-k="0_2" data-i="4"></div><div class="reveal" id="rv0_2_4"></div></div><div class="srow"><div class="snum">17.</div><div class="ssrc">Part U</div><div class="mslot" id="slot0_2_5" data-k="0_2" data-i="5"></div><div class="reveal" id="rv0_2_5"></div></div></div>
+</div><div class="card" id="q0_3">
+  <div class="qn">Question 18</div>
+  <p class="stem">A screw is really which simple machine wrapped around a cylinder?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_3_0" data-k="0_3" data-i="0"><span class="ol">a</span><span>a lever</span></button><button type="button" class="opt" id="o0_3_1" data-k="0_3" data-i="1"><span class="ol">b</span><span>a pulley</span></button><button type="button" class="opt" id="o0_3_2" data-k="0_3" data-i="2"><span class="ol">c</span><span>an inclined plane</span></button><button type="button" class="opt" id="o0_3_3" data-k="0_3" data-i="3"><span class="ol">d</span><span>a wheel and axle</span></button></div>
+  <div class="reveal" id="rv0_3"></div>
+</div><div class="card" id="q0_4">
+  <div class="qn">Question 19</div>
+  <p class="stem">Which is the best description of a wedge?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_4_0" data-k="0_4" data-i="0"><span class="ol">a</span><span>an inclined plane that moves, used to split or cut</span></button><button type="button" class="opt" id="o0_4_1" data-k="0_4" data-i="1"><span class="ol">b</span><span>a bar that turns on a fulcrum</span></button><button type="button" class="opt" id="o0_4_2" data-k="0_4" data-i="2"><span class="ol">c</span><span>a rope running over a grooved wheel</span></button><button type="button" class="opt" id="o0_4_3" data-k="0_4" data-i="3"><span class="ol">d</span><span>a wheel fixed to a shaft</span></button></div>
+  <div class="reveal" id="rv0_4"></div>
+</div><div class="card" id="q0_5">
+  <div class="qn">Question 20</div>
+  <p class="stem">The fixed point that a lever turns on is called the</p>
+  <div class="opts"><button type="button" class="opt" id="o0_5_0" data-k="0_5" data-i="0"><span class="ol">a</span><span>load</span></button><button type="button" class="opt" id="o0_5_1" data-k="0_5" data-i="1"><span class="ol">b</span><span>fulcrum</span></button><button type="button" class="opt" id="o0_5_2" data-k="0_5" data-i="2"><span class="ol">c</span><span>effort</span></button><button type="button" class="opt" id="o0_5_3" data-k="0_5" data-i="3"><span class="ol">d</span><span>axle</span></button></div>
+  <div class="reveal" id="rv0_5"></div>
+</div><div class="card" id="q0_6">
+  <div class="qn">Question 21</div>
+  <p class="stem">In a first-class lever, such as a seesaw, what is in the middle?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_6_0" data-k="0_6" data-i="0"><span class="ol">a</span><span>the load</span></button><button type="button" class="opt" id="o0_6_1" data-k="0_6" data-i="1"><span class="ol">b</span><span>the effort</span></button><button type="button" class="opt" id="o0_6_2" data-k="0_6" data-i="2"><span class="ol">c</span><span>nothing</span></button><button type="button" class="opt" id="o0_6_3" data-k="0_6" data-i="3"><span class="ol">d</span><span>the fulcrum</span></button></div>
+  <div class="reveal" id="rv0_6"></div>
+</div><div class="card" id="q0_7">
+  <div class="qn">Question 22</div>
+  <p class="stem">A wheelbarrow is a second-class lever. What is in the middle?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_7_0" data-k="0_7" data-i="0"><span class="ol">a</span><span>the load</span></button><button type="button" class="opt" id="o0_7_1" data-k="0_7" data-i="1"><span class="ol">b</span><span>the fulcrum</span></button><button type="button" class="opt" id="o0_7_2" data-k="0_7" data-i="2"><span class="ol">c</span><span>the effort</span></button><button type="button" class="opt" id="o0_7_3" data-k="0_7" data-i="3"><span class="ol">d</span><span>the handles</span></button></div>
+  <div class="reveal" id="rv0_7"></div>
+</div><div class="card" id="q0_8">
+  <div class="qn">Question 23</div>
+  <p class="stem">Tweezers and a fishing rod are third-class levers. What is in the middle?</p>
+  <div class="opts"><button type="button" class="opt" id="o0_8_0" data-k="0_8" data-i="0"><span class="ol">a</span><span>the fulcrum</span></button><button type="button" class="opt" id="o0_8_1" data-k="0_8" data-i="1"><span class="ol">b</span><span>the load</span></button><button type="button" class="opt" id="o0_8_2" data-k="0_8" data-i="2"><span class="ol">c</span><span>the effort</span></button><button type="button" class="opt" id="o0_8_3" data-k="0_8" data-i="3"><span class="ol">d</span><span>the fish</span></button></div>
+  <div class="reveal" id="rv0_8"></div>
+</div><div class="card" id="q0_9">
+  <div class="qn">Question 24</div>
+  <p class="stem">A single pulley fixed at the top of a flagpole helps you by</p>
+  <div class="opts"><button type="button" class="opt" id="o0_9_0" data-k="0_9" data-i="0"><span class="ol">a</span><span>multiplying your force by two</span></button><button type="button" class="opt" id="o0_9_1" data-k="0_9" data-i="1"><span class="ol">b</span><span>changing the direction of your force</span></button><button type="button" class="opt" id="o0_9_2" data-k="0_9" data-i="2"><span class="ol">c</span><span>reducing the work to zero</span></button><button type="button" class="opt" id="o0_9_3" data-k="0_9" data-i="3"><span class="ol">d</span><span>making the flag lighter</span></button></div>
+  <div class="reveal" id="rv0_9"></div>
+</div><div class="card" id="q0_10">
+  <div class="qn">Question 25</div>
+  <p class="stem">A screwdriver, a steering wheel and a faucet handle are all examples of a</p>
+  <div class="opts"><button type="button" class="opt" id="o0_10_0" data-k="0_10" data-i="0"><span class="ol">a</span><span>lever</span></button><button type="button" class="opt" id="o0_10_1" data-k="0_10" data-i="1"><span class="ol">b</span><span>wedge</span></button><button type="button" class="opt" id="o0_10_2" data-k="0_10" data-i="2"><span class="ol">c</span><span>pulley</span></button><button type="button" class="opt" id="o0_10_3" data-k="0_10" data-i="3"><span class="ol">d</span><span>wheel and axle</span></button></div>
+  <div class="reveal" id="rv0_10"></div>
+</div><div class="card tfcard" id="q0_11">
+  <div class="qn">Question 26</div>
+  <p class="stem">A wheelchair ramp is an inclined plane.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_11_1" data-k="0_11" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_11_0" data-k="0_11" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_11"></div>
+</div><div class="card tfcard" id="q0_12">
+  <div class="qn">Question 27</div>
+  <p class="stem">The blade of a knife is a wedge.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_12_1" data-k="0_12" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_12_0" data-k="0_12" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_12"></div>
+</div><div class="card tfcard" id="q0_13">
+  <div class="qn">Question 28</div>
+  <p class="stem">A simple machine needs a motor or an engine to work.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_13_1" data-k="0_13" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_13_0" data-k="0_13" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_13"></div>
+</div><div class="card tfcard" id="q0_14">
+  <div class="qn">Question 29</div>
+  <p class="stem">Every lever has its fulcrum in the middle.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o0_14_1" data-k="0_14" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o0_14_0" data-k="0_14" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv0_14"></div>
+</div></section>
+<section class="sec" id="sec1"><h2>How machines help <span class="rng">30–49</span></h2><div class="card" id="q1_0">
+  <div class="qn">Question 30</div>
+  <p class="stem">What does a simple machine do?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_0_0" data-k="1_0" data-i="0"><span class="ol">a</span><span>creates energy</span></button><button type="button" class="opt" id="o1_0_1" data-k="1_0" data-i="1"><span class="ol">b</span><span>reduces the total work that has to be done</span></button><button type="button" class="opt" id="o1_0_2" data-k="1_0" data-i="2"><span class="ol">c</span><span>changes the size or the direction of a force</span></button><button type="button" class="opt" id="o1_0_3" data-k="1_0" data-i="3"><span class="ol">d</span><span>removes friction</span></button></div>
+  <div class="reveal" id="rv1_0"></div>
+</div><div class="card" id="q1_1">
+  <div class="qn">Question 31</div>
+  <p class="stem">You push a box up a long ramp instead of lifting it straight up. You use less force, but you</p>
+  <div class="opts"><button type="button" class="opt" id="o1_1_0" data-k="1_1" data-i="0"><span class="ol">a</span><span>push it over a longer distance</span></button><button type="button" class="opt" id="o1_1_1" data-k="1_1" data-i="1"><span class="ol">b</span><span>do much less work</span></button><button type="button" class="opt" id="o1_1_2" data-k="1_1" data-i="2"><span class="ol">c</span><span>create extra energy</span></button><button type="button" class="opt" id="o1_1_3" data-k="1_1" data-i="3"><span class="ol">d</span><span>make the box lighter</span></button></div>
+  <div class="reveal" id="rv1_1"></div>
+</div><div class="card" id="q1_2">
+  <div class="qn">Question 32</div>
+  <p class="stem">Mechanical advantage tells you</p>
+  <div class="opts"><button type="button" class="opt" id="o1_2_0" data-k="1_2" data-i="0"><span class="ol">a</span><span>how much energy the machine wastes</span></button><button type="button" class="opt" id="o1_2_1" data-k="1_2" data-i="1"><span class="ol">b</span><span>how fast the machine works</span></button><button type="button" class="opt" id="o1_2_2" data-k="1_2" data-i="2"><span class="ol">c</span><span>how heavy the machine is</span></button><button type="button" class="opt" id="o1_2_3" data-k="1_2" data-i="3"><span class="ol">d</span><span>how many times the machine multiplies your force</span></button></div>
+  <div class="reveal" id="rv1_2"></div>
+</div><div class="card" id="q1_3">
+  <div class="qn">Question 33</div>
+  <p class="stem">A machine has a mechanical advantage of 4. That means</p>
+  <div class="opts"><button type="button" class="opt" id="o1_3_0" data-k="1_3" data-i="0"><span class="ol">a</span><span>it wastes 4 joules of energy</span></button><button type="button" class="opt" id="o1_3_1" data-k="1_3" data-i="1"><span class="ol">b</span><span>the output force is 4 times the input force</span></button><button type="button" class="opt" id="o1_3_2" data-k="1_3" data-i="2"><span class="ol">c</span><span>it does 4 times as much work as you do</span></button><button type="button" class="opt" id="o1_3_3" data-k="1_3" data-i="3"><span class="ol">d</span><span>it is 4% efficient</span></button></div>
+  <div class="reveal" id="rv1_3"></div>
+</div><div class="card" id="q1_4">
+  <div class="qn">Question 34</div>
+  <p class="stem">Three ramps all reach the same height. Which one has the greatest mechanical advantage?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_4_0" data-k="1_4" data-i="0"><span class="ol">a</span><span>the shortest ramp</span></button><button type="button" class="opt" id="o1_4_1" data-k="1_4" data-i="1"><span class="ol">b</span><span>the steepest ramp</span></button><button type="button" class="opt" id="o1_4_2" data-k="1_4" data-i="2"><span class="ol">c</span><span>the longest ramp</span></button><button type="button" class="opt" id="o1_4_3" data-k="1_4" data-i="3"><span class="ol">d</span><span>they are all the same</span></button></div>
+  <div class="reveal" id="rv1_4"></div>
+</div><div class="card" id="q1_5">
+  <div class="qn">Question 35</div>
+  <p class="stem">You are prying up a rock with a long bar. You move the fulcrum closer to the rock. Lifting the rock becomes</p>
+  <div class="opts"><button type="button" class="opt" id="o1_5_0" data-k="1_5" data-i="0"><span class="ol">a</span><span>harder</span></button><button type="button" class="opt" id="o1_5_1" data-k="1_5" data-i="1"><span class="ol">b</span><span>easier, but your end of the bar has to move farther</span></button><button type="button" class="opt" id="o1_5_2" data-k="1_5" data-i="2"><span class="ol">c</span><span>impossible</span></button><button type="button" class="opt" id="o1_5_3" data-k="1_5" data-i="3"><span class="ol">d</span><span>exactly the same</span></button></div>
+  <div class="reveal" id="rv1_5"></div>
+</div><div class="card" id="q1_6">
+  <div class="qn">Question 36</div>
+  <p class="stem">Can a machine put out more work than is put into it?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_6_0" data-k="1_6" data-i="0"><span class="ol">a</span><span>yes, if it has a large mechanical advantage</span></button><button type="button" class="opt" id="o1_6_1" data-k="1_6" data-i="1"><span class="ol">b</span><span>yes, if it is well oiled</span></button><button type="button" class="opt" id="o1_6_2" data-k="1_6" data-i="2"><span class="ol">c</span><span>only a compound machine can</span></button><button type="button" class="opt" id="o1_6_3" data-k="1_6" data-i="3"><span class="ol">d</span><span>no, never</span></button></div>
+  <div class="reveal" id="rv1_6"></div>
+</div><div class="card" id="q1_7">
+  <div class="qn">Question 37</div>
+  <p class="stem">Look at the mechanical advantage formulas for all six machines. Every one is a ratio of two</p>
+  <div class="opts"><button type="button" class="opt" id="o1_7_0" data-k="1_7" data-i="0"><span class="ol">a</span><span>forces</span></button><button type="button" class="opt" id="o1_7_1" data-k="1_7" data-i="1"><span class="ol">b</span><span>distances</span></button><button type="button" class="opt" id="o1_7_2" data-k="1_7" data-i="2"><span class="ol">c</span><span>energies</span></button><button type="button" class="opt" id="o1_7_3" data-k="1_7" data-i="3"><span class="ol">d</span><span>speeds</span></button></div>
+  <div class="reveal" id="rv1_7"></div>
+</div><div class="card" id="q1_8">
+  <div class="qn">Question 38</div>
+  <p class="stem">Ideal mechanical advantage is</p>
+  <div class="opts"><button type="button" class="opt" id="o1_8_0" data-k="1_8" data-i="0"><span class="ol">a</span><span>measured with a spring scale</span></button><button type="button" class="opt" id="o1_8_1" data-k="1_8" data-i="1"><span class="ol">b</span><span>always smaller than the actual mechanical advantage</span></button><button type="button" class="opt" id="o1_8_2" data-k="1_8" data-i="2"><span class="ol">c</span><span>the energy the machine wastes</span></button><button type="button" class="opt" id="o1_8_3" data-k="1_8" data-i="3"><span class="ol">d</span><span>worked out from the measurements of the machine, assuming no friction</span></button></div>
+  <div class="reveal" id="rv1_8"></div>
+</div><div class="card" id="q1_9">
+  <div class="qn">Question 39</div>
+  <p class="stem">Actual mechanical advantage is</p>
+  <div class="opts"><button type="button" class="opt" id="o1_9_0" data-k="1_9" data-i="0"><span class="ol">a</span><span>measured in the room: the load divided by the effort you really had to use</span></button><button type="button" class="opt" id="o1_9_1" data-k="1_9" data-i="1"><span class="ol">b</span><span>worked out from the length of the machine</span></button><button type="button" class="opt" id="o1_9_2" data-k="1_9" data-i="2"><span class="ol">c</span><span>always larger than the ideal</span></button><button type="button" class="opt" id="o1_9_3" data-k="1_9" data-i="3"><span class="ol">d</span><span>the same thing as efficiency</span></button></div>
+  <div class="reveal" id="rv1_9"></div>
+</div><div class="card" id="q1_10">
+  <div class="qn">Question 40</div>
+  <p class="stem">The actual mechanical advantage is always smaller than the ideal. What causes the gap?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_10_0" data-k="1_10" data-i="0"><span class="ol">a</span><span>gravity</span></button><button type="button" class="opt" id="o1_10_1" data-k="1_10" data-i="1"><span class="ol">b</span><span>bad measuring</span></button><button type="button" class="opt" id="o1_10_2" data-k="1_10" data-i="2"><span class="ol">c</span><span>friction</span></button><button type="button" class="opt" id="o1_10_3" data-k="1_10" data-i="3"><span class="ol">d</span><span>the weight of the load</span></button></div>
+  <div class="reveal" id="rv1_10"></div>
+</div><div class="card" id="q1_11">
+  <div class="qn">Question 41</div>
+  <p class="stem">A pulley system has 4 rope segments holding up the load. What is its ideal mechanical advantage?</p>
+  <div class="opts"><button type="button" class="opt" id="o1_11_0" data-k="1_11" data-i="0"><span class="ol">a</span><span>1</span></button><button type="button" class="opt" id="o1_11_1" data-k="1_11" data-i="1"><span class="ol">b</span><span>2</span></button><button type="button" class="opt" id="o1_11_2" data-k="1_11" data-i="2"><span class="ol">c</span><span>4</span></button><button type="button" class="opt" id="o1_11_3" data-k="1_11" data-i="3"><span class="ol">d</span><span>8</span></button></div>
+  <div class="reveal" id="rv1_11"></div>
+</div><div class="card tfcard" id="q1_12">
+  <div class="qn">Question 42</div>
+  <p class="stem">A machine can reduce the force you need to do a job.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_12_1" data-k="1_12" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_12_0" data-k="1_12" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_12"></div>
+</div><div class="card tfcard" id="q1_13">
+  <div class="qn">Question 43</div>
+  <p class="stem">A machine reduces the total amount of work needed to do a job.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_13_1" data-k="1_13" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_13_0" data-k="1_13" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_13"></div>
+</div><div class="card tfcard" id="q1_14">
+  <div class="qn">Question 44</div>
+  <p class="stem">The ideal mechanical advantage of a ramp is its length divided by its height.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o1_14_1" data-k="1_14" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o1_14_0" data-k="1_14" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv1_14"></div>
+</div><div class="card" id="q1_15">
+  <div class="qn">Question 45</div>
+  <p class="stem">A lever has an effort arm of 2.4 m and a load arm of 0.3 m. Find its ideal mechanical advantage.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in1_15" data-k="1_15" placeholder="answer"><span class="unit"></span></div>
+  <div class="reveal" id="rv1_15"></div>
+</div><div class="card" id="q1_16">
+  <div class="qn">Question 46</div>
+  <p class="stem">A ramp is 6 m long and rises 1.5 m. Find its ideal mechanical advantage.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in1_16" data-k="1_16" placeholder="answer"><span class="unit"></span></div>
+  <div class="reveal" id="rv1_16"></div>
+</div><div class="card" id="q1_17">
+  <div class="qn">Question 47</div>
+  <p class="stem">A wheel and axle has a wheel radius of 30 cm and an axle radius of 5 cm. Find its ideal mechanical advantage.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in1_17" data-k="1_17" placeholder="answer"><span class="unit"></span></div>
+  <div class="reveal" id="rv1_17"></div>
+</div><div class="card" id="q1_18">
+  <div class="qn">Question 48</div>
+  <p class="stem">A pulley system has 3 rope segments holding the load. A 450 N load hangs from it. Find the ideal effort.</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in1_18" data-k="1_18" placeholder="answer"><span class="unit">N</span></div>
+  <div class="reveal" id="rv1_18"></div>
+</div><div class="card" id="q1_19">
+  <div class="qn">Question 49</div>
+  <p class="stem">Using a spring scale, you find that a lever lifts a 300 N rock when you push with 60 N. What is its actual mechanical advantage?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in1_19" data-k="1_19" placeholder="answer"><span class="unit"></span></div>
+  <div class="reveal" id="rv1_19"></div>
+</div></section>
+<section class="sec" id="sec2"><h2>Efficiency <span class="rng">50–64</span></h2><p class="secnote">For the calculations, write the formula and show your work.</p><div class="card" id="q2_0">
+  <div class="qn">Question 50</div>
+  <p class="stem">Efficiency compares</p>
+  <div class="opts"><button type="button" class="opt" id="o2_0_0" data-k="2_0" data-i="0"><span class="ol">a</span><span>the useful energy a machine puts out to the energy put into it</span></button><button type="button" class="opt" id="o2_0_1" data-k="2_0" data-i="1"><span class="ol">b</span><span>how big a machine is to how heavy it is</span></button><button type="button" class="opt" id="o2_0_2" data-k="2_0" data-i="2"><span class="ol">c</span><span>the force put in to the distance moved</span></button><button type="button" class="opt" id="o2_0_3" data-k="2_0" data-i="3"><span class="ol">d</span><span>how fast two machines work</span></button></div>
+  <div class="reveal" id="rv2_0"></div>
+</div><div class="card" id="q2_1">
+  <div class="qn">Question 51</div>
+  <p class="stem">Which is the correct formula for efficiency?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_1_0" data-k="2_1" data-i="0"><span class="ol">a</span><span>energy in ÷ energy out × 100</span></button><button type="button" class="opt" id="o2_1_1" data-k="2_1" data-i="1"><span class="ol">b</span><span>energy in − energy out</span></button><button type="button" class="opt" id="o2_1_2" data-k="2_1" data-i="2"><span class="ol">c</span><span>energy out ÷ energy in × 100</span></button><button type="button" class="opt" id="o2_1_3" data-k="2_1" data-i="3"><span class="ol">d</span><span>energy out × energy in</span></button></div>
+  <div class="reveal" id="rv2_1"></div>
+</div><div class="card" id="q2_2">
+  <div class="qn">Question 52</div>
+  <p class="stem">Why is no real machine 100% efficient?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_2_0" data-k="2_2" data-i="0"><span class="ol">a</span><span>machines destroy some energy</span></button><button type="button" class="opt" id="o2_2_1" data-k="2_2" data-i="1"><span class="ol">b</span><span>machines are built badly on purpose</span></button><button type="button" class="opt" id="o2_2_2" data-k="2_2" data-i="2"><span class="ol">c</span><span>gravity uses up some of the energy</span></button><button type="button" class="opt" id="o2_2_3" data-k="2_2" data-i="3"><span class="ol">d</span><span>friction turns some of the energy into thermal energy</span></button></div>
+  <div class="reveal" id="rv2_2"></div>
+</div><div class="card" id="q2_3">
+  <div class="qn">Question 53</div>
+  <p class="stem">Machine A is 85% efficient. Machine B is 40% efficient. Which one wastes more of the energy put into it?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_3_0" data-k="2_3" data-i="0"><span class="ol">a</span><span>Machine A</span></button><button type="button" class="opt" id="o2_3_1" data-k="2_3" data-i="1"><span class="ol">b</span><span>Machine B</span></button><button type="button" class="opt" id="o2_3_2" data-k="2_3" data-i="2"><span class="ol">c</span><span>they waste the same amount</span></button><button type="button" class="opt" id="o2_3_3" data-k="2_3" data-i="3"><span class="ol">d</span><span>neither wastes any</span></button></div>
+  <div class="reveal" id="rv2_3"></div>
+</div><div class="card" id="q2_4">
+  <div class="qn">Question 54</div>
+  <p class="stem">What is the best way to raise the efficiency of a squeaky, stiff pulley?</p>
+  <div class="opts"><button type="button" class="opt" id="o2_4_0" data-k="2_4" data-i="0"><span class="ol">a</span><span>oil it, to reduce friction</span></button><button type="button" class="opt" id="o2_4_1" data-k="2_4" data-i="1"><span class="ol">b</span><span>pull on the rope harder</span></button><button type="button" class="opt" id="o2_4_2" data-k="2_4" data-i="2"><span class="ol">c</span><span>use a heavier load</span></button><button type="button" class="opt" id="o2_4_3" data-k="2_4" data-i="3"><span class="ol">d</span><span>use a longer rope</span></button></div>
+  <div class="reveal" id="rv2_4"></div>
+</div><div class="card tfcard" id="q2_5">
+  <div class="qn">Question 55</div>
+  <p class="stem">A machine can have an efficiency greater than 100%.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_5_1" data-k="2_5" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_5_0" data-k="2_5" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_5"></div>
+</div><div class="card tfcard" id="q2_6">
+  <div class="qn">Question 56</div>
+  <p class="stem">A machine that is 30% efficient wastes 70% of the energy put into it.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_6_1" data-k="2_6" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_6_0" data-k="2_6" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_6"></div>
+</div><div class="card tfcard" id="q2_7">
+  <div class="qn">Question 57</div>
+  <p class="stem">For a real machine, the useful energy out is always less than the energy in.</p>
+  <div class="opts tf">
+    <button type="button" class="opt" id="o2_7_1" data-k="2_7" data-i="1"><span class="ol">T</span><span>True</span></button>
+    <button type="button" class="opt" id="o2_7_0" data-k="2_7" data-i="0"><span class="ol">F</span><span>False</span></button>
+  </div>
+  <div class="reveal" id="rv2_7"></div>
+</div><div class="card" id="q2_8">
+  <div class="qn">Question 58</div>
+  <p class="stem">An electric motor takes in 200 J of energy and puts out 150 J of useful energy. What is its efficiency?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_8" data-k="2_8" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_8"></div>
+</div><div class="card" id="q2_9">
+  <div class="qn">Question 59</div>
+  <p class="stem">You put 500 J of energy into a pulley system. It puts 400 J into lifting the load. What is its efficiency?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_9" data-k="2_9" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_9"></div>
+</div><div class="card" id="q2_10">
+  <div class="qn">Question 60</div>
+  <p class="stem">An old-style light bulb takes in 60 J of electrical energy and gives off only 6 J of light. What is its efficiency?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_10" data-k="2_10" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_10"></div>
+</div><div class="card" id="q2_11">
+  <div class="qn">Question 61</div>
+  <p class="stem">A car engine takes in 2,000 J of chemical energy from its fuel and turns 500 J of it into motion. What is its efficiency?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_11" data-k="2_11" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_11"></div>
+</div><div class="card" id="q2_12">
+  <div class="qn">Question 62</div>
+  <p class="stem">Mr. Murray puts 800 J of energy into shoving a very reluctant goat up a ramp. Only 480 J goes into raising the goat. What is the efficiency of the ramp?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_12" data-k="2_12" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_12"></div>
+</div><div class="card" id="q2_13">
+  <div class="qn">Question 63</div>
+  <p class="stem">A blender takes in 400 J of electrical energy and wastes 140 J of it as heat and sound. How much useful energy comes out?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_13" data-k="2_13" placeholder="answer"><span class="unit">J</span></div>
+  <div class="reveal" id="rv2_13"></div>
+</div><div class="card" id="q2_14">
+  <div class="qn">Question 64</div>
+  <p class="stem">What is the efficiency of that blender?</p>
+  <div class="numwrap"><input type="text" inputmode="decimal" id="in2_14" data-k="2_14" placeholder="answer"><span class="unit">%</span></div>
+  <div class="reveal" id="rv2_14"></div>
+</div></section>
+</main>
+<div id="gradebar"><input id="nameinput" placeholder="Type your name" autocomplete="name"><button id="gradebtn">GRADE ME</button></div>
+<div id="overlay"><div id="modalbox"><h2 id="mtitle"></h2><p id="mtext"></p><div class="row"><button id="mgo">Go back</button><button id="many">Grade anyway</button></div></div></div>
+
+<script>
+const SECTIONS=[{"name":"The six simple machines","items":[{"t":"match","tiles":[{"text":"lever","e":"A stiff bar that turns on a fixed point, the fulcrum."},{"text":"inclined plane","e":"A flat, slanted surface. Less force, longer distance."},{"text":"wedge","e":"An inclined plane that moves. It turns a push down into a push apart."},{"text":"screw","e":"The threads are an inclined plane wrapped around a cylinder."},{"text":"pulley","e":"A grooved wheel with a rope. Pull down and the flag goes up."},{"text":"wheel and axle","e":"A big wheel fixed to a small shaft. Turning the knob turns the shaft with more force."}]},{"t":"match","tiles":[{"text":"effort (input force)","e":"The push you supply."},{"text":"load arm","e":"The distance from the fulcrum to the load. Here it is the short side."},{"text":"effort arm","e":"The distance from the fulcrum to where you push. Here it is the long side, which is what gives the advantage."},{"text":"fulcrum","e":"The fixed point the bar turns on."},{"text":"load (output force)","e":"The weight of the rock, which is what the lever has to overcome."}]},{"t":"match","tiles":[{"text":"axle","e":"The small shaft in the center. It turns together with the wheel."},{"text":"effort arm (radius of the wheel)","e":"From the center out to where you pull. The bigger the wheel, the more advantage."},{"text":"effort (input force)","e":"Your pull on the rim of the wheel."},{"text":"load arm (radius of the axle)","e":"From the center out to where the load hangs. It is short, so the load moves a short distance with a large force."},{"text":"load (output force)","e":"The weight being lifted by the axle."},{"text":"wheel","e":"The large outer circle, where the effort is applied."}]},{"t":"mc","a":2,"o":["a lever","a pulley","an inclined plane","a wheel and axle"],"e":"Unwind the thread of a screw and you get a long, thin ramp."},{"t":"mc","a":0,"o":["an inclined plane that moves, used to split or cut","a bar that turns on a fulcrum","a rope running over a grooved wheel","a wheel fixed to a shaft"],"e":"A ramp stays still while the load moves. A wedge is the ramp doing the moving."},{"t":"mc","a":1,"o":["load","fulcrum","effort","axle"],"e":"Effort is your push, load is what gets moved, and the fulcrum is the pivot."},{"t":"mc","a":3,"o":["the load","the effort","nothing","the fulcrum"],"e":"Fulcrum in the middle, with effort on one side and load on the other."},{"t":"mc","a":0,"o":["the load","the fulcrum","the effort","the handles"],"e":"The wheel is the fulcrum at one end, your hands lift at the other, and the load rides between."},{"t":"mc","a":2,"o":["the fulcrum","the load","the effort","the fish"],"e":"You push between the fulcrum and the load. You lose force but gain distance and speed."},{"t":"mc","a":1,"o":["multiplying your force by two","changing the direction of your force","reducing the work to zero","making the flag lighter"],"e":"You pull down and the flag goes up. A single fixed pulley does not multiply force."},{"t":"mc","a":3,"o":["lever","wedge","pulley","wheel and axle"],"e":"In each one a wide part and a narrow shaft turn together."},{"t":"tf","a":1,"e":"True. A slanted surface that lets you raise a load with less force."},{"t":"tf","a":1,"e":"True. It is thin at the edge and wider behind, and it pushes the food apart."},{"t":"tf","a":0,"e":"False. Simple machines only change the force you put in. You are the engine."},{"t":"tf","a":0,"e":"False. That is only a first-class lever. In second- and third-class levers the fulcrum is at one end."}]},{"name":"How machines help","items":[{"t":"mc","a":2,"o":["creates energy","reduces the total work that has to be done","changes the size or the direction of a force","removes friction"],"e":"It makes the job easier to do. It does not make the job smaller."},{"t":"mc","a":0,"o":["push it over a longer distance","do much less work","create extra energy","make the box lighter"],"e":"That is the trade every machine makes: less force, more distance."},{"t":"mc","a":3,"o":["how much energy the machine wastes","how fast the machine works","how heavy the machine is","how many times the machine multiplies your force"],"e":"Mechanical advantage = output force ÷ input force."},{"t":"mc","a":1,"o":["it wastes 4 joules of energy","the output force is 4 times the input force","it does 4 times as much work as you do","it is 4% efficient"],"e":"Push with 10 N and the machine pushes with 40 N."},{"t":"mc","a":2,"o":["the shortest ramp","the steepest ramp","the longest ramp","they are all the same"],"e":"A longer ramp is a gentler slope, so it takes less force. You pay for it in distance."},{"t":"mc","a":1,"o":["harder","easier, but your end of the bar has to move farther","impossible","exactly the same"],"e":"A longer effort side gives more mechanical advantage, at the cost of distance."},{"t":"mc","a":3,"o":["yes, if it has a large mechanical advantage","yes, if it is well oiled","only a compound machine can","no, never"],"e":"A machine can multiply force, but never work or energy."},{"t":"mc","a":1,"o":["forces","distances","energies","speeds"],"e":"Arm ÷ arm, radius ÷ radius, length ÷ height. A machine trades force for distance, so the trade shows up as a distance ratio."},{"t":"mc","a":3,"o":["measured with a spring scale","always smaller than the actual mechanical advantage","the energy the machine wastes","worked out from the measurements of the machine, assuming no friction"],"e":"It comes from the arms, the radii or the length of the ramp. It is the best the machine could ever do."},{"t":"mc","a":0,"o":["measured in the room: the load divided by the effort you really had to use","worked out from the length of the machine","always larger than the ideal","the same thing as efficiency"],"e":"One number comes from the drawing and one from the spring scale."},{"t":"mc","a":2,"o":["gravity","bad measuring","friction","the weight of the load"],"e":"Friction takes a share, and that share leaves as thermal energy and sound. The size of the gap is the machine’s efficiency."},{"t":"mc","a":2,"o":["1","2","4","8"],"e":"For pulleys, count the rope segments that hold the load."},{"t":"tf","a":1,"e":"True. That is the main reason we use them."},{"t":"tf","a":0,"e":"False. The work is the same or a little more, because of friction. Only the force is smaller."},{"t":"tf","a":1,"e":"True. A long, low ramp has a large advantage."},{"t":"num","a":8,"disp":"8","u":"","e":"Ideal MA = effort arm ÷ load arm = 2.4 m ÷ 0.3 m = 8"},{"t":"num","a":4,"disp":"4","u":"","e":"Ideal MA = slope length ÷ slope height = 6 m ÷ 1.5 m = 4"},{"t":"num","a":6,"disp":"6","u":"","e":"Ideal MA = wheel radius ÷ axle radius = 30 cm ÷ 5 cm = 6"},{"t":"num","a":150,"disp":"150","u":"N","e":"Ideal MA = 3 rope segments. Ideal effort = load ÷ MA = 450 N ÷ 3 = 150 N"},{"t":"num","a":5,"disp":"5","u":"","e":"Actual MA = load ÷ effort = 300 N ÷ 60 N = 5"}]},{"name":"Efficiency","items":[{"t":"mc","a":0,"o":["the useful energy a machine puts out to the energy put into it","how big a machine is to how heavy it is","the force put in to the distance moved","how fast two machines work"],"e":"It answers the question: how much of what I put in came out as something useful?"},{"t":"mc","a":2,"o":["energy in ÷ energy out × 100","energy in − energy out","energy out ÷ energy in × 100","energy out × energy in"],"e":"Out over in, times 100 to make it a percent. Your notes say work output ÷ work input, which is the same idea."},{"t":"mc","a":3,"o":["machines destroy some energy","machines are built badly on purpose","gravity uses up some of the energy","friction turns some of the energy into thermal energy"],"e":"Moving parts rub. The energy is not destroyed, but it leaves as heat instead of useful work."},{"t":"mc","a":1,"o":["Machine A","Machine B","they waste the same amount","neither wastes any"],"e":"B turns only 40% into useful output, so 60% is wasted. A wastes only 15%."},{"t":"mc","a":0,"o":["oil it, to reduce friction","pull on the rope harder","use a heavier load","use a longer rope"],"e":"Less friction means less energy lost as heat and sound."},{"t":"tf","a":0,"e":"False. That would mean it puts out more energy than it takes in, which would break conservation of energy."},{"t":"tf","a":1,"e":"True. The useful part and the wasted part always add up to 100%."},{"t":"tf","a":1,"e":"True. Some always goes to friction."},{"t":"num","a":75,"disp":"75","u":"%","e":"Efficiency = energy out ÷ energy in × 100 = 150 J ÷ 200 J × 100 = 75%"},{"t":"num","a":80,"disp":"80","u":"%","e":"Efficiency = 400 J ÷ 500 J × 100 = 80%"},{"t":"num","a":10,"disp":"10","u":"%","e":"Efficiency = 6 J ÷ 60 J × 100 = 10%. The other 90% is heat."},{"t":"num","a":25,"disp":"25","u":"%","e":"Efficiency = 500 J ÷ 2,000 J × 100 = 25%"},{"t":"num","a":60,"disp":"60","u":"%","e":"Efficiency = 480 J ÷ 800 J × 100 = 60%. The rest went to friction and goat."},{"t":"num","a":260,"disp":"260","u":"J","e":"Useful energy out = energy in − wasted energy = 400 J − 140 J = 260 J"},{"t":"num","a":65,"disp":"65","u":"%","e":"Efficiency = 260 J ÷ 400 J × 100 = 65%"}]}];
+const META=[{"name":"The six simple machines","first":1,"last":29},{"name":"How machines help","first":30,"last":49},{"name":"Efficiency","first":50,"last":64}];
+const TOTAL=64;
+let graded=false;
+const pick={}, placed={}, typed={};
+
+function normNum(s){
+  if(s===null||s===undefined)return null;
+  const t=String(s).replace(/[, ]/g,'').replace(/[^0-9eE.+-]/g,'');
+  if(t==='')return null;
+  const v=parseFloat(t);
+  return isFinite(v)?v:null;
+}
+/* a 1% band, so 3.00 and 2.99 and 3 all count */
+function numOk(got,want){
+  if(got===null)return false;
+  return Math.abs(got-want)<=Math.max(0.01,Math.abs(want)*0.01);
+}
+
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+  if(graded)return;
+  const k=b.dataset.k;
+  document.querySelectorAll('#q'+k+' .opt').forEach(o=>o.classList.remove('sel'));
+  b.classList.add('sel'); pick[k]=+b.dataset.i; chips();
+}));
+
+let held=null;
+function clearLive(){document.querySelectorAll('.mslot.live').forEach(s=>s.classList.remove('live'));}
+function refreshTray(k){
+  const tray=document.getElementById('tray'+k); if(!tray)return;
+  const e=tray.querySelector('.trayempty');
+  if(e)e.style.display=tray.querySelectorAll('.tile').length?'none':'block';
+}
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{
+  if(graded)return;
+  const k=t.dataset.k;
+  if(t.parentElement.classList.contains('mslot')){
+    delete placed[k+'|'+t.parentElement.dataset.i];
+    document.getElementById('tray'+k).appendChild(t); refreshTray(k); chips(); return;
+  }
+  if(held===t){held.classList.remove('pick');held=null;clearLive();return;}
+  if(held)held.classList.remove('pick');
+  held=t; t.classList.add('pick'); clearLive();
+  document.querySelectorAll('#q'+k+' .mslot').forEach(s=>s.classList.add('live'));
+}));
+document.querySelectorAll('.mslot').forEach(slot=>slot.addEventListener('click',()=>{
+  if(graded||!held)return;
+  const k=slot.dataset.k;
+  if(held.dataset.k!==k)return;
+  const sitting=slot.querySelector('.tile');
+  if(sitting){document.getElementById('tray'+k).appendChild(sitting);delete placed[k+'|'+slot.dataset.i];}
+  slot.appendChild(held); placed[k+'|'+slot.dataset.i]=+held.dataset.i;
+  held.classList.remove('pick'); held=null; clearLive(); refreshTray(k); chips();
+}));
+document.querySelectorAll('input[data-k]').forEach(inp=>inp.addEventListener('input',()=>{
+  if(graded)return; typed[inp.dataset.k]=inp.value; chips();
+}));
+
+function answeredIn(si){
+  let done=0,tot=0;
+  SECTIONS[si].items.forEach((it,ii)=>{
+    const k=si+'_'+ii;
+    if(it.t==='match'){it.tiles.forEach((_,ti)=>{tot++;if(placed[k+'|'+ti]!==undefined)done++;});}
+    else if(it.t==='num'){tot++;if((typed[k]||'').trim()!=='')done++;}
+    else{tot++;if(pick[k]!==undefined)done++;}
+  });
+  return [done,tot];
+}
+const nav=document.getElementById('nav');
+META.forEach((m,si)=>{
+  const b=document.createElement('button');
+  b.innerHTML=m.name.replace(/^Part [A-D] \u2014 /,'')+' <span class="chip" id="chip'+si+'"></span>';
+  b.onclick=()=>document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});
+  nav.appendChild(b);
+});
+function chips(){
+  META.forEach((m,si)=>{
+    const [d,t]=answeredIn(si);
+    const el=document.getElementById('chip'+si); if(el)el.textContent=d+'/'+t;
+    nav.children[si].classList.toggle('done',d===t);
+  });
+}
+chips();
+
+function showModal(title,text,showAny){
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mtext').textContent=text;
+  document.getElementById('many').style.display=showAny?'':'none';
+  document.getElementById('overlay').classList.add('on');
+}
+document.getElementById('mgo').onclick=()=>document.getElementById('overlay').classList.remove('on');
+document.getElementById('many').onclick=()=>{document.getElementById('overlay').classList.remove('on');doGrade();};
+document.getElementById('gradebtn').onclick=()=>{
+  if(graded)return;
+  if(!document.getElementById('nameinput').value.trim()){
+    showModal('Name needed','Type your name in the box before grading, so you can show this to Mr. Murray.',false);return;}
+  let miss=0; META.forEach((m,si)=>{const[d,t]=answeredIn(si);miss+=t-d;});
+  if(miss>0){showModal('Still blank','You have '+miss+' unanswered '+(miss===1?'question':'questions')+'. Go back, or grade it as it stands.',true);return;}
+  doGrade();
+};
+function say(id,good,html){
+  const el=document.getElementById(id); if(!el)return;
+  el.className='reveal on '+(good?'good':'bad'); el.innerHTML=html;
+}
+function doGrade(){
+  graded=true;
+  let score=0; const rows=[];
+  SECTIONS.forEach((sec,si)=>{
+    let sgot=0,stot=0;
+    sec.items.forEach((it,ii)=>{
+      const k=si+'_'+ii, card=document.getElementById('q'+k);
+      if(it.t==='match'){
+        let right=0;
+        it.tiles.forEach((tk,ti)=>{
+          stot++;
+          const ok=placed[k+'|'+ti]===ti;
+          if(ok){right++;score++;sgot++;}
+          const slot=document.getElementById('slot'+k+'_'+ti);
+          const tile=slot?slot.querySelector('.tile'):null;
+          if(tile)tile.classList.add(ok?'ok':'bad');
+          say('rv'+k+'_'+ti,ok,'<b>'+tk.text+'</b> \u2014 '+tk.e);
+        });
+        card.classList.add(right===it.tiles.length?'ok':(right===0?'no':'part'));
+        return;
+      }
+      stot++;
+      if(it.t==='num'){
+        const ok=numOk(normNum(typed[k]),it.a);
+        if(ok){score++;sgot++;}
+        const inp=document.getElementById('in'+k); if(inp)inp.disabled=true;
+        card.classList.add(ok?'ok':'no');
+        say('rv'+k,ok,'<b>'+it.disp+' '+it.u+'</b> \u2014 '+it.e);
+      }else{
+        const got=pick[k], ok=got===it.a;
+        if(ok){score++;sgot++;}
+        const chosen=document.getElementById('o'+k+'_'+got); if(chosen)chosen.classList.add(ok?'ok':'no');
+        const right=document.getElementById('o'+k+'_'+it.a); if(right)right.classList.add('ok');
+        card.classList.add(ok?'ok':'no');
+        const label=it.t==='tf'?(it.a?'True':'False'):(String.fromCharCode(97+it.a)+') '+it.o[it.a]);
+        say('rv'+k,ok,'<b>'+label+'</b> \u2014 '+it.e);
+      }
+    });
+    rows.push([sec.name,sgot,stot]);
+  });
+  const sc=document.getElementById('scorecard');
+  sc.innerHTML='<div class="big">'+score+' / '+TOTAL+'</div>'
+    +'<div class="pct">'+Math.round(score/TOTAL*100)+'% \u00b7 '+document.getElementById('nameinput').value.trim()+'</div>'
+    +'<table><tr><th>Part</th><th>Score</th></tr>'
+    +rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+' / '+r[2]+'</td></tr>').join('')+'</table>';
+  sc.classList.add('on');
+  document.querySelectorAll('.opt,.tile').forEach(o=>o.disabled=true);
+  const bar=document.getElementById('gradebar');
+  bar.classList.add('locked'); bar.innerHTML='Graded and locked \u2014 scroll up for your score';
+  sc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script></body></html>
